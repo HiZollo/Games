@@ -1,0 +1,27 @@
+{
+  "name": "@hizollo/djsgames",
+  "version": "0.0.0",
+  "description": "A package that creates a variety of games for your bot of discord.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HiZollo/djsgames.git"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "discord-bot",
+    "games",
+    "discord-games",
+    "djs-games"
+  ],
+  "author": "HiZollo Organization",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HiZollo/djsgames/issues"
+  },
+  "homepage": "https://github.com/HiZollo/djsgames#readme"
+}
