@@ -1,2 +1,5 @@
 # HiZollo/Games
-A package that creates a variety of games for your bot of discord.js
+A package that provide various game for you to embed them into your app easily.
+
+# Notice
+This package is NOT finished yet.
