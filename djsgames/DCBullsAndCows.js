@@ -10,6 +10,7 @@ class DCBullsAndCows extends BullsAndCows {
 
     this.strings = overwrite(JSON.parse(JSON.stringify(bullsAndCows)), strings);
 
+    this.content = '';
     this.boardMessage = null;
   }
 
@@ -19,7 +20,8 @@ class DCBullsAndCows extends BullsAndCows {
 
     super.initialize();
 
-    this.boardMessage = await interaction.editReply(format(this.strings.firstMessage, this.playerHandler.nowPlayer.username));
+    this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
+    this.boardMessage = await interaction.editReply(this.content);
   }
 
   // 篩選
@@ -44,7 +46,14 @@ class DCBullsAndCows extends BullsAndCows {
           this.playerHandler.nowPlayer.addStep();
           this.playerHandler.next();
 
-          await channel.send(format(this.strings.queryResponse, this.playerHandler.nowPlayer.username, a, b, message.content));
+          if (this.hardmode) {
+            const content = this.boardMessage.content + '\n' + format(this.strings.queryResponse, a, b, message.content);
+            await this.boardMessage.edit(content);
+          }
+          else {
+            this.content += '\n' + format(this.strings.queryResponse, a, b, message.content);
+            await this.boardMessage.edit(this.content);
+          }
         }
       }).catch(async (error) => {
         await this.end("IDLE");
