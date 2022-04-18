@@ -9,6 +9,7 @@ class BullsAndCows extends Game {
     this.answerLength = answerLength;
     this.numberCount = numberCount;
     this.hardmode = hardmode;
+    this.winner = null;
   }
 
   initialize() {
@@ -45,12 +46,13 @@ class BullsAndCows extends Game {
 
     if (this.win(status)) {
       this.end("WIN");
+      this.winner = this.playerHandler.nowPlayer;
     }
     return status;
   }
 
   win(status) {
-    return status.a === this.answerLength
+    return status.a === this.answerLength;
   }
 }
 

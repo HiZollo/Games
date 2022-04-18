@@ -1,12 +1,12 @@
 const { PlayerStatus } = require('../util/Constants.js');
 
 class Player {
-  constructor({ name = 'Player', id, symbol = null, bot = false }) {
+  constructor({ username = 'Player', id, symbol = null, bot = false }) {
     if (id == null) {
       throw new Error('Player id should be specified');
     }
 
-    this.name = name;
+    this.username = username;
     this.id = id;
     this.symbol = symbol;
     this.steps = 0;

@@ -18,6 +18,14 @@ class PlayerHandler {
     return this.players.reduce((acc, cur) => acc + cur.steps, 0);
   }
 
+  get usernames() {
+    return this.players.map(p => p.username);
+  }
+
+  get ids() {
+    return this.players.map(p => p.id);
+  }
+
   // 上一位玩家
   prev(n = 1) {
     const index = (this.index - n) % this.playerCount

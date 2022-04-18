@@ -1,0 +1,12 @@
+{
+  "bullsAndCows": {
+    "firstMessage": "%s1, please guess a number.",
+    "queryResponse": "%s1, you get `%sA%s3B` from %s4",
+    "endMessage": {
+      "win": "%s1, you've got the answer `%s2`!",
+      "idle": "%s1, the game has been stopped because of idleness.",
+      "stopped": "%s1, the game has been stopped manually.",
+      "trail": "\n**Time**: %s1:%s2\n**Attempt(s)**: %s3"
+    }
+  }
+}
