@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/HiZollo/Games/issues"
   },
-  "homepage": "https://github.com/HiZollo/Games#readme"
+  "homepage": "https://github.com/HiZollo/Games#readme",
+  "dependencies": {
+    "discord.js": "^13.6.0"
+  }
 }

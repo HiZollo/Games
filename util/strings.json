@@ -2,6 +2,7 @@
   "bullsAndCows": {
     "firstMessage": "%s1, please guess a number.",
     "queryResponse": "You get `%s1A%s2B` from %s3",
+    "stopButtonMessage": "Stop",
     "endMessage": {
       "win": "%s1, you've got the answer `%s2`!",
       "idle": "%s1, the game has been stopped because of idleness.",

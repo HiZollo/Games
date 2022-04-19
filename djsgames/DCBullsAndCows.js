@@ -1,3 +1,4 @@
+const { MessageActionRow, MessageButton } = require('discord.js');
 const BullsAndCows = require('../games/BullsAndCows.js');
 const { PlayerStatus } = require('../util/Constants.js');
 const { fixedDigits, format, overwrite } = require('../util/Functions.js');
@@ -22,52 +23,59 @@ class DCBullsAndCows extends BullsAndCows {
     super.initialize();
 
     this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
-    this.boardMessage = await interaction.editReply(this.content);
+    this.boardMessage = await interaction.editReply({ content: this.content, components: this.components });
   }
 
   // 篩選
-  _filter = async message => {
+  _messageFilter = async message => {
     if (message.author.id !== this.playerHandler.nowPlayer.id) return false;
-    if (message.content.toLowerCase() === 'stop') return true;
     return isValid(message.content);
+  }
+
+  _buttonFilter = async interaction => {
+    if (interaction.user.id !== this.playerHandler.nowPlayer.id) return false;
+    return interaction.customId.startsWith(this.name);
   }
 
   // 開始遊戲
   async start(channel) {
     while (this.playerHandler.alive) {
-      const collected = await channel.awaitMessages({ filter: this._filter, time: this.time, max: 1 });
+      const result = await Promise.race([
+        channel.awaitMessages({ filter: this._messageFilter, time: this.time, max: 1 }),
+        this.boardMessage.awaitMessageComponent({ filter: this._buttonFilter, time: this.time, componentType: "BUTTON" })
+      ]);
       const player = this.playerHandler.nowPlayer;
 
-      if (!collected.size) {
-        player.setIdle();
+      if (result.customId === `${this.name}_stop`) {
+        player.setStop();
         continue;
       }
 
-      const message = collected.first();
-      await message.delete().catch(() => {});
-      if (message.content.toLowerCase() === 'stop') {
-        player.setStop();
+      if (!result.size) {
+        player.setIdle();
         continue;
       }
 
       player.setPlay();
       player.addStep();
 
+      const message = result.first();
+      await message.delete().catch(() => {});
       const query = getQuery(message.content);
       const status = this.guess(query);
 
       if (this.hardmode) {
         const content = this.boardMessage.content + '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
-        await this.boardMessage.edit(content);
+        await this.boardMessage.edit({ content });
       }
       else {
         this.content += '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
-        await this.boardMessage.edit(this.content);
+        await this.boardMessage.edit({ content: this.content });
       }
 
       if (this.win(status)) {
+        player.setWinner();
         this.winner = player;
-        this.winner.setWinner();
         continue;
       }
 
@@ -108,7 +116,20 @@ class DCBullsAndCows extends BullsAndCows {
     const min = ~~(this.duration/60000);
     const sec = Math.round(this.duration/1000) % 60;
     mainContent += format(this.strings.endMessage.trail, min, fixedDigits(sec, 2), this.playerHandler.totalSteps);
+
+    await interaction.editReply({ components: [] });
     await interaction.followUp(mainContent);
+  }
+
+  get components() {
+    return [
+      new MessageActionRow().addComponents(
+        new MessageButton()
+          .setCustomId(`${this.name}_stop`)
+          .setLabel(this.strings.stopButtonMessage)
+          .setStyle("DANGER")
+      )
+    ];
   }
 }
 
