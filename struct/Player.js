@@ -10,15 +10,15 @@ class Player {
     this.id = id;
     this.symbol = symbol;
     this.steps = 0;
-    this.status = bot ? PlayerStatus.BOT : PlayerStatus.PLAYING;
+    this.status = bot ? PlayerStatus.BOT : PlayerStatus.PLAY;
   }
 
   addStep(step = 1) {
     this.steps += step;
   }
 
-  setPlaying() {
-    this.status = PlayerStatus.PLAYING;
+  setPlay() {
+    this.status = PlayerStatus.PLAY;
   }
 
   setIdle() {
@@ -29,6 +29,9 @@ class Player {
     this.status = PlayerStatus.STOP;
   }
 
+  setWinner() {
+    this.status = PlayerStatus.WINNER;
+  }
 }
 
 module.exports = Player;

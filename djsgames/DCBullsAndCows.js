@@ -1,4 +1,5 @@
 const BullsAndCows = require('../games/BullsAndCows.js');
+const { PlayerStatus } = require('../util/Constants.js');
 const { fixedDigits, format, overwrite } = require('../util/Functions.js');
 const { bullsAndCows } = require('../util/strings.json');
 
@@ -33,31 +34,56 @@ class DCBullsAndCows extends BullsAndCows {
 
   // 開始遊戲
   async start(channel) {
-    while (!this.ended) {
-      await channel.awaitMessages({ filter: this._filter, time: this.time, max: 1 }).then(async collected => {
-        const message = collected.first();
-        await message.delete().catch(() => {});
+    while (this.playerHandler.alive) {
+      const collected = await channel.awaitMessages({ filter: this._filter, time: this.time, max: 1 });
+      const player = this.playerHandler.nowPlayer;
 
-        if (message.content.toLowerCase() === 'stop')
-          return this.end("STOPPED");
-        else {
-          const query = getQuery(message.content);
-          const {a, b} = this.guess(query);
-          this.playerHandler.nowPlayer.addStep();
-          this.playerHandler.next();
+      if (!collected.size) {
+        player.setIdle();
+        continue;
+      }
 
-          if (this.hardmode) {
-            const content = this.boardMessage.content + '\n' + format(this.strings.queryResponse, a, b, message.content);
-            await this.boardMessage.edit(content);
-          }
-          else {
-            this.content += '\n' + format(this.strings.queryResponse, a, b, message.content);
-            await this.boardMessage.edit(this.content);
-          }
-        }
-      }).catch(async (error) => {
-        await this.end("IDLE");
-      });
+      const message = collected.first();
+      await message.delete().catch(() => {});
+      if (message.content.toLowerCase() === 'stop') {
+        player.setStop();
+        continue;
+      }
+
+      player.setPlay();
+      player.addStep();
+
+      const query = getQuery(message.content);
+      const status = this.guess(query);
+
+      if (this.hardmode) {
+        const content = this.boardMessage.content + '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
+        await this.boardMessage.edit(content);
+      }
+      else {
+        this.content += '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
+        await this.boardMessage.edit(this.content);
+      }
+
+      if (this.win(status)) {
+        this.winner = player;
+        this.winner.setWinner();
+        continue;
+      }
+
+      this.playerHandler.next();
+    }
+
+    switch (this.playerHandler.nowPlayer.status) {
+      case PlayerStatus.WINNER:
+        this.end("WIN");
+        break;
+      case PlayerStatus.IDLE:
+        this.end("IDLE");
+        break;
+      case PlayerStatus.STOP:
+        this.end("STOP");
+        break;
     }
   }
 
@@ -74,7 +100,7 @@ class DCBullsAndCows extends BullsAndCows {
       case "IDLE":
         mainContent = format(this.strings.endMessage.idle, this.playerHandler.usernames.join(' '));
         break;
-      case "STOPPED":
+      case "STOP":
         mainContent = format(this.strings.endMessage.stopped, this.playerHandler.usernames.join(' '));
         break;
     }

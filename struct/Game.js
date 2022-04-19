@@ -11,7 +11,7 @@ class Game {
     this.endReason = null;
   }
 
-  // 初始化
+  // initialize the game
   initialize() {
     if (this._initialized) {
       throw new Error('The game has already been initialized.');
@@ -21,17 +21,18 @@ class Game {
     this._initialized = true;
   }
 
-  // 結束遊戲
+  // Ends the game
   end(endReason) {
-    if (this.ended)
+    if (this.ended) {
       throw new Error("This game has already ended.");
+    }
 
     this.ended = true;
     this.endTime = Date.now();
     this.endReason = endReason;
   }
 
-  // 獲得遊戲總時長（單位為毫秒）
+  // Gets the duration of the game
   get duration() {
     if (this.endTime === null) return null;
     return this.endTime - this.startTime;

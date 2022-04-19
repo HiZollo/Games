@@ -44,10 +44,6 @@ class BullsAndCows extends Game {
           else status.b++;
         }
 
-    if (this.win(status)) {
-      this.end("WIN");
-      this.winner = this.playerHandler.nowPlayer;
-    }
     return status;
   }
 
