@@ -1,4 +1,4 @@
-const { PlayerStatus } = require('../util/Constants.js');
+const PlayerStatus = require('./PlayerStatus.js');
 
 class Player {
   constructor({ username = 'Player', id, symbol = null, bot = false }) {
@@ -10,27 +10,11 @@ class Player {
     this.id = id;
     this.symbol = symbol;
     this.steps = 0;
-    this.status = bot ? PlayerStatus.BOT : PlayerStatus.PLAY;
+    this.status = new PlayerStatus();
   }
 
   addStep(step = 1) {
     this.steps += step;
-  }
-
-  setPlay() {
-    this.status = PlayerStatus.PLAY;
-  }
-
-  setIdle() {
-    this.status = PlayerStatus.IDLE;
-  }
-
-  setStop() {
-    this.status = PlayerStatus.STOP;
-  }
-
-  setWinner() {
-    this.status = PlayerStatus.WINNER;
   }
 }
 

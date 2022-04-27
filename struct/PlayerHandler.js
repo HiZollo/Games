@@ -1,5 +1,4 @@
 const Player = require('./Player.js');
-const { PlayerStatus } = require('../util/Constants.js');
 
 class PlayerHandler {
   constructor({ players, firstPlayerIndex = 0 }) {
@@ -26,7 +25,7 @@ class PlayerHandler {
   }
 
   get alive() {
-    return !this.players.find(p => p.status === PlayerStatus.WINNER) && this.players.find(p => p.status === PlayerStatus.PLAY);
+    return !this.players.find(p => p.status.is("WINNER")) && this.players.find(p => p.status.is("PLAYING"));
   }
 
   // 上一位玩家

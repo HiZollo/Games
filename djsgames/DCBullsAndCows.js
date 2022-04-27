@@ -1,6 +1,5 @@
 const { MessageActionRow, MessageButton } = require('discord.js');
 const BullsAndCows = require('../games/BullsAndCows.js');
-const { PlayerStatus } = require('../util/Constants.js');
 const { fixedDigits, format, overwrite } = require('../util/Functions.js');
 const { bullsAndCows } = require('../util/strings.json');
 
@@ -26,7 +25,6 @@ class DCBullsAndCows extends BullsAndCows {
     this.boardMessage = await interaction.editReply({ content: this.content, components: this.components });
   }
 
-  // 篩選
   _messageFilter = async message => {
     if (message.author.id !== this.playerHandler.nowPlayer.id) return false;
     return isValid(message.content);
@@ -37,7 +35,6 @@ class DCBullsAndCows extends BullsAndCows {
     return interaction.customId.startsWith(this.name);
   }
 
-  // 開始遊戲
   async start(channel) {
     while (this.playerHandler.alive) {
       const result = await Promise.race([
@@ -47,16 +44,16 @@ class DCBullsAndCows extends BullsAndCows {
       const player = this.playerHandler.nowPlayer;
 
       if (result.customId === `${this.name}_stop`) {
-        player.setStop();
+        player.status.set("LEAVING");
         continue;
       }
 
       if (!result.size) {
-        player.setIdle();
+        player.status.set("IDLE");
         continue;
       }
 
-      player.setPlay();
+      player.status.set("PLAYING");
       player.addStep();
 
       const message = result.first();
@@ -74,7 +71,7 @@ class DCBullsAndCows extends BullsAndCows {
       }
 
       if (this.win(status)) {
-        player.setWinner();
+        player.status.set("WINNER");
         this.winner = player;
         continue;
       }
@@ -82,16 +79,18 @@ class DCBullsAndCows extends BullsAndCows {
       this.playerHandler.next();
     }
 
-    switch (this.playerHandler.nowPlayer.status) {
-      case PlayerStatus.WINNER:
-        this.end("WIN");
-        break;
-      case PlayerStatus.IDLE:
-        this.end("IDLE");
-        break;
-      case PlayerStatus.STOP:
-        this.end("STOP");
-        break;
+    const status = this.playerHandler.nowPlayer.status;
+    if (status.is("WINNER", "BOT")) {
+      this.end("WIN");
+    }
+    else if (status.is("IDLE")) {
+      this.end("IDLE");
+    }
+    else if (status.is("LEAVING")) {
+      this.end("STOPPED");
+    }
+    else {
+
     }
   }
 
@@ -108,7 +107,7 @@ class DCBullsAndCows extends BullsAndCows {
       case "IDLE":
         mainContent = format(this.strings.endMessage.idle, this.playerHandler.usernames.join(' '));
         break;
-      case "STOP":
+      case "STOPPED":
         mainContent = format(this.strings.endMessage.stopped, this.playerHandler.usernames.join(' '));
         break;
     }

@@ -36,15 +36,15 @@ class BullsAndCows extends Game {
       throw new Error(`There are duplicated numbers in query ${query}.`);
     }
 
-    let status = { a: 0, b: 0 };
+    let response = { a: 0, b: 0 };
     for (let i = 0; i < this.answerLength; i++)
       for (let j = 0; j < this.answerLength; j++)
         if (query[i] == this.answer[j]) {
-          if (i === j) status.a++;
-          else status.b++;
+          if (i === j) response.a++;
+          else response.b++;
         }
 
-    return status;
+    return response;
   }
 
   win(status) {
