@@ -79,18 +79,16 @@ class DCBullsAndCows extends BullsAndCows {
       this.playerHandler.next();
     }
 
-    const status = this.playerHandler.nowPlayer.status;
-    if (status.is("WINNER", "BOT")) {
-      this.end("WIN");
-    }
-    else if (status.is("IDLE")) {
-      this.end("IDLE");
-    }
-    else if (status.is("LEAVING")) {
-      this.end("STOPPED");
-    }
-    else {
-
+    switch (this.playerHandler.nowPlayer.status.now) {
+      case "WINNER": case "BOT":
+        this.end("WIN");
+        break;
+      case "IDLE":
+        this.end("IDLE");
+        break;
+      case "LEAVING":
+        this.end("STOPPED");
+        break;
     }
   }
 

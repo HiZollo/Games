@@ -25,7 +25,7 @@ class PlayerHandler {
   }
 
   get alive() {
-    return !this.players.find(p => p.status.is("WINNER")) && this.players.find(p => p.status.is("PLAYING"));
+    return !this.players.find(p => p.status.now === "WINNER") && this.players.find(p => p.status.now === "PLAYING");
   }
 
   // 上一位玩家

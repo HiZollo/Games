@@ -1,10 +1,10 @@
 class Status {
   constructor(...status) {
     this._statusCount = 0;
+    this._statusPool = [];
 
-    this.FLAGS = {};
     this.append(status);
-    this.now = this.FLAGS[status[0]];
+    this.now = status[0];
   }
 
   append(status) {
@@ -12,20 +12,12 @@ class Status {
       if (this.has(s)) {
         throw new Error(`Status ${status} already exists.`);
       }
-
-      Object.defineProperty(this.FLAGS, s, {
-        value: this._statusCount++,
-        enumerable: true
-      });
+      this._statusPool.push(s);
     });
   }
 
   has(status) {
-    return Object.keys(this.FLAGS).includes(status);
-  }
-
-  is(...status) {
-    return status.some(s => this.now === this.FLAGS[s]);
+    return this._statusPool.includes(status);
   }
 
   set(status) {
@@ -33,7 +25,7 @@ class Status {
       throw new Error(`Status ${status} does not exist.`);
     }
 
-    this.now = this.FLAGS[status];
+    this.now = status;
   }
 }
 
