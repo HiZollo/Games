@@ -1,4 +1,5 @@
 const Game = require('../struct/Game.js');
+const { shuffle } = require('../util/GameUtil.js');
 const { GameName } = require('../util/Constants.js');
 
 class BullsAndCows extends Game {
@@ -20,7 +21,7 @@ class BullsAndCows extends Game {
       numbers.push(i)
     }
 
-    Game.shuffle(numbers, this.numberCount);
+    shuffle(numbers, this.numberCount);
 
     for (let i = 0; i < this.answerLength; i++) {
       this.answer.push(numbers[i]);
