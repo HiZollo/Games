@@ -1,4 +1,4 @@
-const { MessageActionRow, MessageButton } = require('discord.js');
+const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
 const BullsAndCows = require('../games/BullsAndCows.js');
 const { fixedDigits, format, overwrite } = require('../util/Functions.js');
 const { bullsAndCows } = require('../util/strings.json');
@@ -13,16 +13,29 @@ class DCBullsAndCows extends BullsAndCows {
 
     this.content = '';
     this.boardMessage = null;
+    this.source = null;
   }
 
-  async initialize(interaction) {
-    if (!interaction.deferred)
-      throw new Error('The interaction is not deffered.');
+  async initialize(source) {
+    this.source = source;
+    if (source.constructor.name === CommandInteraction.name) {
+      if (!source.deferred) {
+        await source.deferReply();
+      }
+      super.initialize();
 
-    super.initialize();
+      this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
+      this.boardMessage = await source.editReply({ content: this.content, components: this.components });
+    }
+    else if (source.constructor.name === Message.name) {
+      super.initialize();
 
-    this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
-    this.boardMessage = await interaction.editReply({ content: this.content, components: this.components });
+      this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
+      this.boardMessage = await source.channel.send({ content: this.content, components: this.components });
+    }
+    else {
+      throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
+    }
   }
 
   _messageFilter = async message => {
@@ -35,10 +48,10 @@ class DCBullsAndCows extends BullsAndCows {
     return interaction.customId.startsWith(this.name);
   }
 
-  async start(channel) {
+  async start() {
     while (this.playerHandler.alive) {
       const result = await Promise.race([
-        channel.awaitMessages({ filter: this._messageFilter, time: this.time, max: 1 }),
+        this.source.channel.awaitMessages({ filter: this._messageFilter, time: this.time, max: 1 }),
         this.boardMessage.awaitMessageComponent({ filter: this._buttonFilter, time: this.time, componentType: "BUTTON" })
       ]);
       const player = this.playerHandler.nowPlayer;
@@ -92,7 +105,7 @@ class DCBullsAndCows extends BullsAndCows {
     }
   }
 
-  async conclude(interaction) {
+  async conclude() {
     if (!this.ended) {
       throw new Error('The game has not ended.');
     }
@@ -114,8 +127,18 @@ class DCBullsAndCows extends BullsAndCows {
     const sec = Math.round(this.duration/1000) % 60;
     mainContent += format(this.strings.endMessage.trail, min, fixedDigits(sec, 2), this.playerHandler.totalSteps);
 
-    await interaction.editReply({ components: [] });
-    await interaction.followUp(mainContent);
+    await this.boardMessage.edit({ components: [] });
+
+    if (this.source.constructor.name === CommandInteraction.name) {
+      await this.source.followUp(mainContent);
+    }
+    else if (this.source.constructor.name === Message.name) {
+      await this.source.channel.send(mainContent);
+    }
+    else {
+      throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
+    }
+
   }
 
   get components() {
