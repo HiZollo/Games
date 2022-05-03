@@ -21,7 +21,7 @@ class BullsAndCows extends Game {
       numbers.push(i)
     }
 
-    shuffle(numbers, this.numberCount);
+    shuffle(numbers);
 
     for (let i = 0; i < this.answerLength; i++) {
       this.answer.push(numbers[i]);

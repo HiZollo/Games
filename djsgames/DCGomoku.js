@@ -1,16 +1,17 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
-const BullsAndCows = require('../games/BullsAndCows.js');
+const Gomoku = require('../games/Gomoku.js');
 const { fixedDigits, format, overwrite } = require('../util/Functions.js');
-const { bullsAndCows } = require('../util/strings.json');
+const { gomoku } = require('../util/strings.json');
 
-class DCBullsAndCows extends BullsAndCows {
-  constructor({ players, hardmode, answerLength, numberCount, time, strings }) {
-    super({ players, hardmode, answerLength, numberCount });
+const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+class DCGomoku extends Gomoku {
+  constructor({ players, boardSize = 9, time, strings }) {
+    super({ players, boardSize });
 
     this.time = time;
-    this.strings = overwrite(JSON.parse(JSON.stringify(bullsAndCows)), strings);
+    this.strings = overwrite(JSON.parse(JSON.stringify(gomoku)), strings);
 
-    this.content = '';
     this.boardMessage = null;
     this.source = null;
   }
@@ -23,26 +24,28 @@ class DCBullsAndCows extends BullsAndCows {
       }
       super.initialize();
 
-      this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
-      this.boardMessage = await source.editReply({ content: this.content, components: this.components });
+      const content = format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
+      this.boardMessage = await source.editReply({ content: content + '\n' + this.boardContent, components: this.components });
     }
     else if (source.constructor.name === Message.name) {
       super.initialize();
 
-      this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
-      this.boardMessage = await source.channel.send({ content: this.content, components: this.components });
+      const content = format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
+      this.boardMessage = await source.channel.send({ content: content + '\n' + this.boardContent, components: this.components });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
     }
   }
 
+  // 篩選
   _messageFilter = async message => {
     if (message.author.id !== this.playerHandler.nowPlayer.id) return false;
+    if (!(/^[A-Za-z]\d{1,2}$/.test(message.content))) return false;
 
-    if (!/^\d{4}$/.test(number)) return false;
-    const query = getQuery(number);
-    return (new Set(query)).size === number.length;
+    const [row, col] = getQuery(message.content);
+    if (!(0 <= row && row < this.boardSize && 0 <= col && col < this.boardSize)) return false;
+    return this.playground[row][col] === null;
   }
 
   _buttonFilter = async interaction => {
@@ -50,6 +53,7 @@ class DCBullsAndCows extends BullsAndCows {
     return interaction.customId.startsWith(this.name);
   }
 
+  // 開始遊戲
   async start() {
     while (!this.ended && this.playerHandler.alive) {
       const result = await Promise.race([
@@ -58,40 +62,48 @@ class DCBullsAndCows extends BullsAndCows {
       ]);
       const player = this.playerHandler.nowPlayer;
 
+      let content = '';
       if (result.customId === `${this.name}_stop`) {
+        await result.update({});
+
         player.status.set("LEAVING");
-        continue;
-      }
-
-      if (!result.size) {
-        player.status.set("IDLE");
-        continue;
-      }
-
-      player.status.set("PLAYING");
-      player.addStep();
-
-      const message = result.first();
-      await message.delete().catch(() => {});
-      const query = getQuery(message.content);
-      const status = this.guess(query);
-
-      if (this.win(status)) {
-        player.status.set("WINNER");
-        this.winner = player;
-      }
-      else {
+        content = format(this.strings.previous.leaving, player.username) + '\n';
         this.playerHandler.next();
       }
-
-      if (this.hardmode) {
-        const content = this.boardMessage.content + '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
-        await this.boardMessage.edit({ content });
+      else if (!result.size) {
+        player.status.set("IDLE");
+        content = format(this.strings.previous.idle, player.username) + '\n';
+        this.playerHandler.next();
       }
       else {
-        this.content += '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
-        await this.boardMessage.edit({ content: this.content });
+        player.status.set("PLAYING");
+        player.addStep();
+
+        const message = result.first();
+        await message.delete().catch(() => {});
+        const [row, col] = getQuery(message.content);
+
+        this.fill(row, col);
+
+        if (this.win(row, col)) {
+          player.status.set("WINNER");
+          this.winner = player;
+        }
+        else if (this.draw()) {
+          this.end("DRAW");
+        }
+        else {
+          this.playerHandler.next();
+        }
+
+        content = format(this.strings.previous.move, alphabets[col], row + 1, player.username) + '\n';
       }
+
+      content += format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`) + '\n';
+      content += this.boardContent;
+      await this.boardMessage.edit({ content }).catch(() => {
+        this.end("DELETED");
+      });
     }
 
     switch (this.playerHandler.nowPlayer.status.now) {
@@ -107,6 +119,7 @@ class DCBullsAndCows extends BullsAndCows {
     }
   }
 
+  // 結束遊戲
   async conclude() {
     if (!this.ended) {
       throw new Error('The game has not ended.');
@@ -117,13 +130,19 @@ class DCBullsAndCows extends BullsAndCows {
     let mainContent;
     switch (this.endReason) {
       case "WIN":
-        mainContent = format(message.win, `<@${this.winner.id}>`, this.answer.join(''));
+        mainContent = format(message.win, `<@${this.winner.id}>`);
         break;
       case "IDLE":
         mainContent = message.idle;
         break;
+      case "DRAW":
+        mainContent = message.draw;
+        break;
       case "STOPPED":
         mainContent = message.stopped;
+        break;
+      case "DELETED":
+        mainContent = message.deleted;
         break;
     }
 
@@ -137,7 +156,7 @@ class DCBullsAndCows extends BullsAndCows {
       mainContent += '\n' + message.gameStats.header + '\n';
       mainContent += format(message.gameStats.message, min, sec, this.playerHandler.totalSteps) + '\n';
       mainContent += message.playerStats.header + '\n';
-      for (const player in this.playerHandler.players) {
+      for (const player of this.playerHandler.players) {
         const m = ~~(player.time/60000);
         const s = fixedDigits(Math.round(player.time/1000) % 60, 2);
         mainContent += format(message.playerStats.message, player.username, m, s, player.steps) + '\n';
@@ -157,6 +176,17 @@ class DCBullsAndCows extends BullsAndCows {
     }
   }
 
+  get boardContent() {
+    let content = `${this.strings.corner}${this.strings.columns.join('\u200b')}\n`;
+    for (let i = 0; i < this.boardSize; i++) {
+      content += this.strings.rows[i];
+      for (let j = 0; j < this.boardSize; j++)
+        content += this.playground[i][j] !== null ? this.playground[i][j] : this.strings.grid;
+      content += '\n';
+    }
+    return content;
+  }
+
   get components() {
     return [
       new MessageActionRow().addComponents(
@@ -169,12 +199,11 @@ class DCBullsAndCows extends BullsAndCows {
   }
 }
 
-const getQuery = (number) => {
-  const query = [];
-  for (let c of number) {
-    query.push(+c);
-  }
-  return query;
+const getQuery = (content) => {
+  content = content.toLowerCase();
+  const row = content.substr(1, 2) - 1;
+  const col = content.substr(0, 1).charCodeAt() - 'a'.charCodeAt();
+  return [row, col];
 }
 
-module.exports = DCBullsAndCows;
+module.exports = DCGomoku;

@@ -1,13 +1,48 @@
 {
   "bullsAndCows": {
     "firstMessage": "%s1, please guess a number.",
-    "queryResponse": "You get `%s1A%s2B` from %s3",
+    "queryResponse": "You get `%s1A%s2B` from %s3.",
     "stopButtonMessage": "Stop",
     "endMessage": {
       "win": "%s1, you've got the answer `%s2`!",
-      "idle": "%s1, the game has been stopped because of idleness.",
-      "stopped": "%s1, the game has been stopped manually.",
-      "trail": "\n**Time**: %s1:%s2\n**Attempt(s)**: %s3"
+      "idle": "The game has been stopped because of idleness.",
+      "stopped": "The game has been stopped manually.",
+      "gameStats": {
+        "header": "========= Game Stats =========",
+        "message": "**Total Time**: %s1:%s2\n**Total Attempts**: %s3"
+      },
+      "playerStats": {
+        "header": "========= Player Stats =========",
+        "message": "**Name**: %s1\n**Time**: %s2:%s3\n**Attempts**: %s4"
+      }
+    }
+  },
+  "gomoku": {
+    "rows": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"],
+    "columns": ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮"],
+    "grid": "🔲",
+    "corner": "🔹",
+    "previous": {
+      "move": "Last move is located at `%s1%s2` by %s3.",
+      "idle": "%s1 lost their turn.",
+      "leaving": "%s1 wanted to end the game now."
+    },
+    "nowPlayer": "It is %s1's turn.",
+    "stopButtonMessage": "Stop",
+    "endMessage": {
+      "win": "Congrats, %s1! You won this gomoku game!",
+      "idle": "The game has been stopped because of idleness.",
+      "draw": "The game ends in a draw.",
+      "stopped": "The game has been stopped manually.",
+      "deleted": "Wait? I can't see the chess board, where does it go?",
+      "gameStats": {
+        "header": "========= Game Stats =========",
+        "message": "**Total Time**: %s1:%s2\n**Total Steps**: %s3"
+      },
+      "playerStats": {
+        "header": "========= Player Stats =========",
+        "message": "**Name**: %s1\n**Time**: %s2:%s3\n**Steps**: %s4"
+      }
     }
   }
 }

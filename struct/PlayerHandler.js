@@ -5,6 +5,7 @@ class PlayerHandler {
     this.players = players.map(p => new Player(p));
     this.playerCount = players.length;
     this._index = firstPlayerIndex;
+    this._lastMoveTime = Date.now();
   }
 
   // 現在輪到的玩家
@@ -30,17 +31,29 @@ class PlayerHandler {
 
   // 上一位玩家
   prev(n = 1) {
+    const time = Date.now();
+    this.nowPlayer.time += time - this._lastMoveTime;
+    this._lastMoveTime = time;
+
     const index = (this._index - n) % this.playerCount
     this._index = index < 0 ? index + this.playerCount : index;
   }
 
   // 下一位玩家
   next(n = 1) {
+    const time = Date.now();
+    this.nowPlayer.time += time - this._lastMoveTime;
+    this._lastMoveTime = time;
+
     this._index = (this._index + n) % this.playerCount;
   }
 
   // 指定下家
   assign(nextIndex) {
+    const time = Date.now();
+    this.nowPlayer.time += time - this._lastMoveTime;
+    this._lastMoveTime = time;
+    
     this._index = nextIndex % this.playerCount;
   }
 }

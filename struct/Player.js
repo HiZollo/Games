@@ -10,6 +10,7 @@ class Player {
     this.id = id;
     this.symbol = symbol;
     this.steps = 0;
+    this.time = 0;
     this.status = new PlayerStatus();
   }
 
