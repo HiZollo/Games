@@ -8,12 +8,11 @@
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "gameStats": {
-        "header": "========= Game Stats =========",
+        "header": "Game Stats - ",
         "message": "**Total Time**: %s1:%s2\n**Total Attempts**: %s3"
       },
       "playerStats": {
-        "header": "========= Player Stats =========",
-        "message": "**Name**: %s1\n**Time**: %s2:%s3\n**Attempts**: %s4"
+        "message": "**Time**: %s1:%s2\n**Attempts**: %s3"
       }
     }
   },
@@ -23,7 +22,7 @@
     "grid": "🔲",
     "corner": "🔹",
     "previous": {
-      "move": "Last move is located at `%s1%s2` by %s3.",
+      "move": "Last move is placed at `%s1%s2` by %s3.",
       "idle": "%s1 lost their turn.",
       "leaving": "%s1 wanted to end the game now."
     },
@@ -31,17 +30,16 @@
     "stopButtonMessage": "Stop",
     "endMessage": {
       "win": "Congrats, %s1! You won this gomoku game!",
-      "idle": "The game has been stopped because of idleness.",
       "draw": "The game ends in a draw.",
+      "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the chess board, where does it go?",
       "gameStats": {
-        "header": "========= Game Stats =========",
+        "header": "Game Stats - ",
         "message": "**Total Time**: %s1:%s2\n**Total Steps**: %s3"
       },
       "playerStats": {
-        "header": "========= Player Stats =========",
-        "message": "**Name**: %s1\n**Time**: %s2:%s3\n**Steps**: %s4"
+        "message": "**Time**: %s1:%s2\n**Steps**: %s3"
       }
     }
   }

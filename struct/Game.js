@@ -1,8 +1,8 @@
 const PlayerHandler = require('./PlayerHandler.js');
 
 class Game {
-  constructor(gameName, playerHandlerOptions) {
-    this.gameName = gameName;
+  constructor(name, playerHandlerOptions) {
+    this.name = name;
     this.playerHandler = new PlayerHandler(playerHandlerOptions);
     this._initialized = false;
     this.startTime = null;

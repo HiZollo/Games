@@ -1,6 +1,6 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
 const Gomoku = require('../games/Gomoku.js');
-const { fixedDigits, format, overwrite } = require('../util/Functions.js');
+const { createEndEmbed, fixedDigits, format, overwrite } = require('../util/Functions.js');
 const { gomoku } = require('../util/strings.json');
 
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -12,12 +12,14 @@ class DCGomoku extends Gomoku {
     this.time = time;
     this.strings = overwrite(JSON.parse(JSON.stringify(gomoku)), strings);
 
+    this.client = null;
     this.boardMessage = null;
     this.source = null;
   }
 
   async initialize(source) {
     this.source = source;
+    this.client = source?.client;
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
         await source.deferReply();
@@ -127,49 +129,34 @@ class DCGomoku extends Gomoku {
 
     const message = this.strings.endMessage;
 
-    let mainContent;
+    let content;
     switch (this.endReason) {
       case "WIN":
-        mainContent = format(message.win, `<@${this.winner.id}>`);
+        content = format(message.win, `<@${this.winner.id}>`);
         break;
       case "IDLE":
-        mainContent = message.idle;
+        content = message.idle;
         break;
       case "DRAW":
-        mainContent = message.draw;
+        content = message.draw;
         break;
       case "STOPPED":
-        mainContent = message.stopped;
+        content = message.stopped;
         break;
       case "DELETED":
-        mainContent = message.deleted;
+        content = message.deleted;
         break;
     }
 
-    const min = ~~(this.duration/60000);
-    const sec = fixedDigits(Math.round(this.duration/1000) % 60, 2);
-    if (this.playerHandler.playerCount === 1) {
-      mainContent += '\n' + message.gameStats.header + '\n';
-      mainContent += format(message.playerStats.message, `<@${this.playerHandler.nowPlayer.id}>`, min, sec, this.playerHandler.nowPlayer.steps) + '\n';
-    }
-    else {
-      mainContent += '\n' + message.gameStats.header + '\n';
-      mainContent += format(message.gameStats.message, min, sec, this.playerHandler.totalSteps) + '\n';
-      mainContent += message.playerStats.header + '\n';
-      for (const player of this.playerHandler.players) {
-        const m = ~~(player.time/60000);
-        const s = fixedDigits(Math.round(player.time/1000) % 60, 2);
-        mainContent += format(message.playerStats.message, player.username, m, s, player.steps) + '\n';
-      }
-    }
+    const embeds = [createEndEmbed(this)];
 
     await this.boardMessage.edit({ components: [] });
 
     if (this.source.constructor.name === CommandInteraction.name) {
-      await this.source.followUp(mainContent);
+      await this.source.followUp({ content, embeds });
     }
     else if (this.source.constructor.name === Message.name) {
-      await this.source.channel.send(mainContent);
+      await this.source.channel.send({ content, embeds });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
