@@ -164,12 +164,15 @@ class DCGomoku extends Gomoku {
   }
 
   get boardContent() {
-    let content = `${this.strings.corner}${this.strings.columns.join('\u200b')}\n`;
+    let content = `${this.strings.corner}`;
     for (let i = 0; i < this.boardSize; i++) {
-      content += this.strings.rows[i];
+      content += '\u200b' + this.strings.columns[i];
+    }
+
+    for (let i = 0; i < this.boardSize; i++) {
+      content += '\n' + this.strings.rows[i];
       for (let j = 0; j < this.boardSize; j++)
         content += this.playground[i][j] !== null ? this.playground[i][j] : this.strings.grid;
-      content += '\n';
     }
     return content;
   }
