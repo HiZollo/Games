@@ -42,5 +42,29 @@
         "message": "**Time**: %s1:%s2\n**Steps**: %s3"
       }
     }
+  },
+  "lightsUp": {
+    "currentAnswer": "The answer to the board is: \n%s1",
+    "controller": {
+      "answer": "Answer",
+      "stop": "Stop"
+    },
+    "endMessage": {
+      "jackpot": "JACKPOT! All bulbs are lighted up in the first place!",
+      "win": {
+        "answered": "Congrats, %s1! You lighted up all bulbs!",
+        "unanswered": "Congrats, %s1! You lighted up all bulbs without checking the answer!"
+      },
+      "idle": "The game has been stopped because of idleness.",
+      "stopped": "The game has been stopped manually.",
+      "deleted": "Wait? I can't see the chess board, where does it go?",
+      "gameStats": {
+        "header": "Game Stats - ",
+        "message": "**Total Time**: %s1:%s2\n**Total Steps**: %s3"
+      },
+      "playerStats": {
+        "message": "**Time**: %s1:%s2\n**Steps**: %s3"
+      }
+    }
   }
 }

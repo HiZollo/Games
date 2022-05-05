@@ -1,5 +1,26 @@
 const { MessageEmbed } = require('discord.js');
 
+function createEndEmbed(game) {
+  const message = game.strings.endMessage;
+  const min = ~~(game.duration/60000);
+  const sec = fixedDigits(Math.round(game.duration/1000) % 60, 2);
+
+  const embed = new MessageEmbed()
+    .setAuthor({ name: message.gameStats.header + game.name, iconURL: game.client.user.displayAvatarURL() })
+    .setColor(0x000000)
+    .setDescription(format(message.gameStats.message, min, sec, game.playerHandler.totalSteps));
+
+  if (game.playerHandler.playerCount > 1) {
+    for (const player of game.playerHandler.players) {
+      const m = ~~(player.time/60000);
+      const s = fixedDigits(Math.round(player.time/1000) % 60, 2);
+      embed.addField(player.username, format(message.playerStats.message, m, s, player.steps), true);
+    }
+  }
+
+  return embed;
+}
+
 function fixedDigits(integer, digits) {
   const string = `${integer}`;
 
@@ -22,27 +43,14 @@ function overwrite(obj1, obj2) {
   return obj1;
 }
 
-function createEndEmbed(game) {
-  const message = game.strings.endMessage;
-  const min = ~~(game.duration/60000);
-  const sec = fixedDigits(Math.round(game.duration/1000) % 60, 2);
-
-  const embed = new MessageEmbed()
-    .setAuthor({ name: message.gameStats.header + game.name, iconURL: game.client.user.displayAvatarURL() })
-    .setColor(0x000000)
-    .setDescription(format(message.gameStats.message, min, sec, game.playerHandler.totalSteps));
-
-  if (game.playerHandler.playerCount > 1) {
-    for (const player of game.playerHandler.players) {
-      const m = ~~(player.time/60000);
-      const s = fixedDigits(Math.round(player.time/1000) % 60, 2);
-      embed.addField(player.username, format(message.playerStats.message, m, s, player.steps), true);
-    }
-  }
-
-  return embed;
+function sleep(time, message) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(message);
+    }, time);
+  });
 }
 
 module.exports = {
-  createEndEmbed, fixedDigits, format, overwrite
+  createEndEmbed, fixedDigits, format, overwrite, sleep
 };

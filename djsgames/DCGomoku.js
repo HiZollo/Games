@@ -1,6 +1,6 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
 const Gomoku = require('../games/Gomoku.js');
-const { createEndEmbed, fixedDigits, format, overwrite } = require('../util/Functions.js');
+const { createEndEmbed, format, overwrite } = require('../util/Functions.js');
 const { gomoku } = require('../util/strings.json');
 
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -13,26 +13,24 @@ class DCGomoku extends Gomoku {
     this.strings = overwrite(JSON.parse(JSON.stringify(gomoku)), strings);
 
     this.client = null;
-    this.boardMessage = null;
     this.source = null;
+    this.boardMessage = null;
   }
 
   async initialize(source) {
+    super.initialize();
+
     this.source = source;
     this.client = source?.client;
+    const content = format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
+
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
         await source.deferReply();
       }
-      super.initialize();
-
-      const content = format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
       this.boardMessage = await source.editReply({ content: content + '\n' + this.boardContent, components: this.components });
     }
     else if (source.constructor.name === Message.name) {
-      super.initialize();
-
-      const content = format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
       this.boardMessage = await source.channel.send({ content: content + '\n' + this.boardContent, components: this.components });
     }
     else {
@@ -40,7 +38,6 @@ class DCGomoku extends Gomoku {
     }
   }
 
-  // 篩選
   _messageFilter = async message => {
     if (message.author.id !== this.playerHandler.nowPlayer.id) return false;
     if (!(/^[A-Za-z]\d{1,2}$/.test(message.content))) return false;
@@ -55,7 +52,6 @@ class DCGomoku extends Gomoku {
     return interaction.customId.startsWith(this.name);
   }
 
-  // 開始遊戲
   async start() {
     while (!this.ended && this.playerHandler.alive) {
       const result = await Promise.race([
@@ -90,6 +86,7 @@ class DCGomoku extends Gomoku {
         if (this.win(row, col)) {
           player.status.set("WINNER");
           this.winner = player;
+          this.end("WIN");
         }
         else if (this.draw()) {
           this.end("DRAW");
@@ -109,9 +106,6 @@ class DCGomoku extends Gomoku {
     }
 
     switch (this.playerHandler.nowPlayer.status.now) {
-      case "WINNER": case "BOT":
-        this.end("WIN");
-        break;
       case "IDLE":
         this.end("IDLE");
         break;
@@ -121,7 +115,6 @@ class DCGomoku extends Gomoku {
     }
   }
 
-  // 結束遊戲
   async conclude() {
     if (!this.ended) {
       throw new Error('The game has not ended.');
@@ -152,11 +145,8 @@ class DCGomoku extends Gomoku {
 
     await this.boardMessage.edit({ components: [] });
 
-    if (this.source.constructor.name === CommandInteraction.name) {
-      await this.source.followUp({ content, embeds });
-    }
-    else if (this.source.constructor.name === Message.name) {
-      await this.source.channel.send({ content, embeds });
+    if ([CommandInteraction.name, Message.name].includes(this.source.constructor.name)) {
+      await this.boardMessage.reply({ content, embeds });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
@@ -166,7 +156,7 @@ class DCGomoku extends Gomoku {
   get boardContent() {
     let content = `${this.strings.corner}`;
     for (let i = 0; i < this.boardSize; i++) {
-      content += '\u200b' + this.strings.columns[i];
+      content += this.strings.columns[i];
     }
 
     for (let i = 0; i < this.boardSize; i++) {

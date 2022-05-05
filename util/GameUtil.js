@@ -5,7 +5,7 @@
 function shuffle(array) {
   const length = array.length;
   for (let i = length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
+    let j = randomInt(0, i);
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
@@ -57,6 +57,16 @@ function checkStrike(board, row, col, totalStrike, directions = [[1, 1], [1, 0],
   return null;
 }
 
+/**
+ * Returns a random number in [min, max]
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
+function randomInt(min, max) {
+  return Math.floor((max - min + 1) * Math.random()) + min;
+}
+
 module.exports = {
-  shuffle, checkStrike
+  checkStrike, randomInt, shuffle
 };

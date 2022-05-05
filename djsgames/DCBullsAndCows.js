@@ -11,27 +11,25 @@ class DCBullsAndCows extends BullsAndCows {
     this.strings = overwrite(JSON.parse(JSON.stringify(bullsAndCows)), strings);
 
     this.client = null;
+    this.source = null;
     this.content = '';
     this.boardMessage = null;
-    this.source = null;
   }
 
   async initialize(source) {
+    super.initialize();
+
     this.source = source;
     this.client = source?.client;
+    this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
+
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
         await source.deferReply();
       }
-      super.initialize();
-
-      this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
       this.boardMessage = await source.editReply({ content: this.content, components: this.components });
     }
     else if (source.constructor.name === Message.name) {
-      super.initialize();
-
-      this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
       this.boardMessage = await source.channel.send({ content: this.content, components: this.components });
     }
     else {
@@ -83,6 +81,7 @@ class DCBullsAndCows extends BullsAndCows {
       if (this.win(status)) {
         player.status.set("WINNER");
         this.winner = player;
+        this.end("WIN");
       }
       else {
         this.playerHandler.next();
@@ -99,9 +98,6 @@ class DCBullsAndCows extends BullsAndCows {
     }
 
     switch (this.playerHandler.nowPlayer.status.now) {
-      case "WINNER": case "BOT":
-        this.end("WIN");
-        break;
       case "IDLE":
         this.end("IDLE");
         break;
@@ -135,11 +131,8 @@ class DCBullsAndCows extends BullsAndCows {
 
     await this.boardMessage.edit({ components: [] });
 
-    if (this.source.constructor.name === CommandInteraction.name) {
-      await this.source.followUp({ content, embeds });
-    }
-    else if (this.source.constructor.name === Message.name) {
-      await this.source.channel.send({ content, embeds });
+    if ([CommandInteraction.name, Message.name].includes(this.source.constructor.name)) {
+      await this.boardMessage.reply({ content, embeds });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
