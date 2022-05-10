@@ -66,5 +66,24 @@
         "message": "**Time**: %s1:%s2\n**Steps**: %s3"
       }
     }
+  },
+  "flipTrip": {
+    "numbers": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"],
+    "checks": ["⚪", "⚫"],
+    "stopButtonMessage": "Stop",
+    "endMessage": {
+      "win": "%s1, you make a full trip with %s2 checks!",
+      "lose": "%s1, `%s2` had appeared once before. Only %s3 permutations left!",
+      "idle": "The game has been stopped because of idleness.",
+      "stopped": "The game has been stopped manually.",
+      "deleted": "Wait? I can't see the checks, where does it go?",
+      "gameStats": {
+        "header": "Game Stats - ",
+        "message": "**Total Time**: %s1:%s2\n**Total Steps**: %s3"
+      },
+      "playerStats": {
+        "message": "**Time**: %s1:%s2\n**Steps**: %s3"
+      }
+    }
   }
 }

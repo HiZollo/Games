@@ -67,7 +67,7 @@ class DCLightsUp extends LightsUp {
     }
 
     while (!this.ended && this.playerHandler.alive) {
-      const result = await Promise.race([
+      const result = await Promise.any([
         sleep(this.time, { customId: `${this.name}_idle` }),
         this.boardMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON" }),
         this.controllerMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON" })
@@ -75,16 +75,13 @@ class DCLightsUp extends LightsUp {
       const player = this.playerHandler.nowPlayer;
       const [, arg1, arg2] = result.customId.split('_');
 
-      let content = '';
       if (arg1 === 'stop') {
         await result.update({});
-
         player.status.set("LEAVING");
         this.playerHandler.next();
       }
       else if (arg1 === 'answer') {
         await result.reply({ content: format(this.strings.currentAnswer, this.answerContent), ephemeral: true });
-
         player.status.set("PLAYING");
       }
       else if (arg1 === 'idle') {
@@ -98,7 +95,6 @@ class DCLightsUp extends LightsUp {
         this.flip(parseInt(arg1, 10), parseInt(arg2, 10));
 
         if (this.win()) {
-          player.status.set("WINNER");
           this.winner = player;
           this.end("WIN");
         }
@@ -133,7 +129,7 @@ class DCLightsUp extends LightsUp {
     });
   }
 
-  end(reason) {
+  async end(reason) {
     super.end(reason);
 
     this._board.forEach(row => {
@@ -141,6 +137,8 @@ class DCLightsUp extends LightsUp {
         button.setDisabled(true);
       })
     });
+    await this.boardMessage.edit({ components: this.lightButtons }).catch(() => {});
+    await this.controllerMessage.delete().catch(() => {});
   }
 
   async conclude() {
@@ -149,7 +147,6 @@ class DCLightsUp extends LightsUp {
     }
 
     const message = this.strings.endMessage;
-
     let content;
     switch (this.endReason) {
       case "JACKPOT":
@@ -170,12 +167,10 @@ class DCLightsUp extends LightsUp {
     }
 
     const embeds = [createEndEmbed(this)];
-
-    await this.boardMessage.edit({ components: this.lightButtons });
-    await this.controllerMessage.delete();
-
     if ([CommandInteraction.name, Message.name].includes(this.source.constructor.name)) {
-      await this.boardMessage.reply({ content, embeds });
+      await this.boardMessage.reply({ content, embeds }).catch(() => {
+        this.source.channel.send({ content, embeds });
+      });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');

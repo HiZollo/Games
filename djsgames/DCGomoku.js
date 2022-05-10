@@ -1,6 +1,6 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
 const Gomoku = require('../games/Gomoku.js');
-const { createEndEmbed, format, overwrite } = require('../util/Functions.js');
+const { createEndEmbed, format, overwrite, sleep } = require('../util/Functions.js');
 const { gomoku } = require('../util/strings.json');
 
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -54,21 +54,21 @@ class DCGomoku extends Gomoku {
 
   async start() {
     while (!this.ended && this.playerHandler.alive) {
-      const result = await Promise.race([
-        this.source.channel.awaitMessages({ filter: this._messageFilter, time: this.time, max: 1 }),
-        this.boardMessage.awaitMessageComponent({ filter: this._buttonFilter, time: this.time, componentType: "BUTTON" })
+      const result = await Promise.any([
+        sleep(this.time, { customId: `${this.name}_idle` }),
+        this.source.channel.awaitMessages({ filter: this._messageFilter, max: 1 }),
+        this.boardMessage.awaitMessageComponent({ filter: this._buttonFilter, componentType: "BUTTON" })
       ]);
       const player = this.playerHandler.nowPlayer;
 
       let content = '';
       if (result.customId === `${this.name}_stop`) {
         await result.update({});
-
         player.status.set("LEAVING");
         content = format(this.strings.previous.leaving, player.username) + '\n';
         this.playerHandler.next();
       }
-      else if (!result.size) {
+      else if (result.customId === `${this.name}_idle`) {
         player.status.set("IDLE");
         content = format(this.strings.previous.idle, player.username) + '\n';
         this.playerHandler.next();
@@ -84,7 +84,6 @@ class DCGomoku extends Gomoku {
         this.fill(row, col);
 
         if (this.win(row, col)) {
-          player.status.set("WINNER");
           this.winner = player;
           this.end("WIN");
         }
@@ -115,13 +114,18 @@ class DCGomoku extends Gomoku {
     }
   }
 
+  async end(reason) {
+    super.end(reason);
+
+    await this.boardMessage.edit({ components: [] }).catch(() => {});
+  }
+
   async conclude() {
     if (!this.ended) {
       throw new Error('The game has not ended.');
     }
 
     const message = this.strings.endMessage;
-
     let content;
     switch (this.endReason) {
       case "WIN":
@@ -142,11 +146,10 @@ class DCGomoku extends Gomoku {
     }
 
     const embeds = [createEndEmbed(this)];
-
-    await this.boardMessage.edit({ components: [] });
-
     if ([CommandInteraction.name, Message.name].includes(this.source.constructor.name)) {
-      await this.boardMessage.reply({ content, embeds });
+      await this.boardMessage.reply({ content, embeds }).catch(() => {
+        this.source.channel.send({ content, embeds });
+      });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
