@@ -60,25 +60,8 @@ async function getInput(game) {
       time: game.time
     }));
 
-  const result = await Promise.any(promises);
-
-  // sleep() is resolved, idle
-  if (result === null) {
-    return null;
-  }
-
-  // awaitMessageComponent() is resolved
-  if (result.customId) {
-    result.update({}); // avoid interaction failure
-    return result.customId;
-  }
-
-  // awaitMessages() is resolved
-  if (result.size) {
-    return result.first().content;
-  }
-
-  return null;
+  const input = await Promise.any(promises);
+  return input;
 }
 
 module.exports = {

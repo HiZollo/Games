@@ -1,6 +1,7 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
 const Gomoku = require('../games/Gomoku.js');
-const { createEndEmbed, format, overwrite, sleep } = require('../util/Functions.js');
+const { createEndEmbed, getInput } = require('../util/DjsUtil.js');
+const { format, overwrite } = require('../util/Functions.js');
 const { gomoku } = require('../util/strings.json');
 
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -14,10 +15,20 @@ class DCGomoku extends Gomoku {
 
     this.client = null;
     this.source = null;
-    this.boardMessage = null;
+    this.mainMessage = null;
+
+    this._controller = null;
+    this._inputMode = 0b101;
   }
 
   async initialize(source) {
+    this._controller = new MessageActionRow().addComponents(
+      new MessageButton()
+        .setCustomId('ctrl_stop')
+        .setLabel(this.strings.stopButtonMessage)
+        .setStyle("DANGER")
+    )
+
     super.initialize();
 
     this.source = source;
@@ -28,10 +39,10 @@ class DCGomoku extends Gomoku {
       if (!source.deferred) {
         await source.deferReply();
       }
-      this.boardMessage = await source.editReply({ content: content + '\n' + this.boardContent, components: this.components });
+      this.mainMessage = await source.editReply({ content: content + '\n' + this.boardContent, components: [this._controller] });
     }
     else if (source.constructor.name === Message.name) {
-      this.boardMessage = await source.channel.send({ content: content + '\n' + this.boardContent, components: this.components });
+      this.mainMessage = await source.channel.send({ content: content + '\n' + this.boardContent, components: [this._controller] });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
@@ -48,63 +59,64 @@ class DCGomoku extends Gomoku {
   }
 
   _buttonFilter = async interaction => {
-    if (interaction.user.id !== this.playerHandler.nowPlayer.id) return false;
-    return interaction.customId.startsWith(this.name);
+    return interaction.user.id === this.playerHandler.nowPlayer.id;
   }
 
   async start() {
+    let nowPlayer;
     while (!this.ended && this.playerHandler.alive) {
-      const result = await Promise.any([
-        sleep(this.time, { customId: `${this.name}_idle` }),
-        this.source.channel.awaitMessages({ filter: this._messageFilter, max: 1, time: this.time + 3e3 }),
-        this.boardMessage.awaitMessageComponent({ filter: this._buttonFilter, componentType: "BUTTON", time: this.time + 3e3 })
-      ]);
-      const player = this.playerHandler.nowPlayer;
+      nowPlayer = this.playerHandler.nowPlayer;
+      const input = await getInput(this);
 
-      let content = '';
-      if (result.customId === `${this.name}_stop`) {
-        await result.update({});
-        player.status.set("LEAVING");
-        content = format(this.strings.previous.leaving, player.username) + '\n';
-        this.playerHandler.next();
+      let content = '\u200b';
+      if (input === null) {
+        nowPlayer.status.set("IDLE");
+        content += format(this.strings.previous.idle, nowPlayer.username) + '\n';
       }
-      else if (result.customId === `${this.name}_idle`) {
-        player.status.set("IDLE");
-        content = format(this.strings.previous.idle, player.username) + '\n';
-        this.playerHandler.next();
+      else if (input.customId?.startsWith('ctrl_')) {
+        const [, ...args] = input.customId.split('_');
+
+        if (args[0] === 'stop') {
+          await input.update({});
+          nowPlayer.status.set("LEAVING");
+          content += format(this.strings.previous.leaving, nowPlayer.username) + '\n';
+        }
       }
       else {
-        player.status.set("PLAYING");
-        player.addStep();
+        nowPlayer.status.set("PLAYING");
+        nowPlayer.addStep();
 
-        const message = result.first();
+        const message = input.first();
         await message.delete().catch(() => {});
         const [row, col] = getQuery(message.content);
-
         this.fill(row, col);
 
         if (this.win(row, col)) {
-          this.winner = player;
-          this.end("WIN");
+          this.winner = nowPlayer;
+          nowPlayer.status.set("WINNER");
         }
         else if (this.draw()) {
-          this.end("DRAW");
-        }
-        else {
-          this.playerHandler.next();
+          nowPlayer.status.set("DRAW");
         }
 
-        content = format(this.strings.previous.move, alphabets[col], row + 1, player.username) + '\n';
+        content = format(this.strings.previous.move, alphabets[row], col + 1, nowPlayer.username) + '\n';
       }
 
+      this.playerHandler.next();
       content += format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`) + '\n';
       content += this.boardContent;
-      await this.boardMessage.edit({ content }).catch(() => {
+      await this.mainMessage.edit({ content }).catch(() => {
         this.end("DELETED");
       });
     }
 
-    switch (this.playerHandler.nowPlayer.status.now) {
+    switch (nowPlayer.status.now) {
+      case "WINNER":
+        this.end("WIN");
+        break;
+      case "DRAW":
+        this.end("DRAW");
+        break;
       case "IDLE":
         this.end("IDLE");
         break;
@@ -117,7 +129,7 @@ class DCGomoku extends Gomoku {
   async end(reason) {
     super.end(reason);
 
-    await this.boardMessage.edit({ components: [] }).catch(() => {});
+    await this.mainMessage.edit({ content: this.boardContent, components: [] }).catch(() => {});
   }
 
   async conclude() {
@@ -146,7 +158,7 @@ class DCGomoku extends Gomoku {
     }
 
     const embeds = [createEndEmbed(this)];
-    await this.boardMessage.reply({ content, embeds }).catch(() => {
+    await this.mainMessage.reply({ content, embeds }).catch(() => {
       this.source.channel.send({ content, embeds });
     });
   }
@@ -164,23 +176,12 @@ class DCGomoku extends Gomoku {
     }
     return content;
   }
-
-  get components() {
-    return [
-      new MessageActionRow().addComponents(
-        new MessageButton()
-          .setCustomId(`${this.name}_stop`)
-          .setLabel(this.strings.stopButtonMessage)
-          .setStyle("DANGER")
-      )
-    ];
-  }
 }
 
 const getQuery = (content) => {
-  content = content.toLowerCase();
-  const row = content.substr(1, 2) - 1;
-  const col = content.substr(0, 1).charCodeAt() - 'a'.charCodeAt();
+  let [, row, col] = content.toLowerCase().match(/([a-z])(\d{1,2})/);
+  row = row[0].charCodeAt() - 'a'.charCodeAt();
+  col = col - 1;
   return [row, col];
 }
 

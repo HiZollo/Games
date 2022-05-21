@@ -1,6 +1,7 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
 const FlipTrip = require('../games/FlipTrip.js');
-const { createEndEmbed, format, overwrite, sleep } = require('../util/Functions.js');
+const { createEndEmbed, getInput } = require('../util/DjsUtil.js');
+const { format, overwrite } = require('../util/Functions.js');
 const { flipTrip } = require('../util/strings.json');
 
 const MAX_BUTTON_PER_ROW = 5;
@@ -14,30 +15,32 @@ class DCFlipTrip extends FlipTrip {
 
     this.client = null;
     this.source = null;
-    this.boardMessage = null;
-    this.controller = null;
+    this.mainMessage = null;
+
+    this._board = []
+    this._controller = null;
+    this._inputMode = 0b100;
   }
 
   async initialize(source) {
-    this.controller = [];
     for (let i = 0; i < this.boardSize; i++) {
       if (i % MAX_BUTTON_PER_ROW === 0) {
-        this.controller.push(new MessageActionRow());
+        this._board.push(new MessageActionRow());
       }
 
-      this.controller[~~(i / MAX_BUTTON_PER_ROW)].addComponents(
+      this._board[~~(i / MAX_BUTTON_PER_ROW)].addComponents(
         new MessageButton()
-          .setCustomId(`${this.name}_${this.boardSize - 1 - i}`)
+          .setCustomId(`game_${this.boardSize - 1 - i}`)
           .setLabel(`${this.boardSize - i}`)
           .setStyle("PRIMARY")
       );
     }
-    this.controller.push(new MessageActionRow().addComponents(
+    this._controller = new MessageActionRow().addComponents(
       new MessageButton()
-        .setCustomId(`${this.name}_stop`)
+        .setCustomId('ctrl_stop')
         .setLabel(this.strings.stopButtonMessage)
         .setStyle("DANGER")
-    ));
+    );
 
     super.initialize();
 
@@ -48,65 +51,68 @@ class DCFlipTrip extends FlipTrip {
         await source.deferReply();
       }
 
-      this.boardMessage = await source.editReply({ content: this.board, components: this.controller });
+      this.mainMessage = await source.editReply({ content: this.boardContent, components: [...this._board, this._controller] });
     }
     else if (source.constructor.name === Message.name) {
-      this.boardMessage = await source.channel.send({ content: this.board, components: this.controller });
+      this.mainMessage = await source.channel.send({ content: this.boardContent, components: [...this._board, this._controller] });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
     }
   }
 
-  _filter = async interaction => {
-    if (interaction.user.id !== this.playerHandler.nowPlayer.id) return false;
-    return interaction.customId.startsWith(this.name);
+  _buttonFilter = async interaction => {
+    return interaction.user.id === this.playerHandler.nowPlayer.id;
   }
 
   async start() {
+    let nowPlayer;
     while (!this.ended && this.playerHandler.alive) {
-      const result = await Promise.any([
-        sleep(this.time, { customId: `${this.name}_idle` }),
-        this.boardMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON", time: this.time + 3e3 })
-      ]);
-      const player = this.playerHandler.nowPlayer;
-      const [, arg1] = result.customId.split('_');
+      nowPlayer = this.playerHandler.nowPlayer;
+      const input = await getInput(this);
 
-      if (arg1 === 'stop') {
-        await result.update({});
-
-        player.status.set("LEAVING");
-        this.playerHandler.next();
+      if (input === null) {
+        nowPlayer.status.set("IDLE");
       }
-      else if (arg1 === 'idle') {
-        player.status.set("IDLE");
-        this.playerHandler.next();
+      else if (input.customId?.startsWith('ctrl_')) {
+        const [, ...args] = input.customId.split('_');
+
+        if (args[0] === 'stop') {
+          await input.update({});
+          nowPlayer.status.set("LEAVING");
+        }
       }
       else {
-        player.status.set("PLAYING");
-        player.addStep();
+        await input.update({});
+        nowPlayer.status.set("PLAYING");
+        nowPlayer.addStep();
 
-        const legal = this.flip(parseInt(arg1, 10));
+        const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
+        const legal = this.flip(args[0]);
 
         if (!legal) {
-          this.loser = player;
-          this.end("LOSE");
+          this.loser = nowPlayer;
+          nowPlayer.status.set("LOSER");
         }
-        if (this.win()) {
-          this.winner = player;
-          this.end("WIN");
+        else if (this.win()) {
+          this.winner = nowPlayer;
+          nowPlayer.status.set("WINNER");
         }
-        else {
-          this.playerHandler.next();
-        }
-
-        await result.update(this.board).catch(() => {
-          this.end("DELETED");
-        });
       }
+
+      this.playerHandler.next();
+      await this.mainMessage.edit({ content: this.boardContent }).catch(() => {
+        this.end("DELETED");
+      });
     }
 
-    switch (this.playerHandler.nowPlayer.status.now) {
+    switch (nowPlayer.status.now) {
+      case "WINNER":
+        this.end("WIN");
+        break;
+      case "LOSER":
+        this.end("LOSE");
+        break;
       case "IDLE":
         this.end("IDLE");
         break;
@@ -119,7 +125,7 @@ class DCFlipTrip extends FlipTrip {
   async end(reason) {
     super.end(reason);
 
-    await this.boardMessage.edit({ components: [] }).catch(() => {});
+    await this.mainMessage.edit({ components: [] }).catch(() => {});
   }
 
   async conclude() {
@@ -148,13 +154,13 @@ class DCFlipTrip extends FlipTrip {
     }
 
     const embeds = [createEndEmbed(this)];
-    await this.boardMessage.reply({ content, embeds }).catch(() => {
+    await this.mainMessage.reply({ content, embeds }).catch(() => {
       this.source.channel.send({ content, embeds });
     });
   }
 
 
-  get board() {
+  get boardContent() {
     let boardContent = '';
     for (let i = this.boardSize - 1; i >= 0; i--) {
       boardContent += this.strings.numbers[i];

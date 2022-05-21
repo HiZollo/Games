@@ -1,6 +1,7 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
 const BullsAndCows = require('../games/BullsAndCows.js');
-const { createEndEmbed, fixedDigits, format, overwrite, sleep } = require('../util/Functions.js');
+const { createEndEmbed, getInput } = require('../util/DjsUtil.js');
+const { format, overwrite } = require('../util/Functions.js');
 const { bullsAndCows } = require('../util/strings.json');
 
 class DCBullsAndCows extends BullsAndCows {
@@ -13,10 +14,20 @@ class DCBullsAndCows extends BullsAndCows {
     this.client = null;
     this.source = null;
     this.content = '';
-    this.boardMessage = null;
+    this.mainMessage = null;
+
+    this._controller = null;
+    this._inputMode = 0b101;
   }
 
   async initialize(source) {
+    this._controller = new MessageActionRow().addComponents(
+      new MessageButton()
+        .setCustomId('ctrl_stop')
+        .setLabel(this.strings.stopButtonMessage)
+        .setStyle("DANGER")
+    );
+
     super.initialize();
 
     this.source = source;
@@ -27,10 +38,10 @@ class DCBullsAndCows extends BullsAndCows {
       if (!source.deferred) {
         await source.deferReply();
       }
-      this.boardMessage = await source.editReply({ content: this.content, components: this.components });
+      this.mainMessage = await source.editReply({ content: this.content, components: [this._controller] });
     }
     else if (source.constructor.name === Message.name) {
-      this.boardMessage = await source.channel.send({ content: this.content, components: this.components });
+      this.mainMessage = await source.channel.send({ content: this.content, components: [this._controller] });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
@@ -46,57 +57,54 @@ class DCBullsAndCows extends BullsAndCows {
   }
 
   _buttonFilter = async interaction => {
-    if (interaction.user.id !== this.playerHandler.nowPlayer.id) return false;
-    return interaction.customId.startsWith(this.name);
+    return interaction.user.id === this.playerHandler.nowPlayer.id;
   }
 
   async start() {
+    let nowPlayer;
     while (!this.ended && this.playerHandler.alive) {
-      const result = await Promise.any([
-        sleep(this.time, { customId: `${this.name}_idle` }),
-        this.source.channel.awaitMessages({ filter: this._messageFilter, max: 1, time: this.time + 3e3 }),
-        this.boardMessage.awaitMessageComponent({ filter: this._buttonFilter, componentType: "BUTTON", time: this.time + 3e3 })
-      ]);
-      const player = this.playerHandler.nowPlayer;
+      nowPlayer = this.playerHandler.nowPlayer;
+      const input = await getInput(this);
 
-      if (result.customId === `${this.name}_stop`) {
-        await result.update({});
-        player.status.set("LEAVING");
-        continue;
+      if (input === null) {
+        nowPlayer.status.set("IDLE");
       }
+      else if (input.customId?.startsWith('ctrl_')) {
+        const [, ...args] = input.customId.split('_');
 
-      if (result.customId === `${this.name}_idle`) {
-        player.status.set("IDLE");
-        continue;
-      }
-
-      player.status.set("PLAYING");
-      player.addStep();
-
-      const message = result.first();
-      await message.delete().catch(() => {});
-      const query = getQuery(message.content);
-      const status = this.guess(query);
-
-      if (this.win(status)) {
-        this.winner = player;
-        this.end("WIN");
+        if (args[0] === 'stop') {
+          await input.update({});
+          nowPlayer.status.set("LEAVING");
+        }
       }
       else {
+        nowPlayer.status.set("PLAYING");
+        nowPlayer.addStep();
+
+        const message = input.first();
+        await message.delete().catch(() => {});
+        const query = getQuery(message.content);
+        const status = this.guess(query);
+
+        if (this.win(status)) {
+          this.winner = nowPlayer;
+          nowPlayer.status.set("WINNER");
+        }
+
         this.playerHandler.next();
-      }
-
-      if (this.hardmode) {
-        const content = this.boardMessage.content + '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
-        await this.boardMessage.edit({ content });
-      }
-      else {
-        this.content += '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
-        await this.boardMessage.edit({ content: this.content });
+        const content = this.hardmode ?
+          this.mainMessage.content + '\n' + format(this.strings.queryResponse, status.a, status.b, message.content) :
+          this.content += '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
+        await this.mainMessage.edit({ content }).catch(() => {
+          this.end("DELETED");
+        });
       }
     }
 
-    switch (this.playerHandler.nowPlayer.status.now) {
+    switch (nowPlayer.status.now) {
+      case "WINNER":
+        this.end("WIN");
+        break;
       case "IDLE":
         this.end("IDLE");
         break;
@@ -109,7 +117,7 @@ class DCBullsAndCows extends BullsAndCows {
   async end(reason) {
     super.end(reason);
 
-    await this.boardMessage.edit({ components: [] }).catch(() => {});
+    await this.mainMessage.edit({ components: [] }).catch(() => {});
   }
 
   async conclude() {
@@ -132,20 +140,9 @@ class DCBullsAndCows extends BullsAndCows {
     }
 
     const embeds = [createEndEmbed(this)];
-    await this.boardMessage.reply({ content, embeds }).catch(() => {
+    await this.mainMessage.reply({ content, embeds }).catch(() => {
       this.source.channel.send({ content, embeds });
     });
-  }
-
-  get components() {
-    return [
-      new MessageActionRow().addComponents(
-        new MessageButton()
-          .setCustomId(`${this.name}_stop`)
-          .setLabel(this.strings.stopButtonMessage)
-          .setStyle("DANGER")
-      )
-    ];
   }
 }
 

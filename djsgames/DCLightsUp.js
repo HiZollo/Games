@@ -1,6 +1,7 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
 const LightsUp = require('../games/LightsUp.js');
-const { createEndEmbed, format, overwrite, sleep } = require('../util/Functions.js');
+const { createEndEmbed, getInput } = require('../util/DjsUtil.js');
+const { format, overwrite } = require('../util/Functions.js');
 const { lightsUp } = require('../util/strings.json');
 
 class DCLightsUp extends LightsUp {
@@ -17,9 +18,12 @@ class DCLightsUp extends LightsUp {
 
     this.client = null;
     this.source = null;
-    this._board = [];
-    this.boardMessage = null;
+    this.mainMessage = null;
     this.controllerMessage = null;
+
+    this._board = [];
+    this._controller = null;
+    this._inputMode = 0b110;
   }
 
   async initialize(source) {
@@ -27,12 +31,23 @@ class DCLightsUp extends LightsUp {
       this._board.push([]);
       for (let j = 0; j < this.boardSize; j++) {
         this._board[i].push(new MessageButton()
-          .setCustomId(`${this.name}_${i}_${j}`)
+          .setCustomId(`game_${i}_${j}`)
           .setLabel('\u200b')
           .setStyle("PRIMARY")
         );
       }
     }
+    this._controller = new MessageActionRow().addComponents(
+      new MessageButton()
+        .setCustomId('ctrl_answer')
+        .setLabel(this.strings.controller.answer)
+        .setStyle("SUCCESS")
+    ).addComponents(
+      new MessageButton()
+        .setCustomId('ctrl_stop')
+        .setLabel(this.strings.controller.stop)
+        .setStyle("DANGER")
+    );
 
     super.initialize();
 
@@ -43,21 +58,20 @@ class DCLightsUp extends LightsUp {
         await source.deferReply();
       }
 
-      this.boardMessage = await source.editReply({ content: '\u200b', components: this.lightButtons });
-      this.controllerMessage = await source.followUp({ content: '\u200b', components: this.controller });
+      this.mainMessage = await source.editReply({ content: '\u200b', components: this.components });
+      this.controllerMessage = await source.followUp({ content: '\u200b', components: [this._controller] });
     }
     else if (source.constructor.name === Message.name) {
-      this.boardMessage = await source.channel.send({ content: '\u200b', components: this.lightButtons });
-      this.controllerMessage = await this.boardMessage.reply({ content: '\u200b', components: this.controller });
+      this.mainMessage = await source.channel.send({ content: '\u200b', components: this.components });
+      this.controllerMessage = await this.mainMessage.reply({ content: '\u200b', components: [this._controller] });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
     }
   }
 
-  _filter = async interaction => {
-    if (interaction.user.id !== this.playerHandler.nowPlayer.id) return false;
-    return interaction.customId.startsWith(this.name);
+  _buttonFilter = async interaction => {
+    return interaction.user.id === this.playerHandler.nowPlayer.id;
   }
 
   async start(channel) {
@@ -66,49 +80,50 @@ class DCLightsUp extends LightsUp {
       return;
     }
 
+    let nowPlayer;
     while (!this.ended && this.playerHandler.alive) {
-      const result = await Promise.any([
-        sleep(this.time, { customId: `${this.name}_idle` }),
-        this.boardMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON", time: this.time + 3e3 }),
-        this.controllerMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON", time: this.time + 3e3 })
-      ]);
-      const player = this.playerHandler.nowPlayer;
-      const [, arg1, arg2] = result.customId.split('_');
+      nowPlayer = this.playerHandler.nowPlayer;
+      const input = await getInput(this);
 
-      if (arg1 === 'stop') {
-        await result.update({});
-        player.status.set("LEAVING");
-        this.playerHandler.next();
+      if (input === null) {
+        nowPlayer.status.set("IDLE");
       }
-      else if (arg1 === 'answer') {
-        await result.reply({ content: format(this.strings.currentAnswer, this.answerContent), ephemeral: true });
-        player.status.set("PLAYING");
-      }
-      else if (arg1 === 'idle') {
-        player.status.set("IDLE");
-        this.playerHandler.next();
+      else if (input.customId?.startsWith('ctrl_')) {
+        const [, ...args] = input.customId.split('_');
+
+        if (args[0] === 'stop') {
+          await input.update({});
+          nowPlayer.status.set("LEAVING");
+        }
+        else if (args[0] === 'answer') {
+          await input.reply({ content: format(this.strings.currentAnswer, this.answerContent), ephemeral: true });
+          nowPlayer.status.set("PLAYING");
+        }
       }
       else {
-        player.status.set("PLAYING");
-        player.addStep();
+        await input.update({});
+        nowPlayer.status.set("PLAYING");
+        nowPlayer.addStep();
 
-        this.flip(parseInt(arg1, 10), parseInt(arg2, 10));
+        const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
+        this.flip(args[0], args[1]);
 
         if (this.win()) {
-          this.winner = player;
-          this.end("WIN");
+          this.winner = nowPlayer;
+          nowPlayer.status.set("WINNER");
         }
-        else {
-          this.playerHandler.next();
-        }
-
-        await result.update({ components: this.lightButtons }).catch(() => {
-          this.end("DELETED");
-        });
       }
+
+      this.playerHandler.next();
+      await this.mainMessage.edit({ components: this.components }).catch(() => {
+        this.end("DELETED");
+      });
     }
 
-    switch (this.playerHandler.nowPlayer.status.now) {
+    switch (nowPlayer.status.now) {
+      case "WINNER":
+        this.end("WIN");
+        break;
       case "IDLE":
         this.end("IDLE");
         break;
@@ -137,7 +152,7 @@ class DCLightsUp extends LightsUp {
         button.setDisabled(true);
       })
     });
-    await this.boardMessage.edit({ components: this.lightButtons }).catch(() => {});
+    await this.mainMessage.edit({ components: this.components }).catch(() => {});
     await this.controllerMessage.delete().catch(() => {});
   }
 
@@ -167,12 +182,12 @@ class DCLightsUp extends LightsUp {
     }
 
     const embeds = [createEndEmbed(this)];
-    await this.boardMessage.reply({ content, embeds }).catch(() => {
+    await this.mainMessage.reply({ content, embeds }).catch(() => {
       this.source.channel.send({ content, embeds });
     });
   }
 
-  get lightButtons() {
+  get components() {
     const actionRows = [];
     for (let i = 0; i < this.boardSize; i++) {
       actionRows.push(new MessageActionRow());
@@ -183,28 +198,12 @@ class DCLightsUp extends LightsUp {
     return actionRows;
   }
 
-  get controller() {
-    return [
-      new MessageActionRow().addComponents(
-        new MessageButton()
-          .setCustomId(`${this.name}_answer`)
-          .setLabel(this.strings.controller.answer)
-          .setStyle("SUCCESS")
-      ).addComponents(
-        new MessageButton()
-          .setCustomId(`${this.name}_stop`)
-          .setLabel(this.strings.controller.stop)
-          .setStyle("DANGER")
-      )
-    ];
-  }
-
   get answerContent() {
     this._answered = true;
     let content = '';
     for (let i = 0; i < this.boardSize; i++) {
       for (let j = 0; j < this.boardSize; j++)
-        content += this.answer[i][j] ? '🟡' : '🔴';
+        content += this.strings.answer[this.answer[i][j] ? 1 : 0];
       content += '\n';
     }
     return content;

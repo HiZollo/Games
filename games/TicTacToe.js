@@ -5,7 +5,7 @@ const { GameName } = require('../util/Constants.js');
 class TicTacToe extends Game {
   constructor ({ players, boardSize = 3 }) {
     if (boardSize > 5) {
-      throw new Error('The size of the board should be at most 19.');
+      throw new Error('The size of the board should be at most 5.');
     }
 
     super(GameName.TIC_TAC_TOE, { players });

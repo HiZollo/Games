@@ -5,7 +5,10 @@ const { format, overwrite } = require('../util/Functions.js');
 const { ticTacToe } = require('../util/strings.json');
 
 class DCTicTacToe extends TicTacToe {
-  constructor({ players, boardSize, time, strings }) {
+  constructor({ players, boardSize = 3, time, strings }) {
+    if (boardSize > 4)
+      throw new Error('The size of the board should be at most 4.');
+
     super({ players, boardSize });
 
     this.time = time;
@@ -16,7 +19,7 @@ class DCTicTacToe extends TicTacToe {
     this.mainMessage = null;
 
     this._board = [];
-    this._controller = [];
+    this._controller = null;
     this._inputMode = 0b100;
   }
 
@@ -73,17 +76,21 @@ class DCTicTacToe extends TicTacToe {
         nowPlayer.status.set("IDLE");
         content += format(this.strings.previous.idle, nowPlayer.username) + '\n';
       }
-      else if (input.startsWith('ctrl_')) {
-        const [, ...args] = input.split('_');
+      else if (input.customId?.startsWith('ctrl_')) {
+        const [, ...args] = input.customId.split('_');
 
         if (args[0] === 'stop') {
+          await input.update({});
           nowPlayer.status.set("LEAVING");
           content += format(this.strings.previous.leaving, nowPlayer.username) + '\n';
         }
       }
       else {
+        await input.update({});
+        nowPlayer.status.set("PLAYING");
         nowPlayer.addStep();
-        const [, ...args] = input.split('_').map(a => parseInt(a, 10));
+
+        const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
         this.fill(args[0], args[1]);
 
         if (this.win(args[0], args[1])) {
