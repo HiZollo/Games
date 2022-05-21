@@ -7,12 +7,59 @@
       "win": "%s1, you've got the answer `%s2`!",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
+      "deleted": "Wait? I can't see the message, where does it go?",
       "gameStats": {
         "header": "Game Stats - ",
         "message": "**Total Time**: %s1:%s2\n**Total Attempts**: %s3"
       },
       "playerStats": {
         "message": "**Time**: %s1:%s2\n**Attempts**: %s3"
+      }
+    }
+  },
+  "finalCode": {
+    "compare": {
+      "small": "small",
+      "large": "large"
+    },
+    "previous": {
+      "guess": "%s1 is too %s2!",
+      "idle": "%s1 lost their turn.",
+      "leaving": "%s1 wanted to end the game now."
+    },
+    "interval": "The answer lies between %s1 and %s2 now.",
+    "nowPlayer": "It is %s1's turn.",
+    "stopButtonMessage": "Stop",
+    "endMessage": {
+      "win": "%s1, you hit the final code %s2!",
+      "idle": "The game has been stopped because of idleness.",
+      "stopped": "The game has been stopped manually.",
+      "deleted": "Wait? I can't see the message, where does it go?",
+      "gameStats": {
+        "header": "Game Stats - ",
+        "message": "**Total Time**: %s1:%s2\n**Total Guesses**: %s3"
+      },
+      "playerStats": {
+        "message": "**Time**: %s1:%s2\n**Guesses**: %s3"
+      }
+    }
+  },
+  "flipTrip": {
+    "numbers": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"],
+    "checks": ["⚪", "⚫"],
+    "stopButtonMessage": "Stop",
+    "endMessage": {
+      "win": "%s1, you make a full trip with %s2 checks!",
+      "lose": "%s1, `%s2` had appeared once before. Only %s3 permutation(s) left!",
+      "idle": "The game has been stopped because of idleness.",
+      "stopped": "The game has been stopped manually.",
+      "deleted": "Wait? I can't see the checks, where does it go?",
+      "gameStats": {
+        "header": "Game Stats - ",
+        "message": "**Total Time**: %s1:%s2\n**Total Steps**: %s3"
+      },
+      "playerStats": {
+        "message": "**Time**: %s1:%s2\n**Steps**: %s3"
       }
     }
   },
@@ -59,25 +106,6 @@
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the chess board, where does it go?",
-      "gameStats": {
-        "header": "Game Stats - ",
-        "message": "**Total Time**: %s1:%s2\n**Total Steps**: %s3"
-      },
-      "playerStats": {
-        "message": "**Time**: %s1:%s2\n**Steps**: %s3"
-      }
-    }
-  },
-  "flipTrip": {
-    "numbers": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"],
-    "checks": ["⚪", "⚫"],
-    "stopButtonMessage": "Stop",
-    "endMessage": {
-      "win": "%s1, you make a full trip with %s2 checks!",
-      "lose": "%s1, `%s2` had appeared once before. Only %s3 permutation(s) left!",
-      "idle": "The game has been stopped because of idleness.",
-      "stopped": "The game has been stopped manually.",
-      "deleted": "Wait? I can't see the checks, where does it go?",
       "gameStats": {
         "header": "Game Stats - ",
         "message": "**Total Time**: %s1:%s2\n**Total Steps**: %s3"
