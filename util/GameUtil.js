@@ -1,11 +1,11 @@
 /**
  * Shuffles an Array.
- * @param {Array<*>} array the array to shuffle
+ * @param {Array<*>} array
  */
 function shuffle(array) {
   const length = array.length;
   for (let i = length - 1; i > 0; i--) {
-    let j = randomInt(0, i);
+    const j = randomInt(0, i);
     [array[i], array[j]] = [array[j], array[i]];
   }
 }
@@ -58,7 +58,7 @@ function checkStrike(board, row, col, totalStrike, directions = [[1, 1], [1, 0],
 }
 
 /**
- * Returns a random number in [min, max]
+ * Returns a random number in [min, max].
  * @param {number} min
  * @param {number} max
  * @returns {number}

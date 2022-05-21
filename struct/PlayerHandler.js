@@ -26,7 +26,7 @@ class PlayerHandler {
   }
 
   get alive() {
-    return !this.players.find(p => p.status.now === "WINNER") && this.players.find(p => p.status.now === "PLAYING");
+    return !this.players.some(p => p.status.now === "WINNER" || p.status.now === "DRAW") && this.players.some(p => p.status.now === "PLAYING");
   }
 
   // 上一位玩家
@@ -53,7 +53,7 @@ class PlayerHandler {
     const time = Date.now();
     this.nowPlayer.time += time - this._lastMoveTime;
     this._lastMoveTime = time;
-    
+
     this._index = nextIndex % this.playerCount;
   }
 }

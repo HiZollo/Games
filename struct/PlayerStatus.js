@@ -2,7 +2,7 @@ const Status = require('./Status.js');
 
 class PlayerStatus extends Status {
   constructor(...status) {
-    super("PLAYING", "BOT", "IDLE", "LEAVING", ...status);
+    super("PLAYING", "BOT", "IDLE", "LEAVING", "WINNER", "DRAW", ...status);
   }
 
   set(status) {

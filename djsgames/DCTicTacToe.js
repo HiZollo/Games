@@ -1,9 +1,8 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
 const TicTacToe = require('../games/TicTacToe.js');
-const { createEndEmbed, format, overwrite, sleep } = require('../util/Functions.js');
+const { createEndEmbed, getInput } = require('../util/DjsUtil.js');
+const { format, overwrite } = require('../util/Functions.js');
 const { ticTacToe } = require('../util/strings.json');
-
-const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 class DCTicTacToe extends TicTacToe {
   constructor({ players, boardSize, time, strings }) {
@@ -14,9 +13,11 @@ class DCTicTacToe extends TicTacToe {
 
     this.client = null;
     this.source = null;
-    this.boardMessage = null;
+    this.mainMessage = null;
+
     this._board = [];
     this._controller = [];
+    this._inputMode = 0b100;
   }
 
   async initialize(source) {
@@ -24,7 +25,7 @@ class DCTicTacToe extends TicTacToe {
       this._board.push([]);
       for (let j = 0; j < this.boardSize; j++) {
         this._board[i].push(new MessageButton()
-          .setCustomId(`${this.name}_${i}_${j}`)
+          .setCustomId(`game_${i}_${j}`)
           .setLabel(this.strings.labels[i][j])
           .setStyle("PRIMARY")
         );
@@ -32,7 +33,7 @@ class DCTicTacToe extends TicTacToe {
     }
     this._controller = new MessageActionRow().addComponents(
       new MessageButton()
-        .setCustomId(`${this.name}_stop`)
+        .setCustomId('ctrl_stop')
         .setLabel(this.strings.stopButtonMessage)
         .setStyle("DANGER")
     );
@@ -47,69 +48,67 @@ class DCTicTacToe extends TicTacToe {
       if (!source.deferred) {
         await source.deferReply();
       }
-      this.boardMessage = await source.editReply({ content: content, components: this.components });
+      this.mainMessage = await source.editReply({ content: content, components: this.components });
     }
     else if (source.constructor.name === Message.name) {
-      this.boardMessage = await source.channel.send({ content: content, components: this.components });
+      this.mainMessage = await source.channel.send({ content: content, components: this.components });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
     }
   }
 
-  _filter = async interaction => {
-    if (interaction.user.id !== this.playerHandler.nowPlayer.id) return false;
-    return interaction.customId.startsWith(this.name);
+  _buttonFilter = async interaction => {
+    return interaction.user.id === this.playerHandler.nowPlayer.id;
   }
 
   async start() {
+    let nowPlayer;
     while (!this.ended && this.playerHandler.alive) {
-      const result = await Promise.any([
-        sleep(this.time, { customId: `${this.name}_idle` }),
-        this.boardMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON", time: this.time + 3e3 })
-      ]);
-      const player = this.playerHandler.nowPlayer;
-      const [, arg1, arg2] = result.customId.split('_');
+      nowPlayer = this.playerHandler.nowPlayer;
+      const input = await getInput(this);
 
-      let content = '';
-      if (arg1 === 'stop') {
-        await result.update({});
-        player.status.set("LEAVING");
-        content = format(this.strings.previous.leaving, player.username) + '\n';
-        this.playerHandler.next();
+      let content = '\u200b';
+      if (input === null) {
+        nowPlayer.status.set("IDLE");
+        content += format(this.strings.previous.idle, nowPlayer.username) + '\n';
       }
-      else if (arg1 === 'idle') {
-        player.status.set("IDLE");
-        content = format(this.strings.previous.idle, player.username) + '\n';
-        this.playerHandler.next();
+      else if (input.startsWith('ctrl_')) {
+        const [, ...args] = input.split('_');
+
+        if (args[0] === 'stop') {
+          nowPlayer.status.set("LEAVING");
+          content += format(this.strings.previous.leaving, nowPlayer.username) + '\n';
+        }
       }
       else {
-        await result.update({});
-        player.status.set("PLAYING");
-        player.addStep();
+        nowPlayer.addStep();
+        const [, ...args] = input.split('_').map(a => parseInt(a, 10));
+        this.fill(args[0], args[1]);
 
-        const [row, col] = [parseInt(arg1, 10), parseInt(arg2, 10)];
-        this.fill(row, col);
-
-        if (this.win(row, col)) {
-          this.winner = player;
-          this.end("WIN");
+        if (this.win(args[0], args[1])) {
+          this.winner = nowPlayer;
+          nowPlayer.status.set("WINNER");
         }
         else if (this.draw()) {
-          this.end("DRAW");
-        }
-        else {
-          this.playerHandler.next();
+          nowPlayer.status.set("DRAW");
         }
       }
 
+      this.playerHandler.next();
       content += format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
-      await this.boardMessage.edit({ content, components: this.components }).catch(() => {
+      await this.mainMessage.edit({ content, components: this.components }).catch(() => {
         this.end("DELETED");
       });
     }
 
-    switch (this.playerHandler.nowPlayer.status.now) {
+    switch (nowPlayer.status.now) {
+      case "WINNER":
+        this.end("WIN");
+        break;
+      case "DRAW":
+        this.end("DRAW");
+        break;
       case "IDLE":
         this.end("IDLE");
         break;
@@ -135,7 +134,7 @@ class DCTicTacToe extends TicTacToe {
         button.setDisabled(true);
       })
     });
-    await this.boardMessage.edit({ content: '\u200b', components: this.components }).catch(() => {});
+    await this.mainMessage.edit({ content: '\u200b', components: this.components }).catch(() => {});
   }
 
   async conclude() {
@@ -164,7 +163,7 @@ class DCTicTacToe extends TicTacToe {
     }
 
     const embeds = [createEndEmbed(this)];
-    await this.boardMessage.reply({ content, embeds }).catch(() => {
+    await this.mainMessage.reply({ content, embeds }).catch(() => {
       this.source.channel.send({ content, embeds });
     });
   }
