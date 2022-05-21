@@ -69,8 +69,8 @@ class DCLightsUp extends LightsUp {
     while (!this.ended && this.playerHandler.alive) {
       const result = await Promise.any([
         sleep(this.time, { customId: `${this.name}_idle` }),
-        this.boardMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON" }),
-        this.controllerMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON" })
+        this.boardMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON", time: this.time + 3e3 }),
+        this.controllerMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON", time: this.time + 3e3 })
       ]);
       const player = this.playerHandler.nowPlayer;
       const [, arg1, arg2] = result.customId.split('_');
@@ -167,14 +167,9 @@ class DCLightsUp extends LightsUp {
     }
 
     const embeds = [createEndEmbed(this)];
-    if ([CommandInteraction.name, Message.name].includes(this.source.constructor.name)) {
-      await this.boardMessage.reply({ content, embeds }).catch(() => {
-        this.source.channel.send({ content, embeds });
-      });
-    }
-    else {
-      throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
-    }
+    await this.boardMessage.reply({ content, embeds }).catch(() => {
+      this.source.channel.send({ content, embeds });
+    });
   }
 
   get lightButtons() {

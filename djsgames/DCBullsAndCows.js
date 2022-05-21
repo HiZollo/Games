@@ -54,8 +54,8 @@ class DCBullsAndCows extends BullsAndCows {
     while (!this.ended && this.playerHandler.alive) {
       const result = await Promise.any([
         sleep(this.time, { customId: `${this.name}_idle` }),
-        this.source.channel.awaitMessages({ filter: this._messageFilter, max: 1 }),
-        this.boardMessage.awaitMessageComponent({ filter: this._buttonFilter, componentType: "BUTTON" })
+        this.source.channel.awaitMessages({ filter: this._messageFilter, max: 1, time: this.time + 3e3 }),
+        this.boardMessage.awaitMessageComponent({ filter: this._buttonFilter, componentType: "BUTTON", time: this.time + 3e3 })
       ]);
       const player = this.playerHandler.nowPlayer;
 
@@ -132,14 +132,9 @@ class DCBullsAndCows extends BullsAndCows {
     }
 
     const embeds = [createEndEmbed(this)];
-    if ([CommandInteraction.name, Message.name].includes(this.source.constructor.name)) {
-      await this.boardMessage.reply({ content, embeds }).catch(() => {
-        this.source.channel.send({ content, embeds });
-      });
-    }
-    else {
-      throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
-    }
+    await this.boardMessage.reply({ content, embeds }).catch(() => {
+      this.source.channel.send({ content, embeds });
+    });
   }
 
   get components() {

@@ -2,13 +2,13 @@ const Game = require('../struct/Game.js');
 const { checkStrike } = require('../util/GameUtil.js');
 const { GameName } = require('../util/Constants.js');
 
-class Gomoku extends Game {
-  constructor ({ players, boardSize = 19 }) {
-    if (boardSize > 19) {
+class TicTacToe extends Game {
+  constructor ({ players, boardSize = 3 }) {
+    if (boardSize > 5) {
       throw new Error('The size of the board should be at most 19.');
     }
 
-    super(GameName.GOMOKU, { players });
+    super(GameName.TIC_TAC_TOE, { players });
 
     this.boardSize = boardSize;
     this.playground = [];
@@ -36,7 +36,7 @@ class Gomoku extends Game {
   }
 
   win(row, col) {
-    return checkStrike(this.playground, row, col, 5);
+    return checkStrike(this.playground, row, col, this.boardSize);
   }
 
   draw() {
@@ -44,4 +44,4 @@ class Gomoku extends Game {
   }
 }
 
-module.exports = Gomoku;
+module.exports = TicTacToe;

@@ -1,57 +1,56 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
-const FlipTrip = require('../games/FlipTrip.js');
+const TicTacToe = require('../games/TicTacToe.js');
 const { createEndEmbed, format, overwrite, sleep } = require('../util/Functions.js');
-const { flipTrip } = require('../util/strings.json');
+const { ticTacToe } = require('../util/strings.json');
 
-const MAX_BUTTON_PER_ROW = 5;
+const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-class DCFlipTrip extends FlipTrip {
+class DCTicTacToe extends TicTacToe {
   constructor({ players, boardSize, time, strings }) {
     super({ players, boardSize });
 
     this.time = time;
-    this.strings = overwrite(JSON.parse(JSON.stringify(flipTrip)), strings);
+    this.strings = overwrite(JSON.parse(JSON.stringify(ticTacToe)), strings);
 
     this.client = null;
     this.source = null;
     this.boardMessage = null;
-    this.controller = null;
+    this._board = [];
+    this._controller = [];
   }
 
   async initialize(source) {
-    this.controller = [];
     for (let i = 0; i < this.boardSize; i++) {
-      if (i % MAX_BUTTON_PER_ROW === 0) {
-        this.controller.push(new MessageActionRow());
-      }
-
-      this.controller[~~(i / MAX_BUTTON_PER_ROW)].addComponents(
-        new MessageButton()
-          .setCustomId(`${this.name}_${this.boardSize - 1 - i}`)
-          .setLabel(`${this.boardSize - i}`)
+      this._board.push([]);
+      for (let j = 0; j < this.boardSize; j++) {
+        this._board[i].push(new MessageButton()
+          .setCustomId(`${this.name}_${i}_${j}`)
+          .setLabel(this.strings.labels[i][j])
           .setStyle("PRIMARY")
-      );
+        );
+      }
     }
-    this.controller.push(new MessageActionRow().addComponents(
+    this._controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId(`${this.name}_stop`)
         .setLabel(this.strings.stopButtonMessage)
         .setStyle("DANGER")
-    ));
+    );
 
     super.initialize();
 
     this.source = source;
     this.client = source?.client;
+    const content = format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
+
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
         await source.deferReply();
       }
-
-      this.boardMessage = await source.editReply({ content: this.board, components: this.controller });
+      this.boardMessage = await source.editReply({ content: content, components: this.components });
     }
     else if (source.constructor.name === Message.name) {
-      this.boardMessage = await source.channel.send({ content: this.board, components: this.controller });
+      this.boardMessage = await source.channel.send({ content: content, components: this.components });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
@@ -70,40 +69,44 @@ class DCFlipTrip extends FlipTrip {
         this.boardMessage.awaitMessageComponent({ filter: this._filter, componentType: "BUTTON", time: this.time + 3e3 })
       ]);
       const player = this.playerHandler.nowPlayer;
-      const [, arg1] = result.customId.split('_');
+      const [, arg1, arg2] = result.customId.split('_');
 
+      let content = '';
       if (arg1 === 'stop') {
         await result.update({});
-
         player.status.set("LEAVING");
+        content = format(this.strings.previous.leaving, player.username) + '\n';
         this.playerHandler.next();
       }
       else if (arg1 === 'idle') {
         player.status.set("IDLE");
+        content = format(this.strings.previous.idle, player.username) + '\n';
         this.playerHandler.next();
       }
       else {
+        await result.update({});
         player.status.set("PLAYING");
         player.addStep();
 
-        const legal = this.flip(parseInt(arg1, 10));
+        const [row, col] = [parseInt(arg1, 10), parseInt(arg2, 10)];
+        this.fill(row, col);
 
-        if (!legal) {
-          this.loser = player;
-          this.end("LOSE");
-        }
-        if (this.win()) {
+        if (this.win(row, col)) {
           this.winner = player;
           this.end("WIN");
+        }
+        else if (this.draw()) {
+          this.end("DRAW");
         }
         else {
           this.playerHandler.next();
         }
-
-        await result.update(this.board).catch(() => {
-          this.end("DELETED");
-        });
       }
+
+      content += format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
+      await this.boardMessage.edit({ content, components: this.components }).catch(() => {
+        this.end("DELETED");
+      });
     }
 
     switch (this.playerHandler.nowPlayer.status.now) {
@@ -116,10 +119,23 @@ class DCFlipTrip extends FlipTrip {
     }
   }
 
+  fill(row, col) {
+    super.fill(row, col);
+
+    this._board[row][col]
+      .setDisabled(true)
+      .setLabel(this.playground[row][col]);
+  }
+
   async end(reason) {
     super.end(reason);
 
-    await this.boardMessage.edit({ components: [] }).catch(() => {});
+    this._board.forEach(row => {
+      row.forEach(button => {
+        button.setDisabled(true);
+      })
+    });
+    await this.boardMessage.edit({ content: '\u200b', components: this.components }).catch(() => {});
   }
 
   async conclude() {
@@ -131,13 +147,13 @@ class DCFlipTrip extends FlipTrip {
     let content;
     switch (this.endReason) {
       case "WIN":
-        content = format(message.win, `<@${this.winner.id}>`, this.boardSize);
-        break;
-      case "LOSE":
-        content = format(message.lose, `<@${this.loser.id}>`, this.checks, this._permutationCount - this.playerHandler.totalSteps);
+        content = format(message.win, `<@${this.winner.id}>`);
         break;
       case "IDLE":
         content = message.idle;
+        break;
+      case "DRAW":
+        content = message.draw;
         break;
       case "STOPPED":
         content = message.stopped;
@@ -153,25 +169,27 @@ class DCFlipTrip extends FlipTrip {
     });
   }
 
-
-  get board() {
-    let boardContent = '';
-    for (let i = this.boardSize - 1; i >= 0; i--) {
-      boardContent += this.strings.numbers[i];
+  get components() {
+    const actionRows = [];
+    for (let i = 0; i < this.boardSize; i++) {
+      actionRows.push(new MessageActionRow());
+      for (let j = 0; j < this.boardSize; j++) {
+        actionRows[i].addComponents(this._board[i][j]);
+      }
     }
-    boardContent += '\n';
-    boardContent += this.checks;
 
-    return boardContent;
-  }
-
-  get checks() {
-    let result = '';
-    for (let i = this.boardSize - 1; i >= 0; i--) {
-      result += this.strings.checks[(this.state & (1 << i)) ? 1 : 0];
+    if (!this.ended) {
+      actionRows.push(this._controller);
     }
-    return result;
+    return actionRows;
   }
 }
 
-module.exports = DCFlipTrip;
+const getQuery = (content) => {
+  content = content.toLowerCase();
+  const row = content.substr(1, 2) - 1;
+  const col = content.substr(0, 1).charCodeAt() - 'a'.charCodeAt();
+  return [row, col];
+}
+
+module.exports = DCTicTacToe;

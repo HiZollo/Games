@@ -29,7 +29,7 @@
     "nowPlayer": "It is %s1's turn.",
     "stopButtonMessage": "Stop",
     "endMessage": {
-      "win": "Congrats, %s1! You won this gomoku game!",
+      "win": "Congrats, %s1! You won this gomoku!",
       "draw": "The game ends in a draw.",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
@@ -77,6 +77,33 @@
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the checks, where does it go?",
+      "gameStats": {
+        "header": "Game Stats - ",
+        "message": "**Total Time**: %s1:%s2\n**Total Steps**: %s3"
+      },
+      "playerStats": {
+        "message": "**Time**: %s1:%s2\n**Steps**: %s3"
+      }
+    }
+  },
+  "ticTacToe": {
+    "labels": [
+      ["1", "2", "3"],
+      ["4", "5", "6"],
+      ["7", "8", "9"]
+    ],
+    "previous": {
+      "idle": "%s1 lost their turn.",
+      "leaving": "%s1 wanted to end the game now."
+    },
+    "nowPlayer": "It is %s1's turn.",
+    "stopButtonMessage": "Stop",
+    "endMessage": {
+      "win": "Congrats, %s1! You won this tic-tac-toe!",
+      "draw": "The game ends in a draw.",
+      "idle": "The game has been stopped because of idleness.",
+      "stopped": "The game has been stopped manually.",
+      "deleted": "Wait? I can't see the game board, where does it go?",
       "gameStats": {
         "header": "Game Stats - ",
         "message": "**Total Time**: %s1:%s2\n**Total Steps**: %s3"
