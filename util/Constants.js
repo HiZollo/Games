@@ -1,3 +1,6 @@
+/**
+ * Game names
+ */
 exports.GameName = {
   BULLS_AND_COWS: "Bulls and Cows",
   FINAL_CODE: "Final Code",

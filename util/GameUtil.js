@@ -3,8 +3,7 @@
  * @param {Array<*>} array
  */
 function shuffle(array) {
-  const length = array.length;
-  for (let i = length - 1; i > 0; i--) {
+  for (let i = array.length - 1; i > 0; i--) {
     const j = randomInt(0, i);
     [array[i], array[j]] = [array[j], array[i]];
   }
@@ -13,9 +12,9 @@ function shuffle(array) {
 /**
  * Checks if a specific grid in 2D Array is lined up.
  * @param {Array<Array<*>>} board
- * @param {number} row the row number
- * @param {number} col the column number
- * @param {number} amount the minimum number for a same symbol to make a line
+ * @param {number} row the row index
+ * @param {number} col the column index
+ * @param {number} amount the minimum number for a symbol to make a line
  * @param {Array<Array<number>>} directions the possible directions to make a line
  * @returns {?*} the symbol if it is lined up, null if not
  */

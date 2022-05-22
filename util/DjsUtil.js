@@ -30,7 +30,7 @@ function createEndEmbed(game) {
 /**
  * Gets user input from API.
  * @param {ImplementedGame} game
- * @returns {?string} the user input
+ * @returns {?ButtonInteraction|Collection<Snowflake,Message>} the user input
  */
 async function getInput(game) {
   // Since awaitMessageComponent() may reject, a must-resolving Promise is needed
