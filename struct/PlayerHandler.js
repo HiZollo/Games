@@ -26,7 +26,7 @@ class PlayerHandler {
   }
 
   get alive() {
-    return !this.players.some(p => ["WINNER", "DRAW", "LOSE"].includes(p.status.now)) && this.players.some(p => p.status.now === "PLAYING");
+    return this.players.some(p => p.status.now === "PLAYING");
   }
 
   // 上一位玩家

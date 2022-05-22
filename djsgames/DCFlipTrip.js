@@ -65,77 +65,82 @@ class DCFlipTrip extends FlipTrip {
     return interaction.user.id === this.playerHandler.nowPlayer.id;
   }
 
-  async start() {
-    let nowPlayer;
-    while (!this.ended && this.playerHandler.alive) {
-      nowPlayer = this.playerHandler.nowPlayer;
-      const input = await getInput(this);
+  async _run(nowPlayer) {
+    const input = await getInput(this);
+    let endStatus = null;
 
-      if (input === null) {
-        nowPlayer.status.set("IDLE");
-      }
-      else if (input.customId?.startsWith('ctrl_')) {
-        const [, ...args] = input.customId.split('_');
+    if (input === null) {
+      nowPlayer.status.set("IDLE");
+    }
+    else if (input.customId?.startsWith('ctrl_')) {
+      const [, ...args] = input.customId.split('_');
 
-        if (args[0] === 'stop') {
-          await input.update({});
-          nowPlayer.status.set("LEAVING");
-        }
-      }
-      else {
+      if (args[0] === 'stop') {
         await input.update({});
-        nowPlayer.status.set("PLAYING");
-        nowPlayer.addStep();
-
-        const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
-        const legal = this.flip(args[0]);
-
-        if (!legal) {
-          this.loser = nowPlayer;
-          nowPlayer.status.set("LOSER");
-        }
-        else if (this.win()) {
-          this.winner = nowPlayer;
-          nowPlayer.status.set("WINNER");
-        }
+        nowPlayer.status.set("LEAVING");
       }
+    }
+    else {
+      await input.update({});
+      nowPlayer.status.set("PLAYING");
+      nowPlayer.addStep();
 
-      this.playerHandler.next();
-      await this.mainMessage.edit({ content: this.boardContent }).catch(() => {
-        this.end("DELETED");
-      });
+      const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
+      const legal = this.flip(args[0]);
+
+      if (!legal) {
+        this.loser = nowPlayer;
+        endStatus = "LOSE";
+      }
+      else if (this.win()) {
+        this.winner = nowPlayer;
+        endStatus = "WIN";
+      }
     }
 
-    switch (nowPlayer.status.now) {
-      case "WINNER":
-        this.end("WIN");
-        break;
-      case "LOSER":
-        this.end("LOSE");
-        break;
-      case "IDLE":
-        this.end("IDLE");
-        break;
-      case "LEAVING":
-        this.end("STOPPED");
-        break;
+    this.playerHandler.next();
+    await this.mainMessage.edit({ content: this.boardContent }).catch(() => {
+      this.end("DELETED");
+    });
+
+    if (endStatus) {
+      this.end(endStatus);
     }
   }
 
-  async end(reason) {
-    super.end(reason);
+  async start() {
+    let nowPlayer;
+    while (this.ongoing && this.playerHandler.alive) {
+      nowPlayer = this.playerHandler.nowPlayer;
+      await this._run(nowPlayer);
+    }
+
+    if (this.ongoing) {
+      switch (nowPlayer.status.now) {
+        case "IDLE":
+          this.end("IDLE");
+          break;
+        case "LEAVING":
+          this.end("STOPPED");
+          break;
+      }
+    }
+  }
+
+  async end(status) {
+    super.end(status);
 
     await this.mainMessage.edit({ components: [] }).catch(() => {});
   }
 
   async conclude() {
-    if (!this.ended) {
+    if (this.ongoing) {
       throw new Error('The game has not ended.');
     }
 
     const message = this.strings.endMessage;
     let content;
-    switch (this.endReason) {
+    switch (this.status.now) {
       case "WIN":
         content = format(message.win, `<@${this.winner.id}>`, this.boardSize);
         break;

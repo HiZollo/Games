@@ -1,7 +1,7 @@
 class Status {
   constructor(...status) {
     this._statusCount = 0;
-    this._statusPool = [];
+    this._statusPool = new Set();
 
     this.append(status);
     this.now = status[0];
@@ -9,15 +9,12 @@ class Status {
 
   append(status) {
     status.forEach(s => {
-      if (this.has(s)) {
-        throw new Error(`Status ${status} already exists.`);
-      }
-      this._statusPool.push(s);
+      this._statusPool.add(s);
     });
   }
 
   has(status) {
-    return this._statusPool.includes(status);
+    return this._statusPool.has(status);
   }
 
   set(status) {

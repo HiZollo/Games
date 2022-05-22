@@ -60,74 +60,82 @@ class DCBullsAndCows extends BullsAndCows {
     return interaction.user.id === this.playerHandler.nowPlayer.id;
   }
 
-  async start() {
-    let nowPlayer;
-    while (!this.ended && this.playerHandler.alive) {
-      nowPlayer = this.playerHandler.nowPlayer;
-      const input = await getInput(this);
+  async _run(nowPlayer) {
+    const input = await getInput(this);
+    let endStatus = null;
 
-      if (input === null) {
-        nowPlayer.status.set("IDLE");
+    if (input === null) {
+      nowPlayer.status.set("IDLE");
+    }
+    else if (input.customId?.startsWith('ctrl_')) {
+      const [, ...args] = input.customId.split('_');
+
+      if (args[0] === 'stop') {
+        await input.update({});
+        nowPlayer.status.set("LEAVING");
       }
-      else if (input.customId?.startsWith('ctrl_')) {
-        const [, ...args] = input.customId.split('_');
+    }
+    else {
+      nowPlayer.status.set("PLAYING");
+      nowPlayer.addStep();
 
-        if (args[0] === 'stop') {
-          await input.update({});
-          nowPlayer.status.set("LEAVING");
-        }
-      }
-      else {
-        nowPlayer.status.set("PLAYING");
-        nowPlayer.addStep();
+      const message = input.first();
+      await message.delete().catch(() => {});
+      const query = getQuery(message.content);
+      const status = this.guess(query);
 
-        const message = input.first();
-        await message.delete().catch(() => {});
-        const query = getQuery(message.content);
-        const status = this.guess(query);
-
-        if (this.win(status)) {
-          this.winner = nowPlayer;
-          nowPlayer.status.set("WINNER");
-        }
-
-        this.playerHandler.next();
-        const content = this.hardmode ?
-          this.mainMessage.content + '\n' + format(this.strings.queryResponse, status.a, status.b, message.content) :
-          this.content += '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
-        await this.mainMessage.edit({ content }).catch(() => {
-          this.end("DELETED");
-        });
+      if (this.win(status)) {
+        this.winner = nowPlayer;
+        endStatus = "WIN";
       }
     }
 
-    switch (nowPlayer.status.now) {
-      case "WINNER":
-        this.end("WIN");
-        break;
-      case "IDLE":
-        this.end("IDLE");
-        break;
-      case "LEAVING":
-        this.end("STOPPED");
-        break;
+    this.playerHandler.next();
+    const content = this.hardmode ?
+      this.mainMessage.content + '\n' + format(this.strings.queryResponse, status.a, status.b, message.content) :
+      this.content += '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
+    await this.mainMessage.edit({ content }).catch(() => {
+      this.end("DELETED");
+    });
+
+    if (endStatus) {
+      this.end(endStatus);
     }
   }
 
-  async end(reason) {
-    super.end(reason);
+  async start() {
+    let nowPlayer;
+    while (this.ongoing && this.playerHandler.alive) {
+      nowPlayer = this.playerHandler.nowPlayer;
+       await this._run(nowPlayer);
+    }
+
+    if (this.ongoing) {
+      switch (nowPlayer.status.now) {
+        case "IDLE":
+          this.end("IDLE");
+          break;
+        case "LEAVING":
+          this.end("STOPPED");
+          break;
+      }
+    }
+  }
+
+  async end(status) {
+    super.end(status);
 
     await this.mainMessage.edit({ components: [] }).catch(() => {});
   }
 
   async conclude() {
-    if (!this.ended) {
+    if (this.ongoing) {
       throw new Error('The game has not ended.');
     }
 
     const message = this.strings.endMessage;
     let content;
-    switch (this.endReason) {
+    switch (this.status.now) {
       case "WIN":
         content = format(message.win, `<@${this.winner.id}>`, this.answer.join(''));
         break;
@@ -136,6 +144,9 @@ class DCBullsAndCows extends BullsAndCows {
         break;
       case "STOPPED":
         content = message.stopped;
+        break;
+      case "DELETED":
+        content = message.deleted;
         break;
     }
 

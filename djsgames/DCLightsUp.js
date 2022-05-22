@@ -74,6 +74,49 @@ class DCLightsUp extends LightsUp {
     return interaction.user.id === this.playerHandler.nowPlayer.id;
   }
 
+  async _run(nowPlayer) {
+    const input = await getInput(this);
+    let endStatus = null;
+
+    if (input === null) {
+      nowPlayer.status.set("IDLE");
+    }
+    else if (input.customId?.startsWith('ctrl_')) {
+      const [, ...args] = input.customId.split('_');
+
+      if (args[0] === 'stop') {
+        await input.update({});
+        nowPlayer.status.set("LEAVING");
+      }
+      else if (args[0] === 'answer') {
+        await input.reply({ content: format(this.strings.currentAnswer, this.answerContent), ephemeral: true });
+        nowPlayer.status.set("PLAYING");
+      }
+    }
+    else {
+      await input.update({});
+      nowPlayer.status.set("PLAYING");
+      nowPlayer.addStep();
+
+      const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
+      this.flip(args[0], args[1]);
+
+      if (this.win()) {
+        this.winner = nowPlayer;
+        endStatus = "WIN";
+      }
+    }
+
+    this.playerHandler.next();
+    await this.mainMessage.edit({ components: this.components }).catch(() => {
+      this.end("DELETED");
+    });
+
+    if (endStatus) {
+      this.end(endStatus);
+    }
+  }
+
   async start(channel) {
     if (this.win()) {
       this.end("JACKPOT");
@@ -81,55 +124,20 @@ class DCLightsUp extends LightsUp {
     }
 
     let nowPlayer;
-    while (!this.ended && this.playerHandler.alive) {
+    while (this.ongoing && this.playerHandler.alive) {
       nowPlayer = this.playerHandler.nowPlayer;
-      const input = await getInput(this);
-
-      if (input === null) {
-        nowPlayer.status.set("IDLE");
-      }
-      else if (input.customId?.startsWith('ctrl_')) {
-        const [, ...args] = input.customId.split('_');
-
-        if (args[0] === 'stop') {
-          await input.update({});
-          nowPlayer.status.set("LEAVING");
-        }
-        else if (args[0] === 'answer') {
-          await input.reply({ content: format(this.strings.currentAnswer, this.answerContent), ephemeral: true });
-          nowPlayer.status.set("PLAYING");
-        }
-      }
-      else {
-        await input.update({});
-        nowPlayer.status.set("PLAYING");
-        nowPlayer.addStep();
-
-        const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
-        this.flip(args[0], args[1]);
-
-        if (this.win()) {
-          this.winner = nowPlayer;
-          nowPlayer.status.set("WINNER");
-        }
-      }
-
-      this.playerHandler.next();
-      await this.mainMessage.edit({ components: this.components }).catch(() => {
-        this.end("DELETED");
-      });
+      await this._run(nowPlayer);
     }
 
-    switch (nowPlayer.status.now) {
-      case "WINNER":
-        this.end("WIN");
-        break;
-      case "IDLE":
-        this.end("IDLE");
-        break;
-      case "LEAVING":
-        this.end("STOPPED");
-        break;
+    if (this.ongoing) {
+      switch (nowPlayer.status.now) {
+        case "IDLE":
+          this.end("IDLE");
+          break;
+        case "LEAVING":
+          this.end("STOPPED");
+          break;
+      }
     }
   }
 
@@ -144,8 +152,8 @@ class DCLightsUp extends LightsUp {
     });
   }
 
-  async end(reason) {
-    super.end(reason);
+  async end(status) {
+    super.end(status);
 
     this._board.forEach(row => {
       row.forEach(button => {
@@ -157,13 +165,13 @@ class DCLightsUp extends LightsUp {
   }
 
   async conclude() {
-    if (!this.ended) {
+    if (this.ongoing) {
       throw new Error('The game has not ended.');
     }
 
     const message = this.strings.endMessage;
     let content;
-    switch (this.endReason) {
+    switch (this.status.now) {
       case "JACKPOT":
         content = format(message.jackpot, `<@${this.winner.id}>`);
         break;
