@@ -1,10 +1,9 @@
 const Game = require('../struct/Game.js');
 const { shuffle } = require('../util/GameUtil.js');
-const { GameName } = require('../util/Constants.js');
 
 class BullsAndCows extends Game {
   constructor ({ players, hardmode = false, answerLength = 4, numberCount = 10 }) {
-    super(GameName.BULLS_AND_COWS, { players });
+    super({ players });
 
     this.answer = [];
     this.answerLength = answerLength;

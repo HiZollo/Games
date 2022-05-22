@@ -1,10 +1,9 @@
 const Game = require('../struct/Game.js');
-const { GameName } = require('../util/Constants.js');
 const { randomInt } = require('../util/GameUtil.js');
 
 class LightsUp extends Game {
   constructor ({ players, boardSize }) {
-    super(GameName.LIGHTS_UP, { players }, ["JACKPOT"]);
+    super({ players }, ["JACKPOT"]);
 
     this.boardSize = boardSize;
     this.lights = [];

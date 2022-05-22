@@ -1,6 +1,5 @@
 const Game = require('../struct/Game.js');
 const { checkStrike } = require('../util/GameUtil.js');
-const { GameName } = require('../util/Constants.js');
 
 class TicTacToe extends Game {
   constructor ({ players, boardSize = 3 }) {
@@ -8,7 +7,7 @@ class TicTacToe extends Game {
       throw new Error('The size of the board should be at most 5.');
     }
 
-    super(GameName.TIC_TAC_TOE, { players });
+    super({ players });
 
     this.boardSize = boardSize;
     this.playground = [];

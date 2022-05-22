@@ -17,7 +17,7 @@ class DCFlipTrip extends FlipTrip {
     this.source = null;
     this.mainMessage = null;
 
-    this._board = []
+    this._board = [];
     this._controller = null;
     this._inputMode = 0b100;
   }

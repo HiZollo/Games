@@ -1,6 +1,5 @@
 const Game = require('../struct/Game.js');
 const { checkStrike } = require('../util/GameUtil.js');
-const { GameName } = require('../util/Constants.js');
 
 class Gomoku extends Game {
   constructor ({ players, boardSize = 19 }) {
@@ -8,7 +7,7 @@ class Gomoku extends Game {
       throw new Error('The size of the board should be at most 19.');
     }
 
-    super(GameName.GOMOKU, { players });
+    super({ players });
 
     this.boardSize = boardSize;
     this.playground = [];

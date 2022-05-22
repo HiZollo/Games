@@ -8,7 +8,6 @@ class PlayerManager {
     this._lastMoveTime = Date.now();
   }
 
-  // 現在輪到的玩家
   get nowPlayer() {
     return this.players[this._index];
   }
@@ -29,7 +28,6 @@ class PlayerManager {
     return this.players.some(p => p.status.now === "PLAYING");
   }
 
-  // 上一位玩家
   prev(n = 1) {
     const time = Date.now();
     this.nowPlayer.time += time - this._lastMoveTime;
@@ -39,7 +37,6 @@ class PlayerManager {
     this._index = index < 0 ? index + this.playerCount : index;
   }
 
-  // 下一位玩家
   next(n = 1) {
     const time = Date.now();
     this.nowPlayer.time += time - this._lastMoveTime;
@@ -48,7 +45,6 @@ class PlayerManager {
     this._index = (this._index + n) % this.playerCount;
   }
 
-  // 指定下家
   assign(nextIndex) {
     const time = Date.now();
     this.nowPlayer.time += time - this._lastMoveTime;

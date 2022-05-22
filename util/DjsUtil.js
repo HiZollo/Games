@@ -12,7 +12,7 @@ function createEndEmbed(game) {
   const sec = fixedDigits(Math.round(game.duration/1000) % 60, 2);
 
   const embed = new MessageEmbed()
-    .setAuthor({ name: message.gameStats.header + game.name, iconURL: game.client.user.displayAvatarURL() })
+    .setAuthor({ name: message.gameStats.header + game.strings.name, iconURL: game.client.user.displayAvatarURL() })
     .setColor(0x000000)
     .setDescription(format(message.gameStats.message, min, sec, game.playerManager.totalSteps));
 

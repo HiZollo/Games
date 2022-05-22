@@ -1,5 +1,6 @@
 {
   "bullsAndCows": {
+    "name": "Bulls and Cows",
     "firstMessage": "%1s, please guess a number.",
     "queryResponse": "You get `%1sA%2sB` from %3s.",
     "stopButtonMessage": "Stop",
@@ -18,6 +19,7 @@
     }
   },
   "finalCode": {
+    "name": "Final Code",
     "compare": {
       "small": "small",
       "large": "large"
@@ -45,6 +47,7 @@
     }
   },
   "flipTrip": {
+    "name": "Flip Trip",
     "numbers": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"],
     "checks": ["⚪", "⚫"],
     "stopButtonMessage": "Stop",
@@ -64,6 +67,7 @@
     }
   },
   "gomoku": {
+    "name": "Gomoku",
     "rows": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"],
     "columns": ["🇦", "🇧", "🇨", "🇩", "🇪", "🇫", "🇬", "🇭", "🇮"],
     "grid": "🔲",
@@ -91,6 +95,7 @@
     }
   },
   "lightsUp": {
+    "name": "Lights-up",
     "answer": ["🔴", "🟡"],
     "currentAnswer": "The answer to the board is: \n%1s",
     "controller": {
@@ -116,6 +121,7 @@
     }
   },
   "ticTacToe": {
+    "name": "Tic-tac-toe",
     "labels": [
       ["1", "2", "3"],
       ["4", "5", "6"],

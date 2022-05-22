@@ -1,13 +1,11 @@
 const Game = require('../struct/Game.js');
-const { checkStrike } = require('../util/GameUtil.js');
-const { GameName } = require('../util/Constants.js');
 
 class FlipTrip extends Game {
   constructor ({ gameLogger, players, boardSize = 10 }) {
     if (boardSize > 10)
       throw new Error('The size of the board should be at most 10.');
 
-    super(GameName.FLIP_TRIP, { players });
+    super({ players });
 
     this.boardSize = boardSize;
     this._permutationCount = 2 ** boardSize;

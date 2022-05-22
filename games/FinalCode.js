@@ -1,10 +1,9 @@
 const Game = require('../struct/Game.js');
 const { randomInt } = require('../util/GameUtil.js');
-const { GameName } = require('../util/Constants.js');
 
 class FinalCode extends Game {
   constructor ({ players, min = 1, max = 1000 }) {
-    super(GameName.FINAL_CODE, { players });
+    super({ players });
 
     this.answer = null;
     this.min = min;
