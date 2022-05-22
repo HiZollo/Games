@@ -10,11 +10,14 @@ class Game {
     this.startTime = null;
     this.endTime = null;
 
+    this.winner = null;
+    this.loser = null;
+
     this._initialized = false;
     this._ended = false;
   }
 
-  // initialize the game
+  // Initializes the game
   initialize() {
     if (this._initialized) {
       throw new Error('The game has already been initialized.');
@@ -41,7 +44,7 @@ class Game {
     return this.endTime - this.startTime;
   }
 
-  // check if the game is still ungoing
+  // Checks if the game is still ungoing
   get ongoing() {
     return this.status.now === "ONGOING";
   }

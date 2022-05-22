@@ -9,7 +9,6 @@ class LightsUp extends Game {
     this.boardSize = boardSize;
     this.lights = [];
     this.answer = [];
-    this.winner = null;
   }
 
   initialize() {

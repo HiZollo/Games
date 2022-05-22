@@ -10,7 +10,6 @@ class BullsAndCows extends Game {
     this.answerLength = answerLength;
     this.numberCount = numberCount;
     this.hardmode = hardmode;
-    this.winner = null;
   }
 
   initialize() {

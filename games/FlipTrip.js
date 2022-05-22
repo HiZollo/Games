@@ -13,8 +13,6 @@ class FlipTrip extends Game {
     this._permutationCount = 2 ** boardSize;
     this.state = 0;
     this.appearedStates = [];
-    this.winner = null;
-    this.loser = null;
   }
 
   initialize() {

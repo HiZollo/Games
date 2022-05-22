@@ -12,7 +12,6 @@ class Gomoku extends Game {
 
     this.boardSize = boardSize;
     this.playground = [];
-    this.winner = null;
 
     this._occupied = 0;
   }

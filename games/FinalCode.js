@@ -9,7 +9,6 @@ class FinalCode extends Game {
     this.answer = null;
     this.min = min;
     this.max = max;
-    this.winner = null;
   }
 
   initialize() {
