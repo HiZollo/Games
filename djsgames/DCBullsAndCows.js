@@ -32,7 +32,7 @@ class DCBullsAndCows extends BullsAndCows {
 
     this.source = source;
     this.client = source?.client;
-    this.content = format(this.strings.firstMessage, this.playerHandler.nowPlayer.username);
+    this.content = format(this.strings.firstMessage, this.playerManager.nowPlayer.username);
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
@@ -49,7 +49,7 @@ class DCBullsAndCows extends BullsAndCows {
   }
 
   _messageFilter = async message => {
-    if (message.author.id !== this.playerHandler.nowPlayer.id) return false;
+    if (message.author.id !== this.playerManager.nowPlayer.id) return false;
 
     if (!/^\d{4}$/.test(message.content)) return false;
     const query = getQuery(message.content);
@@ -57,7 +57,7 @@ class DCBullsAndCows extends BullsAndCows {
   }
 
   _buttonFilter = async interaction => {
-    return interaction.user.id === this.playerHandler.nowPlayer.id;
+    return interaction.user.id === this.playerManager.nowPlayer.id;
   }
 
   async _run(nowPlayer) {
@@ -90,7 +90,7 @@ class DCBullsAndCows extends BullsAndCows {
       }
     }
 
-    this.playerHandler.next();
+    this.playerManager.next();
     const content = this.hardmode ?
       this.mainMessage.content + '\n' + format(this.strings.queryResponse, status.a, status.b, message.content) :
       this.content += '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
@@ -105,8 +105,8 @@ class DCBullsAndCows extends BullsAndCows {
 
   async start() {
     let nowPlayer;
-    while (this.ongoing && this.playerHandler.alive) {
-      nowPlayer = this.playerHandler.nowPlayer;
+    while (this.ongoing && this.playerManager.alive) {
+      nowPlayer = this.playerManager.nowPlayer;
        await this._run(nowPlayer);
     }
 

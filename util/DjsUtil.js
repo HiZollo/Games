@@ -14,10 +14,10 @@ function createEndEmbed(game) {
   const embed = new MessageEmbed()
     .setAuthor({ name: message.gameStats.header + game.name, iconURL: game.client.user.displayAvatarURL() })
     .setColor(0x000000)
-    .setDescription(format(message.gameStats.message, min, sec, game.playerHandler.totalSteps));
+    .setDescription(format(message.gameStats.message, min, sec, game.playerManager.totalSteps));
 
-  if (game.playerHandler.playerCount > 1) {
-    for (const player of game.playerHandler.players) {
+  if (game.playerManager.playerCount > 1) {
+    for (const player of game.playerManager.players) {
       const m = ~~(player.time/60000);
       const s = fixedDigits(Math.round(player.time/1000) % 60, 2);
       embed.addField(player.username, format(message.playerStats.message, m, s, player.steps), true);

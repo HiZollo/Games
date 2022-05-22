@@ -31,7 +31,7 @@ class Gomoku extends Game {
     if (this.playground[row][col] !== null)
       throw new Error(`Trying to fill playground[${row}][${col}] that has already been filled.`);
 
-    this.playground[row][col] = this.playerHandler.nowPlayer.symbol;
+    this.playground[row][col] = this.playerManager.nowPlayer.symbol;
     this._occupied++;
   }
 

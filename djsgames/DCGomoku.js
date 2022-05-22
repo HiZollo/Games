@@ -33,7 +33,7 @@ class DCGomoku extends Gomoku {
 
     this.source = source;
     this.client = source?.client;
-    const content = format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
+    const content = format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`);
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
@@ -50,7 +50,7 @@ class DCGomoku extends Gomoku {
   }
 
   _messageFilter = async message => {
-    if (message.author.id !== this.playerHandler.nowPlayer.id) return false;
+    if (message.author.id !== this.playerManager.nowPlayer.id) return false;
     if (!(/^[A-Za-z]\d{1,2}$/.test(message.content))) return false;
 
     const [row, col] = getQuery(message.content);
@@ -59,7 +59,7 @@ class DCGomoku extends Gomoku {
   }
 
   _buttonFilter = async interaction => {
-    return interaction.user.id === this.playerHandler.nowPlayer.id;
+    return interaction.user.id === this.playerManager.nowPlayer.id;
   }
 
   async _run(nowPlayer) {
@@ -100,8 +100,8 @@ class DCGomoku extends Gomoku {
       content = format(this.strings.previous.move, alphabets[row], col + 1, nowPlayer.username) + '\n';
     }
 
-    this.playerHandler.next();
-    content += format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`) + '\n';
+    this.playerManager.next();
+    content += format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`) + '\n';
     content += this.boardContent;
     await this.mainMessage.edit({ content }).catch(() => {
       this.end("DELETED");
@@ -114,8 +114,8 @@ class DCGomoku extends Gomoku {
 
   async start() {
     let nowPlayer;
-    while (this.ongoing && this.playerHandler.alive) {
-      nowPlayer = this.playerHandler.nowPlayer;
+    while (this.ongoing && this.playerManager.alive) {
+      nowPlayer = this.playerManager.nowPlayer;
       await this._run(nowPlayer);
     }
 

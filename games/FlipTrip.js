@@ -37,7 +37,7 @@ class FlipTrip extends Game {
   }
 
   win() {
-    return this.playerHandler.totalSteps === this._permutationCount - 1;
+    return this.playerManager.totalSteps === this._permutationCount - 1;
   }
 }
 

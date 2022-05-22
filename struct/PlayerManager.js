@@ -1,6 +1,6 @@
 const Player = require('./Player.js');
 
-class PlayerHandler {
+class PlayerManager {
   constructor({ players, firstPlayerIndex = 0 }) {
     this.players = players.map(p => new Player(p));
     this.playerCount = players.length;
@@ -58,4 +58,4 @@ class PlayerHandler {
   }
 }
 
-module.exports = PlayerHandler;
+module.exports = PlayerManager;

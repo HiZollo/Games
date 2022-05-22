@@ -45,7 +45,7 @@ class DCTicTacToe extends TicTacToe {
 
     this.source = source;
     this.client = source?.client;
-    const content = format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
+    const content = format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`);
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
@@ -62,7 +62,7 @@ class DCTicTacToe extends TicTacToe {
   }
 
   _buttonFilter = async interaction => {
-    return interaction.user.id === this.playerHandler.nowPlayer.id;
+    return interaction.user.id === this.playerManager.nowPlayer.id;
   }
 
   async _run(nowPlayer) {
@@ -100,8 +100,8 @@ class DCTicTacToe extends TicTacToe {
       }
     }
 
-    this.playerHandler.next();
-    content += format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
+    this.playerManager.next();
+    content += format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`);
     await this.mainMessage.edit({ content, components: this.components }).catch(() => {
       this.end("DELETED");
     });
@@ -113,8 +113,8 @@ class DCTicTacToe extends TicTacToe {
 
   async start() {
     let nowPlayer;
-    while (this.ongoing && this.playerHandler.alive) {
-      nowPlayer = this.playerHandler.nowPlayer;
+    while (this.ongoing && this.playerManager.alive) {
+      nowPlayer = this.playerManager.nowPlayer;
       await this._run(nowPlayer);
     }
 

@@ -1,10 +1,10 @@
 const GameStatus = require('./GameStatus.js');
-const PlayerHandler = require('./PlayerHandler.js');
+const PlayerManager = require('./PlayerManager.js');
 
 class Game {
-  constructor(name, playerHandlerOptions, gameStatus = []) {
+  constructor(name, playerManagerOptions, gameStatus = []) {
     this.name = name;
-    this.playerHandler = new PlayerHandler(playerHandlerOptions);
+    this.playerManager = new PlayerManager(playerManagerOptions);
     this.status = new GameStatus(...gameStatus);
 
     this.startTime = null;

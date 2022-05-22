@@ -62,7 +62,7 @@ class DCFlipTrip extends FlipTrip {
   }
 
   _buttonFilter = async interaction => {
-    return interaction.user.id === this.playerHandler.nowPlayer.id;
+    return interaction.user.id === this.playerManager.nowPlayer.id;
   }
 
   async _run(nowPlayer) {
@@ -98,7 +98,7 @@ class DCFlipTrip extends FlipTrip {
       }
     }
 
-    this.playerHandler.next();
+    this.playerManager.next();
     await this.mainMessage.edit({ content: this.boardContent }).catch(() => {
       this.end("DELETED");
     });
@@ -110,8 +110,8 @@ class DCFlipTrip extends FlipTrip {
 
   async start() {
     let nowPlayer;
-    while (this.ongoing && this.playerHandler.alive) {
-      nowPlayer = this.playerHandler.nowPlayer;
+    while (this.ongoing && this.playerManager.alive) {
+      nowPlayer = this.playerManager.nowPlayer;
       await this._run(nowPlayer);
     }
 
@@ -145,7 +145,7 @@ class DCFlipTrip extends FlipTrip {
         content = format(message.win, `<@${this.winner.id}>`, this.boardSize);
         break;
       case "LOSE":
-        content = format(message.lose, `<@${this.loser.id}>`, this.checks, this._permutationCount - this.playerHandler.totalSteps);
+        content = format(message.lose, `<@${this.loser.id}>`, this.checks, this._permutationCount - this.playerManager.totalSteps);
         break;
       case "IDLE":
         content = message.idle;

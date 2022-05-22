@@ -71,7 +71,7 @@ class DCLightsUp extends LightsUp {
   }
 
   _buttonFilter = async interaction => {
-    return interaction.user.id === this.playerHandler.nowPlayer.id;
+    return interaction.user.id === this.playerManager.nowPlayer.id;
   }
 
   async _run(nowPlayer) {
@@ -107,7 +107,7 @@ class DCLightsUp extends LightsUp {
       }
     }
 
-    this.playerHandler.next();
+    this.playerManager.next();
     await this.mainMessage.edit({ components: this.components }).catch(() => {
       this.end("DELETED");
     });
@@ -124,8 +124,8 @@ class DCLightsUp extends LightsUp {
     }
 
     let nowPlayer;
-    while (this.ongoing && this.playerHandler.alive) {
-      nowPlayer = this.playerHandler.nowPlayer;
+    while (this.ongoing && this.playerManager.alive) {
+      nowPlayer = this.playerManager.nowPlayer;
       await this._run(nowPlayer);
     }
 

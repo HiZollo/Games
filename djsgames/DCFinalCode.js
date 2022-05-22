@@ -32,7 +32,7 @@ class DCFinalCode extends FinalCode {
     this.source = source;
     this.client = source?.client;
     let content = format(this.strings.interval, this.min, this.max) + '\n';
-    content += format(this.strings.nowPlayer, `<@${this.playerHandler.nowPlayer.id}>`);
+    content += format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`);
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
@@ -49,7 +49,7 @@ class DCFinalCode extends FinalCode {
   }
 
   _messageFilter = async message => {
-    if (message.author.id !== this.playerHandler.nowPlayer.id) return false;
+    if (message.author.id !== this.playerManager.nowPlayer.id) return false;
 
     const query = +message.content;
     if (isNaN(query) || query !== ~~query) return false;
@@ -57,7 +57,7 @@ class DCFinalCode extends FinalCode {
   }
 
   _buttonFilter = async interaction => {
-    return interaction.user.id === this.playerHandler.nowPlayer.id;
+    return interaction.user.id === this.playerManager.nowPlayer.id;
   }
 
   async _run(nowPlayer) {
@@ -98,7 +98,7 @@ class DCFinalCode extends FinalCode {
       }
     }
 
-    this.playerHandler.next();
+    this.playerManager.next();
     content += format(this.strings.interval, this.min, this.max) + '\n';
     content += format(this.strings.nowPlayer, `<@${nowPlayer.id}>`);
     await this.mainMessage.edit({ content }).catch(() => {
@@ -112,8 +112,8 @@ class DCFinalCode extends FinalCode {
 
   async start() {
     let nowPlayer;
-    while (this.ongoing && this.playerHandler.alive) {
-      nowPlayer = this.playerHandler.nowPlayer;
+    while (this.ongoing && this.playerManager.alive) {
+      nowPlayer = this.playerManager.nowPlayer;
       await this._run(nowPlayer);
     }
 
