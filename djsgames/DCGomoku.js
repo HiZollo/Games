@@ -97,7 +97,7 @@ class DCGomoku extends Gomoku {
         endStatus = "DRAW";
       }
 
-      content = format(this.strings.previous.move, alphabets[row], col + 1, nowPlayer.username) + '\n';
+      content = format(this.strings.previous.move, alphabets[col], row + 1, nowPlayer.username) + '\n';
     }
 
     this.playerManager.next();
@@ -171,10 +171,10 @@ class DCGomoku extends Gomoku {
   get boardContent() {
     let content = `${this.strings.corner}`;
     for (let i = 0; i < this.boardSize; i++) {
-      content += this.strings.columns[i];
+      content += '\u200b' + this.strings.columns[i];
     }
 
-    for (let i = 0; i < this.boardSize; i++) {
+    for (let i = this.boardSize - 1; i >= 0; i--) {
       content += '\n' + this.strings.rows[i];
       for (let j = 0; j < this.boardSize; j++)
         content += this.playground[i][j] !== null ? this.playground[i][j] : this.strings.grid;
@@ -184,9 +184,9 @@ class DCGomoku extends Gomoku {
 }
 
 const getQuery = (content) => {
-  let [, row, col] = content.toLowerCase().match(/([a-z])(\d{1,2})/);
-  row = row[0].charCodeAt() - 'a'.charCodeAt();
-  col = col - 1;
+  let [, col, row] = content.toLowerCase().match(/([a-z])(\d{1,2})/);
+  col = col[0].charCodeAt() - 'a'.charCodeAt();
+  row = row - 1;
   return [row, col];
 }
 
