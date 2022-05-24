@@ -22,18 +22,18 @@ class FinalCode extends Game {
       throw new Error(`The query should be an integer.`);
     }
 
-    if (this.min < query && query < this.answer) {
+    if (this.min < query && query <= this.answer) {
       this.min = query;
     }
-    if (this.answer < query && query < this.max) {
+    if (this.answer <= query && query < this.max) {
       this.max = query;
     }
 
     return (query > this.answer) - (query < this.answer);
   }
 
-  win(query) {
-    return query === answer;
+  win() {
+    return this.min === this.max;
   }
 }
 

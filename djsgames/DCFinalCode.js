@@ -132,7 +132,7 @@ class DCFinalCode extends FinalCode {
   async end(status) {
     super.end(status);
 
-    await this.mainMessage.edit({ components: [] }).catch(() => {});
+    await this.mainMessage.edit({ content: format(this.strings.interval, this.min, this.max), components: [] }).catch(() => {});
   }
 
   async conclude() {
