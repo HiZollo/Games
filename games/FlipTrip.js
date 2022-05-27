@@ -1,7 +1,7 @@
 const Game = require('../struct/Game.js');
 
 class FlipTrip extends Game {
-  constructor ({ gameLogger, players, boardSize = 10 }) {
+  constructor({ gameLogger, players, boardSize = 10 }) {
     if (boardSize > 10)
       throw new Error('The size of the board should be at most 10.');
 

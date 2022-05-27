@@ -2,7 +2,7 @@ const Game = require('../struct/Game.js');
 const { randomInt } = require('../util/GameUtil.js');
 
 class FinalCode extends Game {
-  constructor ({ players, min = 1, max = 1000 }) {
+  constructor({ players, min = 1, max = 1000 }) {
     super({ players });
 
     this.answer = null;

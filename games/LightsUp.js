@@ -2,7 +2,7 @@ const Game = require('../struct/Game.js');
 const { randomInt } = require('../util/GameUtil.js');
 
 class LightsUp extends Game {
-  constructor ({ players, boardSize }) {
+  constructor({ players, boardSize }) {
     super({ players }, ["JACKPOT"]);
 
     this.boardSize = boardSize;

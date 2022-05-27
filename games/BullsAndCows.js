@@ -2,7 +2,7 @@ const Game = require('../struct/Game.js');
 const { shuffle } = require('../util/GameUtil.js');
 
 class BullsAndCows extends Game {
-  constructor ({ players, hardmode = false, answerLength = 4, numberCount = 10 }) {
+  constructor({ players, hardmode = false, answerLength = 4, numberCount = 10 }) {
     super({ players });
 
     this.answer = [];

@@ -2,7 +2,7 @@ const Game = require('../struct/Game.js');
 const { checkStrike } = require('../util/GameUtil.js');
 
 class Gomoku extends Game {
-  constructor ({ players, boardSize = 19 }) {
+  constructor({ players, boardSize = 19 }) {
     if (boardSize > 19) {
       throw new Error('The size of the board should be at most 19.');
     }

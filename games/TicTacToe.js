@@ -2,7 +2,7 @@ const Game = require('../struct/Game.js');
 const { checkStrike } = require('../util/GameUtil.js');
 
 class TicTacToe extends Game {
-  constructor ({ players, boardSize = 3 }) {
+  constructor({ players, boardSize = 3 }) {
     if (boardSize > 5) {
       throw new Error('The size of the board should be at most 5.');
     }
