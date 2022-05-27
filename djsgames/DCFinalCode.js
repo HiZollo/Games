@@ -23,7 +23,7 @@ class DCFinalCode extends FinalCode {
     this._controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('ctrl_stop')
-        .setLabel(this.strings.stopButtonMessage)
+        .setLabel(this.strings.controller.stop)
         .setStyle("DANGER")
     );
 
@@ -140,7 +140,7 @@ class DCFinalCode extends FinalCode {
       throw new Error('The game has not ended.');
     }
 
-    const message = this.strings.endMessage;
+    const message = this.strings.endMessages;
     let content;
     switch (this.status.now) {
       case "WIN":

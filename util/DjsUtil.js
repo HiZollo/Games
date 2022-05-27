@@ -7,12 +7,12 @@ const { fixedDigits, format, sleep } = require('./Functions.js');
  * @returns {MessageEmbed} the endgame embed for this game
  */
 function createEndEmbed(game) {
-  const message = game.strings.endMessage;
+  const message = game.strings.endMessages;
   const min = ~~(game.duration/60000);
   const sec = fixedDigits(Math.round(game.duration/1000) % 60, 2);
 
   const embed = new MessageEmbed()
-    .setAuthor({ name: message.gameStats.header + game.strings.name, iconURL: game.client.user.displayAvatarURL() })
+    .setAuthor({ name: format(message.gameStats.header, game.strings.name), iconURL: game.client.user.displayAvatarURL() })
     .setColor(0x000000)
     .setDescription(format(message.gameStats.message, min, sec, game.playerManager.totalSteps));
 

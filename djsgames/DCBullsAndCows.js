@@ -24,7 +24,7 @@ class DCBullsAndCows extends BullsAndCows {
     this._controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('ctrl_stop')
-        .setLabel(this.strings.stopButtonMessage)
+        .setLabel(this.strings.controller.stop)
         .setStyle("DANGER")
     );
 
@@ -32,7 +32,7 @@ class DCBullsAndCows extends BullsAndCows {
 
     this.source = source;
     this.client = source?.client;
-    this.content = format(this.strings.firstMessage, this.playerManager.nowPlayer.username);
+    this.content = format(this.strings.initial, this.playerManager.nowPlayer.username);
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
@@ -64,6 +64,7 @@ class DCBullsAndCows extends BullsAndCows {
     const input = await getInput(this);
     let endStatus = null;
 
+    let content = this.hardmode ? this.mainMessage.content : this.content;
     if (input === null) {
       nowPlayer.status.set("IDLE");
     }
@@ -88,12 +89,12 @@ class DCBullsAndCows extends BullsAndCows {
         this.winner = nowPlayer;
         endStatus = "WIN";
       }
+
+      content += '\n' + format(this.strings.query, status.a, status.b, message.content);
+      this.content += '\n' + format(this.strings.query, status.a, status.b, message.content);
     }
 
     this.playerManager.next();
-    const content = this.hardmode ?
-      this.mainMessage.content + '\n' + format(this.strings.queryResponse, status.a, status.b, message.content) :
-      this.content += '\n' + format(this.strings.queryResponse, status.a, status.b, message.content);
     await this.mainMessage.edit({ content }).catch(() => {
       this.end("DELETED");
     });
@@ -133,7 +134,7 @@ class DCBullsAndCows extends BullsAndCows {
       throw new Error('The game has not ended.');
     }
 
-    const message = this.strings.endMessage;
+    const message = this.strings.endMessages;
     let content;
     switch (this.status.now) {
       case "WIN":

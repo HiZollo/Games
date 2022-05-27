@@ -1,20 +1,22 @@
 {
   "bullsAndCows": {
     "name": "Bulls and Cows",
-    "firstMessage": "%1s, please guess a number.",
-    "queryResponse": "You get `%1sA%2sB` from %3s.",
-    "stopButtonMessage": "Stop",
-    "endMessage": {
+    "initial": "%1s, please guess a number.",
+    "query": "You get `%1sA%2sB` from %3s.",
+    "controller": {
+      "stop": "Stop"
+    },
+    "endMessages": {
       "win": "%1s, you've got the answer `%2s`!",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the message, where does it go?",
       "gameStats": {
-        "header": "Game Stats - ",
-        "message": "**Total Time**: %1s:%2s\n**Total Attempts**: %3s"
+        "header": "Game Stats - %1s",
+        "message": "**Total Time**: %1s:%2s\n**Total Attempt(s)**: %3s"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Attempts**: %3s"
+        "message": "**Time**: %1s:%2s\n**Attempt(s)**: %3s"
       }
     }
   },
@@ -31,18 +33,20 @@
     },
     "interval": "The answer lies between %1s and %2s now.",
     "nowPlayer": "It is %1s's turn.",
-    "stopButtonMessage": "Stop",
-    "endMessage": {
+    "controller": {
+      "stop": "Stop"
+    },
+    "endMessages": {
       "win": "%1s, you hit the final code %2s!",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the message, where does it go?",
       "gameStats": {
-        "header": "Game Stats - ",
-        "message": "**Total Time**: %1s:%2s\n**Total Guesses**: %3s"
+        "header": "Game Stats - %1s",
+        "message": "**Total Time**: %1s:%2s\n**Total Guess(es)**: %3s"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Guesses**: %3s"
+        "message": "**Time**: %1s:%2s\n**Guess(es)**: %3s"
       }
     }
   },
@@ -50,19 +54,21 @@
     "name": "Flip Trip",
     "numbers": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"],
     "checks": ["⚪", "⚫"],
-    "stopButtonMessage": "Stop",
-    "endMessage": {
+    "controller": {
+      "stop": "Stop"
+    },
+    "endMessages": {
       "win": "%1s, you make a full trip with %2s checks!",
       "lose": "%1s, `%2s` had appeared once before. Only %3s permutation(s) left!",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the checks, where does it go?",
       "gameStats": {
-        "header": "Game Stats - ",
-        "message": "**Total Time**: %1s:%2s\n**Total Steps**: %3s"
+        "header": "Game Stats - %1s",
+        "message": "**Total Time**: %1s:%2s\n**Total Step(s)**: %3s"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Steps**: %3s"
+        "message": "**Time**: %1s:%2s\n**Step(s)**: %3s"
       }
     }
   },
@@ -77,20 +83,22 @@
       "idle": "%1s lost their turn.",
       "leaving": "%1s wanted to end the game now."
     },
-    "nowPlayer": "It is %1s's turn.",
-    "stopButtonMessage": "Stop",
-    "endMessage": {
+    "nowPlayer": "It is %1s's turn (%2s).",
+    "controller": {
+      "stop": "Stop"
+    },
+    "endMessages": {
       "win": "Congrats, %1s! You won this gomoku!",
       "draw": "The game ends in a draw.",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the chess board, where does it go?",
       "gameStats": {
-        "header": "Game Stats - ",
-        "message": "**Total Time**: %1s:%2s\n**Total Steps**: %3s"
+        "header": "Game Stats - %1s",
+        "message": "**Total Time**: %1s:%2s\n**Total Step(s)**: %3s"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Steps**: %3s"
+        "message": "**Time**: %1s:%2s\n**Step(s)**: %3s"
       }
     }
   },
@@ -102,7 +110,7 @@
       "answer": "Answer",
       "stop": "Stop"
     },
-    "endMessage": {
+    "endMessages": {
       "jackpot": "JACKPOT! All bulbs are lighted up in the first place!",
       "win": {
         "answered": "Congrats, %1s! You lighted up all bulbs!",
@@ -112,11 +120,11 @@
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the chess board, where does it go?",
       "gameStats": {
-        "header": "Game Stats - ",
-        "message": "**Total Time**: %1s:%2s\n**Total Steps**: %3s"
+        "header": "Game Stats - %1s",
+        "message": "**Total Time**: %1s:%2s\n**Total Step(s)**: %3s"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Steps**: %3s"
+        "message": "**Time**: %1s:%2s\n**Step(s)**: %3s"
       }
     }
   },
@@ -131,20 +139,22 @@
       "idle": "%1s lost their turn.",
       "leaving": "%1s wanted to end the game now."
     },
-    "nowPlayer": "It is %1s's turn.",
-    "stopButtonMessage": "Stop",
-    "endMessage": {
+    "nowPlayer": "It is %1s's turn (%2s).",
+    "controller": {
+      "stop": "Stop"
+    },
+    "endMessages": {
       "win": "Congrats, %1s! You won this tic-tac-toe!",
       "draw": "The game ends in a draw.",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the game board, where does it go?",
       "gameStats": {
-        "header": "Game Stats - ",
-        "message": "**Total Time**: %1s:%2s\n**Total Steps**: %3s"
+        "header": "Game Stats - %1s",
+        "message": "**Total Time**: %1s:%2s\n**Total Step(s)**: %3s"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Steps**: %s3"
+        "message": "**Time**: %1s:%2s\n**Step(s)**: %s3"
       }
     }
   }

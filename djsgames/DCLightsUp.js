@@ -169,7 +169,7 @@ class DCLightsUp extends LightsUp {
       throw new Error('The game has not ended.');
     }
 
-    const message = this.strings.endMessage;
+    const message = this.strings.endMessages;
     let content;
     switch (this.status.now) {
       case "JACKPOT":
