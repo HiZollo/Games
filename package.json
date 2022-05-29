@@ -1,7 +1,7 @@
 {
   "name": "@hizollo/games",
   "version": "0.0.0",
-  "description": "A package that provide various game for you to embed them into your app easily.",
+  "description": "A package that provides various games for discord.js.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
