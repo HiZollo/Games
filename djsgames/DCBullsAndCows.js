@@ -5,8 +5,8 @@ const { format, overwrite } = require('../util/Functions.js');
 const { bullsAndCows } = require('../util/strings.json');
 
 class DCBullsAndCows extends BullsAndCows {
-  constructor({ players, hardmode, answerLength, numberCount, time, strings }) {
-    super({ players, hardmode, answerLength, numberCount });
+  constructor({ players, hardmode, answerLength, time, strings }) {
+    super({ players, hardmode, answerLength });
 
     this.time = time;
     this.strings = overwrite(JSON.parse(JSON.stringify(bullsAndCows)), strings);
@@ -51,7 +51,8 @@ class DCBullsAndCows extends BullsAndCows {
   _messageFilter = async message => {
     if (message.author.id !== this.playerManager.nowPlayer.id) return false;
 
-    if (!/^\d{4}$/.test(message.content)) return false;
+    if (message.content !== this.answerLength) return false;
+    if (!/^\d+$/.test(message.content)) return false;
     const query = getQuery(message.content);
     return (new Set(query)).size === message.content.length;
   }
