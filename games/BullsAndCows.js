@@ -24,7 +24,6 @@ class BullsAndCows extends Game {
     for (let i = 0; i < this.answerLength; i++) {
       this.answer.push(numbers[i]);
     }
-    console.log(this.answer);
   }
 
   guess(query) {

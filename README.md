@@ -218,7 +218,7 @@ Whenever a player guesses the answer correctly, the game ends.
 - `max - min` is greater than or equal to `2`
 
 ### Rules
-The bot will generate a random answer key in open interval `(min, max)`. The players take turns to call a number. After that, the bot will tell you the number is smaller or larger than the key, so the interval will shrink accordingly. Notice that it is allowed to guess a number that is not in the current interval.
+The bot will generate a random answer key in open interval `(min, max)`. The players take turns to call a number. After that, the bot will tell you the number is smaller or larger than the key, so the interval will shrink accordingly.
 
 For example, suppose that the answer key is `602`, and the interval is `(1, 1000)`.
 - Player A calls `400`. It's too small, so the interval will shrink to `(400, 1000)`.

@@ -14,7 +14,6 @@ class FinalCode extends Game {
     super.initialize();
 
     this.answer = randomInt(this.min + 1, this.max - 1);
-    console.log(this.answer);
   }
 
   guess(query) {
