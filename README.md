@@ -1,5 +1,5 @@
 # Introduction
-`HiZollo/Games` is a package that provides various games for discord.js. With simple configurations, your app can host games easily by importing our modules.
+`HiZollo/Games` is a package that provides various games for discord.js. With simple settings, your app can host games easily by importing our modules.
 
 # Usage
 ```js
@@ -35,10 +35,9 @@ client.on('messageCreate', async message => {
 });
 ```
 - To host a game, you need to create an instance of the class first. Then sequentially call `initialize()`, `start()` and `conclude()`, and await them.
-- Passing either a `CommandInteraction` instance or a `Message` instance into `initialize()` works.
-- For different games, you should pass the corresponding options to the constructor. Those information are detailed in [this section](#Options).
+- Passing either a `CommandInteraction` instance or a `Message` instance to `initialize()` works.
+- For different games, you should pass corresponding options to the constructor. Those information are detailed in [this section](#Options).
 - You can, but not recommended to, let bots join the game, since the bot will not and cannot play the game for themselves.
- - We might create AI algorithm in the future.
 - **Player that joins multiple games in the same channel may cause problems, so it's recommended to block them off if they are trying to do so**.
 
 # Options
@@ -51,7 +50,7 @@ new DCBullsAndCows({
   time,         // yes      |               | how long to consider a player idle, in milliseconds
   strings,      // no       | strings.json  | the strings to show on your app
   hardmode,     // no       | false         | whether to start this game in hard mode
-  answerLength  // no       | 4             | how long should the answer key be
+  answerLength  // no       | 4             | the answer's length
 })
 ```
 
@@ -62,8 +61,8 @@ new DCFinalCode({
   players,      // yes      |               | an array of playerOptions
   time,         // yes      |               | how long to consider a player idle, in milliseconds
   strings,      // no       | strings.json  | the strings to show on your app
-  min,          // no       | 1             | the minimum number can the final code be (exclusive)
-  max           // no       | 1000          | the maximum number can the final code be (exclusive)
+  min,          // no       | 1             | how small can the final code be (exclusive)
+  max           // no       | 1000          | how large can the final code be (exclusive)
 })
 ```
 
@@ -74,7 +73,7 @@ new DCFlipTrip({
   players,      // yes      |               | an array of playerOptions
   time,         // yes      |               | how long to consider a player idle, in milliseconds
   strings,      // no       | strings.json  | the strings to show on your app
-  boardSize     // no       | 3             | the number of checks on the board
+  boardSize     // no       | 3             | the number of pieces on the board
 })
 ```
 
@@ -117,15 +116,15 @@ new DCTicTacToe({
                 // required | default value | description
   username,     // no       | 'Player'      | the player's username
   id,           // yes      |               | the player's id, it's recommended to be distinctive
-  symbol,       // no       | null          | the symbol for the player in chessboard-like games
+  symbol,       // no       | null          | the symbol for the player in chess-like games
   bot           // no       | false         | whether the player is a bot
 }
 ```
 
 ## strings
-In this package, you can customize what string should display when certain events happen, like, someone wins a game or makes a wrong guess. To be more specific, in default settings, all strings displayed on Discord are located in [strings.json](./util/strings.json), but you can overwrite them by passing corresponding objects into `gameOptions#strings`.
+In this package, you can customize what string should display when certain events happen, like, someone wins a game or makes a wrong guess. To be more specific, in default settings, all strings displayed on Discord are located in [strings.json](./util/strings.json), but you can overwrite them by passing corresponding objects to `gameOptions#strings`.
 
-For example, if you want to change the string that shows when someone hit the answer in Final Code, you can do this:
+For example, if you want to change the string that shows when someone hit the answer in Final Code, you can do:
 ```js
 const game = new DCFinalCode({
   players: [
@@ -142,7 +141,7 @@ const game = new DCFinalCode({
 
 You might notice that there are substrings `%1s` and `%2s` in it, and those are called specifiers. Usually, the specifiers represent substrings that vary from game to game, such as the player's name, scores, etc. In this case, `%1s` represents username and `%2s` represents the answer. It's ok to discard some specifiers if you prefer, and this will not break the functionality.
 
-If you are planning to make a bot in languages other than English, feel free to copy the content of [strings.json](./util/strings.json), translate them into any language you want, and create your own json file, say, `mystrings.json`. Then, you can include them into your game as below:
+If you are planning to make a bot in languages other than English, feel free to copy the content of [strings.json](./util/strings.json), translate them into any language you want, and create your own json file, say, `mystrings.json`. Then, you can include them in your game as below:
 ```js
 const mystrings = require('./your/path/to/mystrings.json');
 const game = new DCFinalCode({
@@ -155,7 +154,7 @@ const game = new DCFinalCode({
 ```
 
 # Examples
-Games that do not require symbols. You can directly pass a discord.js `User` object into `player` parameter.
+Games that do not require symbols. You can directly pass a discord.js `User` object to `player` parameter.
 ```js
 const mystrings = require('./your/path/to/mystrings.json');
 
@@ -171,19 +170,19 @@ await game.start();
 await game.conclude();
 ```
 
-Games that require symbols. It's recommended to pass a new object into `player` parameter.
+Games that require symbols. It's recommended to pass a new object to `player` parameter.
 ```js
 const mystrings = require('./your/path/to/mystrings.json');
 
-const game = new DCTicTacToe({
+const game = new DCGomoku({
   players: [{
     username: interaction.user.username,
     id: interaction.user.id,
-    symbol: '❌'
+    symbol: '⚫'
   }, {
     username: opponent.username,
     id: opponent.id,
-    symbol: '⭕'
+    symbol: '⚪'
   }],
   time: 60e3,
   strings: mystrings.ticTacToe,   
@@ -201,10 +200,10 @@ There are some restrictions to the games, **if you fail to fulfill the restricti
 ## Bulls and Cows
 ### Restrictions
 - `player`'s length: `1`
-- `answerLength`: `[1, 10]`
+- `answerLength`: less than or equal to `10`
 
 ### Rules
-The bot will generate a random number with the length of `answerLength`, every digit within the number is distinctive, and the number can start with `0`. The player can make several queries, and the goal is to get the exact number in as fewer guesses as possible.
+The bot will generate a random number with the length of `answerLength`, all digits in it are distinctive, and it can start with `0`. The player can make several queries, and the goal is to get the exact number in as fewer guesses as possible.
 
 In each query, player should type a number with the length of `answerLength`, and every digit is distinctive. Otherwise, the query is invalid and the bot will not response. After that, the bot will return a string `mAnB`, saying that there are `m` A's and `n` B's. It means that in the query, there are `m` matching digits that are in the right location, and `n` matching digits that are in the wrong location.
 
@@ -233,26 +232,27 @@ Whenever a player guesses the answer key, the game ends.
 - `boardSize`: less than or equal to `10`
 
 ### Rules
-There are `n` checks on the board. All of them have two sides: white one facing up and black on facing down. When a button is pressed, the corresponding check will be flipped from white to black or from black to white. The goal is to get each possible permutation of the checks (`2^n` permutations) without encountering a permutation that has appeared before.
+There are `n` pieces on the board. All of them have two sides: white one facing up and black one facing down. When a button is pressed, the corresponding piece will be flipped from white to black or from black to white. The goal is to get each possible permutation of the colors (`2^n` permutations) without encountering a permutation that has appeared before.
 
 For example, say `n = 3`, so the initial state is ⚪⚪⚪.
-- If a player flips check 1, 2 and 3 sequentially, the checks will turn out to be ⚪⚪⚫, ⚪⚫⚫, ⚫⚫⚫ sequentially.
-- If a player flips check 1, 1 sequentially, the checks will turn out to be ⚪⚪⚫, ⚪⚪⚪ sequentially. Since ⚪⚪⚪ already appears before, the player loses the game.
+- If a player flips piece 1, 2 and 3 sequentially, the pieces will turn out to be ⚪⚪⚫, ⚪⚫⚫, ⚫⚫⚫ sequentially.
+- If a player flips piece 1, 1 sequentially, the pieces will turn out to be ⚪⚪⚫, ⚪⚪⚪ sequentially. Since ⚪⚪⚪ already appears before, the player loses the game.
+- One possible solution when `n = 3` is 1, 2, 3, 2, 1, 2, 3.
 
 Whenever all permutations have shown exactly once, the game ends.
 
 ## Gomoku
-## Restrictions
+### Restrictions
 - `player`'s length: `2` or more, but `2` is recommended
- - `symbol` is required
+    - `player.symbol` is required
 - `boardSize`: less than or equal to `19`
- - If you want to host a gomoku game with `boardSize` larger than `10`, you should pass your custom row and column symbol into `strings.row` and `strings.column`, because Discord default emoji does not cover numbers from 11 to 19.
+    - If you want to host a gomoku game with `boardSize` larger than `10`, you should **always** make your own custom row/column symbol (`strings.row`/`strings.column`), because we (or more precisely, Discord) only support numbers from 1 to 10.
 
 ### Rules
 The players take turns to place their pieces on the board. Players can send messages like `a3` or `g7` in chat to place a piece. The first player who forms a consecutive line (vertically, horizontally or diagonally) of 5 or more pieces wins.
 
 ## Lights-up
-## Restrictions
+### Restrictions
 - `player`'s length: `1`
 - `boardSize`: less than or equal to `5`
 
@@ -262,7 +262,7 @@ There are n*n bulbs, with some of them randomly lighted (blue ones). When you cl
 ## Tic-tac-toe
 ### Restrictions
 - `player`'s length `2` or more, but `2` is recommended
- - `symbol` is required
+    - `player.symbol` is required
 - `boardSize`: less than or equal to `4`
 
 ### Rules
