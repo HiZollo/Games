@@ -1,9 +1,9 @@
 module.exports = {
-  Game: require('./struct/Games.js'),
+  Game: require('./struct/Game.js'),
   Player: require('./struct/Player.js'),
   PlayerManager: require('./struct/PlayerManager.js'),
   Status: require('./struct/Status.js'),
-  GameStatus: require('./struct/GamesStatus.js'),
+  GameStatus: require('./struct/GameStatus.js'),
   PlayerStatus: require('./struct/PlayerStatus.js'),
 
   BullsAndCows: require('./games/BullsAndCows.js'),
