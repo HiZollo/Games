@@ -100,7 +100,7 @@ class DCFinalCode extends FinalCode {
 
     this.playerManager.next();
     content += format(this.strings.interval, this.min, this.max) + '\n';
-    content += format(this.strings.nowPlayer, `<@${nowPlayer.id}>`);
+    content += format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`);
     await this.mainMessage.edit({ content }).catch(() => {
       this.end("DELETED");
     });
