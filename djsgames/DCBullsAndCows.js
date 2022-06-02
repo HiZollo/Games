@@ -51,7 +51,7 @@ class DCBullsAndCows extends BullsAndCows {
   _messageFilter = async message => {
     if (message.author.id !== this.playerManager.nowPlayer.id) return false;
 
-    if (message.content !== this.answerLength) return false;
+    if (message.content.length !== this.answerLength) return false;
     if (!/^\d+$/.test(message.content)) return false;
     const query = getQuery(message.content);
     return (new Set(query)).size === message.content.length;
@@ -109,7 +109,7 @@ class DCBullsAndCows extends BullsAndCows {
     let nowPlayer;
     while (this.ongoing && this.playerManager.alive) {
       nowPlayer = this.playerManager.nowPlayer;
-       await this._run(nowPlayer);
+      await this._run(nowPlayer);
     }
 
     if (this.ongoing) {
