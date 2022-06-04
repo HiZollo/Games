@@ -89,7 +89,7 @@ class DCLightsUp extends LightsUp {
         nowPlayer.status.set("LEAVING");
       }
       else if (args[0] === 'answer') {
-        await input.reply({ content: format(this.strings.currentAnswer, this.answerContent), ephemeral: true });
+        await input.reply({ content: format(this.strings.currentAnswer, { answer: this.answerContent }), ephemeral: true });
         nowPlayer.status.set("PLAYING");
       }
     }
@@ -173,10 +173,10 @@ class DCLightsUp extends LightsUp {
     let content;
     switch (this.status.now) {
       case "JACKPOT":
-        content = format(message.jackpot, `<@${this.winner.id}>`);
+        content = format(message.jackpot, { player: `<@${this.winner.id}>` });
         break;
       case "WIN":
-        content = format(this._answered ? message.win.answered : message.win.unanswered, `<@${this.winner.id}>`);
+        content = format(this._answered ? message.win.answered : message.win.unanswered, { player: `<@${this.winner.id}>` });
         break;
       case "IDLE":
         content = message.idle;

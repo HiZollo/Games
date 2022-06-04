@@ -1,52 +1,51 @@
 {
   "bullsAndCows": {
     "name": "Bulls and Cows",
-    "initial": "%1s, please guess a number.",
-    "query": "You get `%1sA%2sB` from %3s.",
+    "initial": "<player>, please guess a number.",
+    "query": "You get `<a>A<b>B` from `<query>`.",
     "controller": {
       "stop": "Stop"
     },
     "endMessages": {
-      "win": "%1s, you've got the answer `%2s`!",
+      "win": "<player>, you've got the answer `<answer>`!",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the message, where does it go?",
       "gameStats": {
-        "header": "Game Stats - %1s",
-        "message": "**Total Time**: %1s:%2s\n**Total Attempt(s)**: %3s"
+        "header": "Game Stats - <game>",
+        "message": "**Total Time**: <min>:<sec>\n**Total Attempt(s)**: <step>"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Attempt(s)**: %3s"
+        "message": "**Time**: <min>:<sec>\n**Attempt(s)**: <step>"
       }
     }
   },
   "finalCode": {
     "name": "Final Code",
-    "compare": {
-      "small": "small",
-      "large": "large"
-    },
     "previous": {
-      "guess": "%1s is too %2s!",
-      "idle": "%1s lost their turn.",
-      "leaving": "%1s wanted to end the game now."
+      "guess": {
+        "small": "<query> is too small!",
+        "large": "<query> is too large!"
+      },
+      "idle": "<player> lost their turn.",
+      "leaving": "<player> wanted to end the game now."
     },
-    "interval": "The answer lies between %1s and %2s now.",
-    "nowPlayer": "It is %1s's turn.",
+    "interval": "The answer lies between <min> and <max> now.",
+    "nowPlayer": "It is <player>'s turn.",
     "controller": {
       "stop": "Stop"
     },
     "endMessages": {
-      "win": "%1s, you hit the final code %2s!",
+      "win": "<player>, you hit the final code <answer>!",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the message, where does it go?",
       "gameStats": {
-        "header": "Game Stats - %1s",
-        "message": "**Total Time**: %1s:%2s\n**Total Guess(es)**: %3s"
+        "header": "Game Stats - <game>",
+        "message": "**Total Time**: <min>:<sec>\n**Total Attempt(s)**: <step>"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Guess(es)**: %3s"
+        "message": "**Time**: <min>:<sec>\n**Attempt(s)**: <step>"
       }
     }
   },
@@ -58,17 +57,17 @@
       "stop": "Stop"
     },
     "endMessages": {
-      "win": "%1s, you make a full trip with %2s checks!",
-      "lose": "%1s, `%2s` had appeared once before. Only %3s permutation(s) left!",
+      "win": "<player>, you make a full trip with <size> checks!",
+      "lose": "<player>, `<state>` had appeared once before. Only <perm> permutation(s) left!",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the checks, where does it go?",
       "gameStats": {
-        "header": "Game Stats - %1s",
-        "message": "**Total Time**: %1s:%2s\n**Total Step(s)**: %3s"
+        "header": "Game Stats - <game>",
+        "message": "**Total Time**: <min>:<sec>\n**Total Attempt(s)**: <step>"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Step(s)**: %3s"
+        "message": "**Time**: <min>:<sec>\n**Attempt(s)**: <step>"
       }
     }
   },
@@ -79,33 +78,33 @@
     "grid": "🔲",
     "corner": "🔹",
     "previous": {
-      "move": "Last move is placed at `%1s%2s` by %3s.",
-      "idle": "%1s lost their turn.",
-      "leaving": "%1s wanted to end the game now."
+      "move": "Last move is placed at `<col><row>` by <player>.",
+      "idle": "<player> lost their turn.",
+      "leaving": "<player> wanted to end the game now."
     },
-    "nowPlayer": "It is %1s's turn (%2s).",
+    "nowPlayer": "It is <player>'s turn (<symbol>).",
     "controller": {
       "stop": "Stop"
     },
     "endMessages": {
-      "win": "Congrats, %1s! You won this gomoku!",
+      "win": "Congrats, <player>! You won this gomoku!",
       "draw": "The game ends in a draw.",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the chess board, where does it go?",
       "gameStats": {
-        "header": "Game Stats - %1s",
-        "message": "**Total Time**: %1s:%2s\n**Total Step(s)**: %3s"
+        "header": "Game Stats - <game>",
+        "message": "**Total Time**: <min>:<sec>\n**Total Attempt(s)**: <step>"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Step(s)**: %3s"
+        "message": "**Time**: <min>:<sec>\n**Attempt(s)**: <step>"
       }
     }
   },
   "lightsUp": {
     "name": "Lights-up",
     "answer": ["🔴", "🟡"],
-    "currentAnswer": "The answer to the board is: \n%1s",
+    "currentAnswer": "The answer to the board is: \n<answer>",
     "controller": {
       "answer": "Answer",
       "stop": "Stop"
@@ -113,48 +112,49 @@
     "endMessages": {
       "jackpot": "JACKPOT! All bulbs are lighted up in the first place!",
       "win": {
-        "answered": "Congrats, %1s! You lighted up all bulbs!",
-        "unanswered": "Congrats, %1s! You lighted up all bulbs without checking the answer!"
+        "answered": "Congrats, <player>! You lighted up all bulbs!",
+        "unanswered": "Congrats, <player>! You lighted up all bulbs without checking the answer!"
       },
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the chess board, where does it go?",
       "gameStats": {
-        "header": "Game Stats - %1s",
-        "message": "**Total Time**: %1s:%2s\n**Total Step(s)**: %3s"
+        "header": "Game Stats - <game>",
+        "message": "**Total Time**: <min>:<sec>\n**Total Attempt(s)**: <step>"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Step(s)**: %3s"
+        "message": "**Time**: <min>:<sec>\n**Attempt(s)**: <step>"
       }
     }
   },
   "ticTacToe": {
     "name": "Tic-tac-toe",
     "labels": [
-      ["1", "2", "3"],
-      ["4", "5", "6"],
-      ["7", "8", "9"]
+      ["\u200b", "\u200b", "\u200b", "\u200b"],
+      ["\u200b", "\u200b", "\u200b", "\u200b"],
+      ["\u200b", "\u200b", "\u200b", "\u200b"],
+      ["\u200b", "\u200b", "\u200b", "\u200b"]
     ],
     "previous": {
-      "idle": "%1s lost their turn.",
-      "leaving": "%1s wanted to end the game now."
+      "idle": "<player> lost their turn.",
+      "leaving": "<player> wanted to end the game now."
     },
-    "nowPlayer": "It is %1s's turn (%2s).",
+    "nowPlayer": "It is <player>'s turn (<symbol>).",
     "controller": {
       "stop": "Stop"
     },
     "endMessages": {
-      "win": "Congrats, %1s! You won this tic-tac-toe!",
+      "win": "Congrats, <player>! You won this tic-tac-toe!",
       "draw": "The game ends in a draw.",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the game board, where does it go?",
       "gameStats": {
-        "header": "Game Stats - %1s",
-        "message": "**Total Time**: %1s:%2s\n**Total Step(s)**: %3s"
+        "header": "Game Stats - <game>",
+        "message": "**Total Time**: <min>:<sec>\n**Total Attempt(s)**: <step>"
       },
       "playerStats": {
-        "message": "**Time**: %1s:%2s\n**Step(s)**: %s3"
+        "message": "**Time**: <min>:<sec>\n**Attempt(s)**: <step>"
       }
     }
   }

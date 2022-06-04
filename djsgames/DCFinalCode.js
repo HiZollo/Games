@@ -31,8 +31,8 @@ class DCFinalCode extends FinalCode {
 
     this.source = source;
     this.client = source?.client;
-    let content = format(this.strings.interval, this.min, this.max) + '\n';
-    content += format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`);
+    let content = format(this.strings.interval, { min: this.min, max: this.max }) + '\n';
+    content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>` });
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
@@ -67,7 +67,7 @@ class DCFinalCode extends FinalCode {
     let content = '\u200b';
     if (input === null) {
       nowPlayer.status.set("IDLE");
-      content += format(this.strings.previous.idle, nowPlayer.username) + '\n';
+      content += format(this.strings.previous.idle, { player: nowPlayer.username }) + '\n';
     }
     else if (input.customId?.startsWith('ctrl_')) {
       const [, ...args] = input.customId.split('_');
@@ -75,7 +75,7 @@ class DCFinalCode extends FinalCode {
       if (args[0] === 'stop') {
         await input.update({});
         nowPlayer.status.set("LEAVING");
-        content += format(this.strings.previous.leaving, nowPlayer.username) + '\n';
+        content += format(this.strings.previous.leaving, { player: nowPlayer.username }) + '\n';
       }
     }
     else {
@@ -93,14 +93,14 @@ class DCFinalCode extends FinalCode {
       }
       else {
         content += result > 0 ?
-          format(this.strings.previous.guess, query, this.strings.compare.large) + '\n' :
-          format(this.strings.previous.guess, query, this.strings.compare.small) + '\n';
+          format(this.strings.previous.guess.large, { query }) + '\n' :
+          format(this.strings.previous.guess.small, { query }) + '\n';
       }
     }
 
     this.playerManager.next();
-    content += format(this.strings.interval, this.min, this.max) + '\n';
-    content += format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`);
+    content += format(this.strings.interval, { min: this.min, max: this.max }) + '\n';
+    content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>` });
     await this.mainMessage.edit({ content }).catch(() => {
       this.end("DELETED");
     });
@@ -132,7 +132,7 @@ class DCFinalCode extends FinalCode {
   async end(status) {
     super.end(status);
 
-    await this.mainMessage.edit({ content: format(this.strings.interval, this.min, this.max), components: [] }).catch(() => {});
+    await this.mainMessage.edit({ content: format(this.strings.interval, { min: this.min, max: this.max }), components: [] }).catch(() => {});
   }
 
   async conclude() {
@@ -144,7 +144,7 @@ class DCFinalCode extends FinalCode {
     let content;
     switch (this.status.now) {
       case "WIN":
-        content = format(message.win, `<@${this.winner.id}>`, this.answer);
+        content = format(message.win, { player: `<@${this.winner.id}>`, answer: this.answer });
         break;
       case "IDLE":
         content = message.idle;

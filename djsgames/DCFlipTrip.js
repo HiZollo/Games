@@ -142,10 +142,10 @@ class DCFlipTrip extends FlipTrip {
     let content;
     switch (this.status.now) {
       case "WIN":
-        content = format(message.win, `<@${this.winner.id}>`, this.boardSize);
+        content = format(message.win, { player: `<@${this.winner.id}>`, size: this.boardSize });
         break;
       case "LOSE":
-        content = format(message.lose, `<@${this.loser.id}>`, this.checks, this._permutationCount - this.playerManager.totalSteps);
+        content = format(message.lose, { player: `<@${this.loser.id}>`, state: this.checks, perm: this._permutationCount - this.playerManager.totalSteps });
         break;
       case "IDLE":
         content = message.idle;

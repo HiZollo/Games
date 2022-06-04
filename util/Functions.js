@@ -14,19 +14,19 @@ function fixedDigits(integer, length) {
 /**
  * Replaces format specifiers with given strings.
  * @param {string} string the format string with format specifiers inside
- * @param {...string} str given strings
+ * @param {<string: string>} object the values that replace <key>
  * @returns {string}
  * @example
- * // only specifiers like "%1s" "%2s" are available, numbers between % and s are 1-indexed
- * const string = format("I love %2s and %1s!", "tea", "pizza");
+ * // only specifiers like "<string>" are available
+ * const string = format("I love <drink> and <food>!", { food: "pizza", drink: "tea" });
  * console.log(string);
- * // I love pizza and tea!
+ * // I love tea and pizza!
  */
-function format(string, ...str) {
-  for (let i = str.length - 1; i >= 0; i--) {
-    string = string.replaceAll(`%${i+1}s`, str[i]);
+function format(string, object) {
+  for (let key in object) {
+    const regexp = new RegExp(`<${key}>`, 'g');
+    string = string.replaceAll(regexp, object[key]);
   }
-  string = string.replace(/\%\d+s/g, '');
   return string;
 }
 

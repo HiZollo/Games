@@ -12,15 +12,15 @@ function createEndEmbed(game) {
   const sec = fixedDigits(Math.round(game.duration/1000) % 60, 2);
 
   const embed = new MessageEmbed()
-    .setAuthor({ name: format(message.gameStats.header, game.strings.name), iconURL: game.client.user.displayAvatarURL() })
+    .setAuthor({ name: format(message.gameStats.header, { game: game.strings.name }), iconURL: game.client.user.displayAvatarURL() })
     .setColor(0x000000)
-    .setDescription(format(message.gameStats.message, min, sec, game.playerManager.totalSteps));
+    .setDescription(format(message.gameStats.message, { min, sec, step: game.playerManager.totalSteps }));
 
   if (game.playerManager.playerCount > 1) {
     for (const player of game.playerManager.players) {
       const m = ~~(player.time/60000);
       const s = fixedDigits(Math.round(player.time/1000) % 60, 2);
-      embed.addField(player.username, format(message.playerStats.message, m, s, player.steps), true);
+      embed.addField(player.username, format(message.playerStats.message, { min: m, sec: s, step: player.steps }), true);
     }
   }
 

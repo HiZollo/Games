@@ -45,7 +45,7 @@ class DCTicTacToe extends TicTacToe {
 
     this.source = source;
     this.client = source?.client;
-    const content = format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`, this.playerManager.nowPlayer.symbol);
+    const content = format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
@@ -72,7 +72,7 @@ class DCTicTacToe extends TicTacToe {
     let content = '\u200b';
     if (input === null) {
       nowPlayer.status.set("IDLE");
-      content += format(this.strings.previous.idle, nowPlayer.username) + '\n';
+      content += format(this.strings.previous.idle, { player: nowPlayer.username }) + '\n';
     }
     else if (input.customId?.startsWith('ctrl_')) {
       const [, ...args] = input.customId.split('_');
@@ -80,7 +80,7 @@ class DCTicTacToe extends TicTacToe {
       if (args[0] === 'stop') {
         await input.update({});
         nowPlayer.status.set("LEAVING");
-        content += format(this.strings.previous.leaving, nowPlayer.username) + '\n';
+        content += format(this.strings.previous.leaving, { player: nowPlayer.username }) + '\n';
       }
     }
     else {
@@ -101,7 +101,7 @@ class DCTicTacToe extends TicTacToe {
     }
 
     this.playerManager.next();
-    content += format(this.strings.nowPlayer, `<@${this.playerManager.nowPlayer.id}>`, this.playerManager.nowPlayer.symbol);
+    content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
     await this.mainMessage.edit({ content, components: this.components }).catch(() => {
       this.end("DELETED");
     });
@@ -158,7 +158,7 @@ class DCTicTacToe extends TicTacToe {
     let content;
     switch (this.status.now) {
       case "WIN":
-        content = format(message.win, `<@${this.winner.id}>`);
+        content = format(message.win, { player: `<@${this.winner.id}>` });
         break;
       case "IDLE":
         content = message.idle;

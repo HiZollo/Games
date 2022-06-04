@@ -32,7 +32,7 @@ class DCBullsAndCows extends BullsAndCows {
 
     this.source = source;
     this.client = source?.client;
-    this.content = format(this.strings.initial, this.playerManager.nowPlayer.username);
+    this.content = format(this.strings.initial, { player: this.playerManager.nowPlayer.username });
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
@@ -91,8 +91,8 @@ class DCBullsAndCows extends BullsAndCows {
         endStatus = "WIN";
       }
 
-      content += '\n' + format(this.strings.query, status.a, status.b, message.content);
-      this.content += '\n' + format(this.strings.query, status.a, status.b, message.content);
+      content += '\n' + format(this.strings.query, { a: status.a, b: status.b, query: message.content });
+      this.content += '\n' + format(this.strings.query, { a: status.a, b: status.b, query: message.content });
     }
 
     this.playerManager.next();
@@ -139,7 +139,7 @@ class DCBullsAndCows extends BullsAndCows {
     let content;
     switch (this.status.now) {
       case "WIN":
-        content = format(message.win, `<@${this.winner.id}>`, this.answer.join(''));
+        content = format(message.win, { player: `<@${this.winner.id}>`, answer: this.answer.join('') });
         break;
       case "IDLE":
         content = message.idle;
