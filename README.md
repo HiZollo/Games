@@ -140,13 +140,13 @@ const game = new DCFinalCode({
   time: 15e3,
   strings: { // this will overwrite the default object
     endMessages: {
-      win: "Oh no, %1s! You hit the final code %2s!"
+      win: "Oh no, <player>! You hit the final code <answer>!"
     }
   }
 });
 ```
 
-You might notice that there are substrings `%1s` and `%2s` in it, and those are called specifiers. Usually, the specifiers represent substrings that vary from game to game, such as the player's name, scores, etc. In this case, `%1s` represents username and `%2s` represents the answer. It's ok to discard some specifiers if you prefer, and this will not break the functionality.
+You might notice that there are substrings `<player>` and `<answer>` in it, and those are called specifiers. Usually, the specifiers represent substrings that vary from game to game, such as the player's name, scores, etc. It's ok to discard some specifiers if you prefer, and this will not break the functionality.
 
 If you are planning to make a bot in languages other than English, feel free to copy the content of [strings.json](./util/strings.json), translate them into any language you want, and create your own json file, say, `mystrings.json`. Then, you can include them in your game as below:
 ```js
