@@ -3,6 +3,10 @@ const { shuffle } = require('../util/GameUtil.js');
 
 class BullsAndCows extends Game {
   constructor({ players, hardmode = false, answerLength = 4 }) {
+    if (answerLength > 10) {
+      throw new Error('Parameter answerLength should be less than or equal to 10');
+    }
+
     super({ players, playerCountRange: [1, 1] });
 
     this.answer = [];

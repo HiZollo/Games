@@ -3,6 +3,10 @@ const { randomInt } = require('../util/GameUtil.js');
 
 class FinalCode extends Game {
   constructor({ players, min = 1, max = 1000 }) {
+    if (max - min < 2) {
+      throw new Error('Maximum number should be 2 more than minimum number.');
+    }
+
     super({ players });
 
     this.answer = null;
