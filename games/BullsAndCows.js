@@ -3,7 +3,7 @@ const { shuffle } = require('../util/GameUtil.js');
 
 class BullsAndCows extends Game {
   constructor({ players, hardmode = false, answerLength = 4 }) {
-    super({ players });
+    super({ players, playerCountRange: [1, 1] });
 
     this.answer = [];
     this.answerLength = answerLength;

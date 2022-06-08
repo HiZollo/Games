@@ -1,8 +1,19 @@
 const Player = require('./Player.js');
 
 class PlayerManager {
-  constructor({ players, firstPlayerIndex = 0 }) {
+  constructor({ players, playerCountRange = [0, Infinity], requireSymbol = false, firstPlayerIndex = 0 }) {
+    if (players.length < playerCountRange[0]) {
+      throw new Error(`The player count should be larger than or equal to ${playerCountRange[0]}`);
+    }
+    if (playerCountRange[1] < players.length) {
+      throw new Error(`The player count should be less than or equal to ${playerCountRange[1]}`);
+    }
+
     this.players = players.map(p => new Player(p));
+    if (requireSymbol && this.players.find(p => p.symbol == null)) {
+      throw new Error('You should provide symbols for all players');
+    }
+
     this.playerCount = players.length;
     this._index = firstPlayerIndex;
     this._lastMoveTime = Date.now();

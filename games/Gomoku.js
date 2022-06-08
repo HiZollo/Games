@@ -7,7 +7,7 @@ class Gomoku extends Game {
       throw new Error('The size of the board should be at most 19.');
     }
 
-    super({ players });
+    super({ players, playerCountRange: [2, ], requireSymbol: true });
 
     this.boardSize = boardSize;
     this.playground = [];

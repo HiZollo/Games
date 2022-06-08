@@ -7,7 +7,7 @@ class TicTacToe extends Game {
       throw new Error('The size of the board should be at most 5.');
     }
 
-    super({ players });
+    super({ players, playerCountRange: [2, ], requireSymbol: true });
 
     this.boardSize = boardSize;
     this.playground = [];

@@ -3,7 +3,7 @@ const { randomInt } = require('../util/GameUtil.js');
 
 class LightsUp extends Game {
   constructor({ players, boardSize }) {
-    super({ players }, ["JACKPOT"]);
+    super({ players, playerCountRange: [1, 1] }, ["JACKPOT"]);
 
     this.boardSize = boardSize;
     this.lights = [];
