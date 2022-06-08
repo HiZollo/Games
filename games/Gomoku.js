@@ -1,5 +1,5 @@
 const Game = require('../struct/Game.js');
-const { checkStrike } = require('../util/GameUtil.js');
+const GameUtil = require('../util/GameUtil.js');
 
 class Gomoku extends Game {
   constructor({ players, boardSize = 19 }) {
@@ -34,7 +34,7 @@ class Gomoku extends Game {
   }
 
   win(row, col) {
-    return checkStrike(this.playground, row, col, 5);
+    return GameUtil.checkStrike(this.playground, row, col, 5);
   }
 
   draw() {

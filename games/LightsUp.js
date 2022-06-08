@@ -1,5 +1,5 @@
 const Game = require('../struct/Game.js');
-const { randomInt } = require('../util/GameUtil.js');
+const GameUtil = require('../util/GameUtil.js');
 
 class LightsUp extends Game {
   constructor({ players, boardSize }) {
@@ -23,7 +23,7 @@ class LightsUp extends Game {
       this.answer.push([]);
       for (let j = 0; j < this.boardSize; j++) {
         this.answer[i].push(false);
-        if (randomInt(0, 1)) {
+        if (GameUtil.randomInt(0, 1)) {
           this.flip(i, j);
         }
       }

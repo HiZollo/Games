@@ -1,5 +1,5 @@
 const Game = require('../struct/Game.js');
-const { checkStrike } = require('../util/GameUtil.js');
+const GameUtil = require('../util/GameUtil.js');
 
 class TicTacToe extends Game {
   constructor({ players, boardSize = 3 }) {
@@ -34,7 +34,7 @@ class TicTacToe extends Game {
   }
 
   win(row, col) {
-    return checkStrike(this.playground, row, col, this.boardSize);
+    return GameUtil.checkStrike(this.playground, row, col, this.boardSize);
   }
 
   draw() {

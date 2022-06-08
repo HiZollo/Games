@@ -18,5 +18,7 @@ module.exports = {
   DCFinalCode: require('./djsgames/DCFinalCode.js'),
   DCFlipTrip: require('./djsgames/DCFlipTrip.js'),
   DCLightsUp: require('./djsgames/DCLightsUp.js'),
-  DCTicTacToe: require('./djsgames/DCTicTacToe.js')
+  DCTicTacToe: require('./djsgames/DCTicTacToe.js'),
+
+  GameUtil: require('./util/GameUtil.js')
 };
