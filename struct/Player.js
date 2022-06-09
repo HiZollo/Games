@@ -17,6 +17,10 @@ class Player {
   addStep(step = 1) {
     this.steps += step;
   }
+
+  addTime(time = 0) {
+    this.time += time;
+  }
 }
 
 module.exports = Player;

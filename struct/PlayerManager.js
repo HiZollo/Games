@@ -41,7 +41,7 @@ class PlayerManager {
 
   prev(n = 1) {
     const time = Date.now();
-    this.nowPlayer.time += time - this._lastMoveTime;
+    this.nowPlayer.addTime(time - this._lastMoveTime);
     this._lastMoveTime = time;
 
     const index = (this._index - n) % this.playerCount
@@ -50,7 +50,7 @@ class PlayerManager {
 
   next(n = 1) {
     const time = Date.now();
-    this.nowPlayer.time += time - this._lastMoveTime;
+    this.nowPlayer.addTime(time - this._lastMoveTime);
     this._lastMoveTime = time;
 
     this._index = (this._index + n) % this.playerCount;
@@ -58,7 +58,7 @@ class PlayerManager {
 
   assign(nextIndex) {
     const time = Date.now();
-    this.nowPlayer.time += time - this._lastMoveTime;
+    this.nowPlayer.addTime(time - this._lastMoveTime);
     this._lastMoveTime = time;
 
     this._index = nextIndex % this.playerCount;

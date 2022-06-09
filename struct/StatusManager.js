@@ -1,20 +1,21 @@
 class StatusManager {
   constructor(...status) {
-    this._statusCount = 0;
-    this._statusPool = new Set();
+    this.statusCount = 0;
+    this.statusPool = new Set();
 
-    this.append(status);
+    this.append(...status);
     this.now = status[0];
   }
 
-  append(status) {
+  append(...status) {
     status.forEach(s => {
-      this._statusPool.add(s);
+      this.statusPool.add(s);
+      this.statusCount++;
     });
   }
 
   has(status) {
-    return this._statusPool.has(status);
+    return this.statusPool.has(status);
   }
 
   set(status) {
