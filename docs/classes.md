@@ -17,10 +17,10 @@ The base class for all games.
 ```js
 new Game(gameOptions, gameStatus);
 ```
-| parameter   | type           | default    | description                 |
-|-------------|----------------|------------|-----------------------------|
-| gameOptions | GameOptions    | *required* | Options for the game        |
-| gameStatus  | Array\<string> | `[]`       | Extra statuses for the game |
+| parameter   | type                                     | default    | description                 |
+|-------------|------------------------------------------|------------|-----------------------------|
+| gameOptions | [GameOptions](./options.md/#GameOptions) | *required* | Options for the game        |
+| gameStatus  | Array\<string>                           | `[]`       | Extra statuses for the game |
 
 ## properties
 ### .duration
@@ -33,7 +33,7 @@ new Game(gameOptions, gameStatus);
 
 ### .loser
 - The loser of the game
-- Type: ?Player
+- Type: ?[Player](#Player)
 
 ### .ongoing
 - Whether the game is ongoing
@@ -41,7 +41,7 @@ new Game(gameOptions, gameStatus);
 
 ### .playerManager
 - The player manager for the game
-- Type: PlayerManager
+- Type: [PlayerManager](#PlayerManager)
 
 ### .startTime
 - The start time of the game (in millisecond)
@@ -49,11 +49,11 @@ new Game(gameOptions, gameStatus);
 
 ### .status
 - The status manager of the game
-- Type: GameStatusManager
+- Type: [GameStatusManager](#GameStatusManager)
 
 ### .winner
 - The winner of the game
-- Type: ?Player
+- Type: ?[Player](#Player)
 
 ## methods
 ### .initialize()
@@ -75,9 +75,9 @@ The class representing a player.
 ```js
 new Player(playerOptions);
 ```
-| parameter     | type          | default    | description                |
-|---------------|---------------|------------|----------------------------|
-| playerOptions | PlayerOptions | *required* | the options for the player |
+| parameter     | type                                         | default    | description                |
+|---------------|----------------------------------------------|------------|----------------------------|
+| playerOptions | [PlayerOptions](./options.md/#PlayerOptions) | *required* | the options for the player |
 
 ## properties
 ### .id
@@ -86,7 +86,7 @@ new Player(playerOptions);
 
 ### .status
 - The status of the player
-- Type: PlayerStatusManager
+- Type: [PlayerStatusManager](#PlayerStatusManager)
 
 ### .steps
 - The total number of steps the player has made
@@ -127,9 +127,9 @@ The manager handling the players.
 ```js
 new PlayerManager(playerManagerOptions);
 ```
-| parameter            | type                 | default    | description                 |
-|----------------------|----------------------|------------|-----------------------------|
-| playerManagerOptions | PlayerManagerOptions | *required* | the options for the manager |
+| parameter            | type                                                       | default    | description                 |
+|----------------------|------------------------------------------------------------|------------|-----------------------------|
+| playerManagerOptions | [PlayerManagerOptions](./options.md/#PlayerManagerOptions) | *required* | the options for the manager |
 
 ## properties
 ### .alive
@@ -142,7 +142,7 @@ new PlayerManager(playerManagerOptions);
 
 ### .nowPlayer
 - The current player
-- Type: Player
+- Type: [Player](#Player)
 
 ### .playerCount
 - The number of the players
@@ -150,7 +150,7 @@ new PlayerManager(playerManagerOptions);
 
 ### .players
 - The players
-- Type: Array\<Player>
+- Type: Array\<[Player](#Player)>
 
 ### .totalSteps
 - The total number of steps that all players have made
