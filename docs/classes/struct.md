@@ -1,4 +1,4 @@
-This is the documentations for all classes.
+This is the documentations for all basic classes.
 
 
 # Table of Contents
@@ -17,10 +17,10 @@ The base class for all games.
 ```js
 new Game(gameOptions, gameStatus);
 ```
-| parameter   | type                                     | default    | description                 |
-|-------------|------------------------------------------|------------|-----------------------------|
-| gameOptions | [GameOptions](./options.md/#GameOptions) | *required* | Options for the game        |
-| gameStatus  | Array\<string>                           | `[]`       | Extra statuses for the game |
+| parameter   | type                                      | default    | description                 |
+|-------------|-------------------------------------------|------------|-----------------------------|
+| gameOptions | [GameOptions](../options.md/#GameOptions) | *required* | Options for the game        |
+| gameStatus  | Array\<string>                            | `[]`       | Extra statuses for the game |
 
 ## properties
 ### .duration
@@ -61,9 +61,9 @@ new Game(gameOptions, gameStatus);
 - Returns: void
 
 ### .end(status)
-| parameter   | type          | default    | description                |
-|-------------|---------------|------------|----------------------------|
-| status      | string        | *required* | The end status of the game |
+| parameter | type   | default    | description                |
+|-----------|--------|------------|----------------------------|
+| status    | string | *required* | The end status of the game |
 - Ends the game with a certain status
 - Returns: void
 
@@ -75,9 +75,9 @@ The class representing a player.
 ```js
 new Player(playerOptions);
 ```
-| parameter     | type                                         | default    | description                |
-|---------------|----------------------------------------------|------------|----------------------------|
-| playerOptions | [PlayerOptions](./options.md/#PlayerOptions) | *required* | the options for the player |
+| parameter     | type                                          | default    | description                |
+|---------------|-----------------------------------------------|------------|----------------------------|
+| playerOptions | [PlayerOptions](../options.md/#PlayerOptions) | *required* | the options for the player |
 
 ## properties
 ### .id
@@ -127,9 +127,9 @@ The manager handling the players.
 ```js
 new PlayerManager(playerManagerOptions);
 ```
-| parameter            | type                                                       | default    | description                 |
-|----------------------|------------------------------------------------------------|------------|-----------------------------|
-| playerManagerOptions | [PlayerManagerOptions](./options.md/#PlayerManagerOptions) | *required* | the options for the manager |
+| parameter            | type                                                        | default    | description                 |
+|----------------------|-------------------------------------------------------------|------------|-----------------------------|
+| playerManagerOptions | [PlayerManagerOptions](../options.md/#PlayerManagerOptions) | *required* | the options for the manager |
 
 ## properties
 ### .alive
@@ -231,7 +231,7 @@ new StatusManager(...status);
 
 
 # GameStatusManager
-> extends StatusManager
+> extends [StatusManager](#StatusManager)
 
 The status manager for games, with a status pool initialized with `"ONGOING"`, `"WIN"`, `"DRAW"`, `"LOSE"`, `"STOPPED"`, `"IDLE"`, `"DELETED"` by default.
 
@@ -280,7 +280,7 @@ new GameStatusManager(...status);
 
 
 # PlayerStatusManager
-> extends StatusManager
+> extends [StatusManager](#StatusManager)
 
 The status manager for players, with a status pool initialized with `"PLAYING"`, `"BOT"`, `"IDLE"`, `"LEAVING"` by default.
 
