@@ -16,7 +16,6 @@ class Game {
     this._ended = false;
   }
 
-  // Initializes the game
   initialize() {
     if (this._initialized) {
       throw new Error('The game has already been initialized.');
@@ -26,7 +25,6 @@ class Game {
     this.startTime = Date.now();
   }
 
-  // Ends the game
   end(status) {
     if (this._ended) {
       throw new Error("This game has already ended.");
@@ -37,13 +35,11 @@ class Game {
     this.status.set(status);
   }
 
-  // Gets the duration of the game
   get duration() {
     if (this.endTime === null) return null;
     return this.endTime - this.startTime;
   }
 
-  // Checks if the game is still ungoing
   get ongoing() {
     return this.status.now === "ONGOING";
   }
