@@ -1,4 +1,4 @@
-const PlayerStatus = require('./PlayerStatus.js');
+const PlayerStatusManager = require('./PlayerStatusManager.js');
 
 class Player {
   constructor({ username = 'Player', id, symbol = null, bot = false }) {
@@ -11,7 +11,7 @@ class Player {
     this.symbol = symbol;
     this.steps = 0;
     this.time = 0;
-    this.status = new PlayerStatus();
+    this.status = new PlayerStatusManager();
   }
 
   addStep(step = 1) {

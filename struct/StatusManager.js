@@ -1,4 +1,4 @@
-class Status {
+class StatusManager {
   constructor(...status) {
     this._statusCount = 0;
     this._statusPool = new Set();
@@ -26,4 +26,4 @@ class Status {
   }
 }
 
-module.exports = Status;
+module.exports = StatusManager;

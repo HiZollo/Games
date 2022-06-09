@@ -1,6 +1,6 @@
-const Status = require('./Status.js');
+const StatusManager = require('./StatusManager.js');
 
-class PlayerStatus extends Status {
+class PlayerStatusManager extends StatusManager {
   constructor(...status) {
     super("PLAYING", "BOT", "IDLE", "LEAVING", ...status);
   }
@@ -14,4 +14,4 @@ class PlayerStatus extends Status {
   }
 }
 
-module.exports = PlayerStatus;
+module.exports = PlayerStatusManager;
