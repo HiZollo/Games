@@ -172,14 +172,14 @@ new PlayerManager(playerManagerOptions);
 | parameter | type           | default | description |
 |-----------|----------------|---------|-------------|
 | n         | number         | `1`     |             |
-- Changes the current player to the next *n* player
+- Changes the current player to the next `n` player
 - Returns: void
 
 ### .prev(n)
 | parameter | type           | default | description |
 |-----------|----------------|---------|-------------|
 | n         | number         | `1`     |             |
-- Changes the current player to the previous *n* player
+- Changes the current player to the previous `n` player
 - Returns: void
 
 

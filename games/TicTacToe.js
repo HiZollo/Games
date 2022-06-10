@@ -10,7 +10,7 @@ class TicTacToe extends Game {
     super({ players, playerCountRange: [2, ], requireSymbol: true });
 
     this.boardSize = boardSize;
-    this.playground = [];
+    this.board = [];
 
     this._occupied = 0;
   }
@@ -19,22 +19,22 @@ class TicTacToe extends Game {
     super.initialize();
 
     for (let i = 0; i < this.boardSize; i++) {
-      this.playground.push([]);
+      this.board.push([]);
       for (let j = 0; j < this.boardSize; j++)
-        this.playground[i].push(null);
+        this.board[i].push(null);
     }
   }
 
   fill(row, col) {
-    if (this.playground[row][col] !== null)
-      throw new Error(`Trying to fill playground[${row}][${col}] that has already been filled.`);
+    if (this.board[row][col] !== null)
+      throw new Error(`Trying to fill board[${row}][${col}] that has already been filled.`);
 
-    this.playground[row][col] = this.playerManager.nowPlayer.symbol;
+    this.board[row][col] = this.playerManager.nowPlayer.symbol;
     this._occupied++;
   }
 
   win(row, col) {
-    return GameUtil.checkStrike(this.playground, row, col, this.boardSize);
+    return GameUtil.checkStrike(this.board, row, col, this.boardSize);
   }
 
   draw() {

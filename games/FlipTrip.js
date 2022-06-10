@@ -10,25 +10,25 @@ class FlipTrip extends Game {
     this.boardSize = boardSize;
     this._permutationCount = 2 ** boardSize;
     this.state = 0;
-    this.appearedStates = [];
+    this._appearedStates = [];
   }
 
   initialize() {
     super.initialize();
 
     for (let i = 0; i < this._permutationCount; i++)
-      this.appearedStates.push(0);
-    this.appearedStates[this.state] = 1;
+      this._appearedStates.push(0);
+    this._appearedStates[this.state] = 1;
   }
 
   flip(location) {
     this.state ^= (1 << location);
 
-    if (this.appearedStates[this.state]) {
+    if (this._appearedStates[this.state]) {
       return false;
     }
 
-    this.appearedStates[this.state] = 1;
+    this._appearedStates[this.state] = 1;
     return true;
   }
 
