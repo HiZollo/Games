@@ -7,7 +7,7 @@ const { gomoku } = require('../util/strings.json');
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 class DjsGomoku extends Gomoku {
-  constructor({ players, boardSize = 9, time, strings }) {
+  constructor({ players, boardSize = 9, time = 60e3, strings }) {
     super({ players, boardSize });
 
     this.time = time;

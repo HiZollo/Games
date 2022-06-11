@@ -3,7 +3,7 @@ const GameUtil = require('../util/GameUtil.js');
 
 class LightsUp extends Game {
   constructor({ players, boardSize }) {
-    super({ players, playerCountRange: [1, 1] }, ["JACKPOT"]);
+    super({ players, playerCountRange: { min: 1, max: 1 } }, ["JACKPOT"]);
 
     this.boardSize = boardSize;
     this.board = [];

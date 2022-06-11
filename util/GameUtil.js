@@ -58,7 +58,7 @@ class GameUtil extends null {
   }
 
   /**
-   * Returns a random number in [min, max].
+   * Returns a random integer in [min, max].
    * @param {number} min
    * @param {number} max
    * @returns {number}

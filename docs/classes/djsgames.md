@@ -58,7 +58,7 @@ new DjsBullsAndCows(djsBullsAndCowsOptions);
 
 ### .mainMessage
 - The message where most of the information are shown
-- Type: [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .numberCount
 - The number of digits that can possibly appear in the answer
@@ -74,7 +74,7 @@ new DjsBullsAndCows(djsBullsAndCowsOptions);
 
 ### .source
 - The source that instantiated this
-- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .startTime
 - The start time of the game (in millisecond)
@@ -111,8 +111,8 @@ new DjsBullsAndCows(djsBullsAndCowsOptions);
 ### .initialize(source)
 | parameter | type    | default    | description                       |
 |-----------|---------|------------|-----------------------------------|
-| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message|https://discord.js.org/#/docs/main/stable/class/Message] | *required* | The source that instantiated this |
-- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message](https://discord.js.org/#/docs/main/stable/class/Message) | *required* | The source that instantiated this |
+- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 - Returns: void
 
 ### .guess(query)
@@ -170,7 +170,7 @@ new DjsFinalCode(djsFinalCodeOptions);
 
 ### .mainMessage
 - The message where most of the information are shown
-- Type: [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .max
 - The upper bound of the interval where the answer lies
@@ -190,7 +190,7 @@ new DjsFinalCode(djsFinalCodeOptions);
 
 ### .source
 - The source that instantiated this
-- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .startTime
 - The start time of the game (in millisecond)
@@ -227,8 +227,8 @@ new DjsFinalCode(djsFinalCodeOptions);
 ### .initialize(source)
 | parameter | type    | default    | description                       |
 |-----------|---------|------------|-----------------------------------|
-| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message|https://discord.js.org/#/docs/main/stable/class/Message] | *required* | The source that instantiated this |
-- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message](https://discord.js.org/#/docs/main/stable/class/Message) | *required* | The source that instantiated this |
+- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 - Returns: void
 
 ### .guess(query)
@@ -287,7 +287,7 @@ new DjsFinalCode(djsFlipTripOptions);
 
 ### .mainMessage
 - The message where most of the information are shown
-- Type: [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .ongoing
 - Whether the game is ongoing
@@ -302,7 +302,7 @@ new DjsFinalCode(djsFlipTripOptions);
 
 ### .source
 - The source that instantiated this
-- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .startTime
 - The start time of the game (in millisecond)
@@ -350,8 +350,8 @@ new DjsFinalCode(djsFlipTripOptions);
 ### .initialize(source)
 | parameter | type    | default    | description                       |
 |-----------|---------|------------|-----------------------------------|
-| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message|https://discord.js.org/#/docs/main/stable/class/Message] | *required* | The source that instantiated this |
-- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message](https://discord.js.org/#/docs/main/stable/class/Message) | *required* | The source that instantiated this |
+- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 - Returns: void
 
 ### .start()
@@ -407,7 +407,7 @@ new DjsGomoku(djsGomokuOptions);
 
 ### .mainMessage
 - The message where most of the information are shown
-- Type: [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .ongoing
 - Whether the game is ongoing
@@ -419,7 +419,7 @@ new DjsGomoku(djsGomokuOptions);
 
 ### .source
 - The source that instantiated this
-- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .startTime
 - The start time of the game (in millisecond)
@@ -468,8 +468,8 @@ new DjsGomoku(djsGomokuOptions);
 ### .initialize(source)
 | parameter | type    | default    | description                       |
 |-----------|---------|------------|-----------------------------------|
-| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message|https://discord.js.org/#/docs/main/stable/class/Message] | *required* | The source that instantiated this |
-- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message](https://discord.js.org/#/docs/main/stable/class/Message) | *required* | The source that instantiated this |
+- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 - Returns: void
 
 ### .start()
@@ -537,7 +537,7 @@ new DjsLightsUp(djsLightsUpOptions);
 
 ### .mainMessage
 - The message where most of the information are shown
-- Type: [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .ongoing
 - Whether the game is ongoing
@@ -549,7 +549,7 @@ new DjsLightsUp(djsLightsUpOptions);
 
 ### .source
 - The source that instantiated this
-- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .startTime
 - The start time of the game (in millisecond)
@@ -594,8 +594,8 @@ new DjsLightsUp(djsLightsUpOptions);
 ### .initialize(source)
 | parameter | type    | default    | description                       |
 |-----------|---------|------------|-----------------------------------|
-| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message|https://discord.js.org/#/docs/main/stable/class/Message] | *required* | The source that instantiated this |
-- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message](https://discord.js.org/#/docs/main/stable/class/Message) | *required* | The source that instantiated this |
+- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 - Returns: void
 
 ### .start()
@@ -651,7 +651,7 @@ new DjsTicTacToe(djsTicTacToeOptions);
 
 ### .mainMessage
 - The message where most of the information are shown
-- Type: [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .ongoing
 - Whether the game is ongoing
@@ -663,7 +663,7 @@ new DjsTicTacToe(djsTicTacToeOptions);
 
 ### .source
 - The source that instantiated this
-- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .startTime
 - The start time of the game (in millisecond)
@@ -712,8 +712,8 @@ new DjsTicTacToe(djsTicTacToeOptions);
 ### .initialize(source)
 | parameter | type    | default    | description                       |
 |-----------|---------|------------|-----------------------------------|
-| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message|https://discord.js.org/#/docs/main/stable/class/Message] | *required* | The source that instantiated this |
-- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message|https://discord.js.org/#/docs/main/stable/class/Message]
+| source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message](https://discord.js.org/#/docs/main/stable/class/Message) | *required* | The source that instantiated this |
+- Initializes the game with an instance of [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) or [Message](https://discord.js.org/#/docs/main/stable/class/Message)
 - Returns: void
 
 ### .start()

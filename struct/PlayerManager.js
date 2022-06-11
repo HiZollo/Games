@@ -1,12 +1,12 @@
 const Player = require('./Player.js');
 
 class PlayerManager {
-  constructor({ players, playerCountRange = [0, Infinity], requireSymbol = false, firstPlayerIndex = 0 }) {
-    if (players.length < playerCountRange[0]) {
-      throw new Error(`The player count should be larger than or equal to ${playerCountRange[0]}`);
+  constructor({ players, playerCountRange: { min = 1, max = Infinity }, requireSymbol = false, firstPlayerIndex = 0 }) {
+    if (players.length < min) {
+      throw new Error(`The player count should be larger than or equal to ${min}`);
     }
-    if (playerCountRange[1] < players.length) {
-      throw new Error(`The player count should be less than or equal to ${playerCountRange[1]}`);
+    if (max < players.length) {
+      throw new Error(`The player count should be less than or equal to ${max}`);
     }
 
     this.players = players.map(p => new Player(p));

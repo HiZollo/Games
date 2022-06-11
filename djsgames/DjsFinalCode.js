@@ -5,7 +5,7 @@ const { format, overwrite } = require('../util/Functions.js');
 const { finalCode } = require('../util/strings.json');
 
 class DjsFinalCode extends FinalCode {
-  constructor({ players, min, max, time, strings }) {
+  constructor({ players, min, max, time = 60e3, strings }) {
     super({ players, min, max });
 
     this.time = time;

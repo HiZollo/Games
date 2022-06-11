@@ -5,7 +5,7 @@ const { format, overwrite } = require('../util/Functions.js');
 const { ticTacToe } = require('../util/strings.json');
 
 class DjsTicTacToe extends TicTacToe {
-  constructor({ players, boardSize = 3, time, strings }) {
+  constructor({ players, boardSize = 3, time = 60e3, strings }) {
     if (boardSize > 4)
       throw new Error('The size of the board should be at most 4.');
 

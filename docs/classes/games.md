@@ -89,7 +89,7 @@ new BullsAndCows(bullsAndCowsOptions);
 |-----------|----------------|------------|---------------------------------------|
 | query     | Array\<number> | *required* | An array with a digit in each element |
 - Compares the query with the answer
-- Returns: [BullsAndCowsGuessResult](../results.md/#BullsAndCowsGuessResult)
+- Returns: [BullsAndCowsGuessResult](../others.md/#BullsAndCowsGuessResult)
 
 ### .win(result)
 | parameter | type                                                              | default    | description               |
@@ -130,11 +130,11 @@ new FinalCode(finalCodeOptions);
 - Type: ?[Player](./struct.md/#Player)
 
 ### .max
-- The upper bound of the interval where the answer lies
+- The upper bound of the answer
 - Type: number
 
 ### .min
-- The lower bound of the interval where the answer lies
+- The lower bound of the answer
 - Type: number
 
 ### .ongoing

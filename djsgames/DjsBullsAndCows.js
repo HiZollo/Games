@@ -5,7 +5,7 @@ const { format, overwrite } = require('../util/Functions.js');
 const { bullsAndCows } = require('../util/strings.json');
 
 class DjsBullsAndCows extends BullsAndCows {
-  constructor({ players, hardmode, answerLength, time, strings }) {
+  constructor({ players, hardmode, answerLength, time = 60e3, strings }) {
     super({ players, hardmode, answerLength });
 
     this.time = time;

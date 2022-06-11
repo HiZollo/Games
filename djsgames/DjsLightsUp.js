@@ -5,7 +5,7 @@ const { format, overwrite } = require('../util/Functions.js');
 const { lightsUp } = require('../util/strings.json');
 
 class DjsLightsUp extends LightsUp {
-  constructor({ players, boardSize = 5, time, strings }) {
+  constructor({ players, boardSize = 5, time = 60e3, strings }) {
     if (boardSize > 5) {
       throw new Error('The size of the board should be at most 5.');
     }

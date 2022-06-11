@@ -7,7 +7,7 @@ const { flipTrip } = require('../util/strings.json');
 const MAX_BUTTON_PER_ROW = 5;
 
 class DjsFlipTrip extends FlipTrip {
-  constructor({ players, boardSize, time, strings }) {
+  constructor({ players, boardSize, time = 60e3, strings }) {
     super({ players, boardSize });
 
     this.time = time;
