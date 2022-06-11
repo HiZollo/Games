@@ -1,29 +1,26 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
-const LightsUp = require('../games/LightsUp.js');
+const TicTacToe = require('../games/TicTacToe.js');
 const { createEndEmbed, getInput } = require('../util/DjsUtil.js');
 const { format, overwrite } = require('../util/Functions.js');
-const { lightsUp } = require('../util/strings.json');
+const { ticTacToe } = require('../util/strings.json');
 
-class DCLightsUp extends LightsUp {
-  constructor({ players, boardSize = 5, time, strings }) {
-    if (boardSize > 5) {
-      throw new Error('The size of the board should be at most 5.');
-    }
+class DjsTicTacToe extends TicTacToe {
+  constructor({ players, boardSize = 3, time, strings }) {
+    if (boardSize > 4)
+      throw new Error('The size of the board should be at most 4.');
 
     super({ players, boardSize });
 
     this.time = time;
-    this._answered = false;
-    this.strings = overwrite(JSON.parse(JSON.stringify(lightsUp)), strings);
+    this.strings = overwrite(JSON.parse(JSON.stringify(ticTacToe)), strings);
 
     this.client = null;
     this.source = null;
     this.mainMessage = null;
-    this.controllerMessage = null;
 
     this._board = [];
     this._controller = null;
-    this._inputMode = 0b110;
+    this._inputMode = 0b100;
   }
 
   async initialize(source) {
@@ -32,17 +29,12 @@ class DCLightsUp extends LightsUp {
       for (let j = 0; j < this.boardSize; j++) {
         this._board[i].push(new MessageButton()
           .setCustomId(`game_${i}_${j}`)
-          .setLabel('\u200b')
+          .setLabel(this.strings.labels[i][j])
           .setStyle("PRIMARY")
         );
       }
     }
     this._controller = new MessageActionRow().addComponents(
-      new MessageButton()
-        .setCustomId('ctrl_answer')
-        .setLabel(this.strings.controller.answer)
-        .setStyle("SUCCESS")
-    ).addComponents(
       new MessageButton()
         .setCustomId('ctrl_stop')
         .setLabel(this.strings.controller.stop)
@@ -53,17 +45,16 @@ class DCLightsUp extends LightsUp {
 
     this.source = source;
     this.client = source?.client;
+    const content = format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
+
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
         await source.deferReply();
       }
-
-      this.mainMessage = await source.editReply({ content: '\u200b', components: this.boardComponents });
-      this.controllerMessage = await source.followUp({ content: '\u200b', components: [this._controller] });
+      this.mainMessage = await source.editReply({ content: content, components: this.boardComponents });
     }
     else if (source.constructor.name === Message.name) {
-      this.mainMessage = await source.channel.send({ content: '\u200b', components: this.boardComponents });
-      this.controllerMessage = await this.mainMessage.reply({ content: '\u200b', components: [this._controller] });
+      this.mainMessage = await source.channel.send({ content: content, components: this.boardComponents });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
@@ -78,8 +69,10 @@ class DCLightsUp extends LightsUp {
     const input = await getInput(this);
     let endStatus = null;
 
+    let content = '\u200b';
     if (input === null) {
       nowPlayer.status.set("IDLE");
+      content += format(this.strings.previous.idle, { player: nowPlayer.username }) + '\n';
     }
     else if (input.customId?.startsWith('ctrl_')) {
       const [, ...args] = input.customId.split('_');
@@ -87,10 +80,7 @@ class DCLightsUp extends LightsUp {
       if (args[0] === 'stop') {
         await input.update({});
         nowPlayer.status.set("LEAVING");
-      }
-      else if (args[0] === 'answer') {
-        await input.reply({ content: format(this.strings.currentAnswer, { answer: this.answerContent }), ephemeral: true });
-        nowPlayer.status.set("PLAYING");
+        content += format(this.strings.previous.leaving, { player: nowPlayer.username }) + '\n';
       }
     }
     else {
@@ -99,16 +89,20 @@ class DCLightsUp extends LightsUp {
       nowPlayer.addStep();
 
       const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
-      this.flip(args[0], args[1]);
+      this.fill(args[0], args[1]);
 
-      if (this.win()) {
+      if (this.win(args[0], args[1])) {
         this.winner = nowPlayer;
         endStatus = "WIN";
+      }
+      else if (this.draw()) {
+        endStatus = "DRAW";
       }
     }
 
     this.playerManager.next();
-    await this.mainMessage.edit({ components: this.boardComponents }).catch(() => {
+    content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
+    await this.mainMessage.edit({ content, components: this.boardComponents }).catch(() => {
       this.end("DELETED");
     });
 
@@ -117,12 +111,7 @@ class DCLightsUp extends LightsUp {
     }
   }
 
-  async start(channel) {
-    if (this.win()) {
-      this.end("JACKPOT");
-      return;
-    }
-
+  async start() {
     let nowPlayer;
     while (this.ongoing && this.playerManager.alive) {
       nowPlayer = this.playerManager.nowPlayer;
@@ -141,15 +130,12 @@ class DCLightsUp extends LightsUp {
     }
   }
 
-  flip(row, col) {
-    super.flip(row, col);
+  fill(row, col) {
+    super.fill(row, col);
 
-    [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dr, dc]) => {
-      const nr = row + dr, nc = col + dc;
-      if (0 <= nr && nr < this.boardSize && 0 <= nc && nc < this.boardSize) {
-        this._board[nr][nc].setStyle(this.lights[nr][nc] ? "PRIMARY" : "SECONDARY");
-      }
-    });
+    this._board[row][col]
+      .setDisabled(true)
+      .setLabel(this.playground[row][col]);
   }
 
   async end(status) {
@@ -160,8 +146,7 @@ class DCLightsUp extends LightsUp {
         button.setDisabled(true);
       })
     });
-    await this.mainMessage.edit({ components: this.boardComponents }).catch(() => {});
-    await this.controllerMessage.delete().catch(() => {});
+    await this.mainMessage.edit({ content: '\u200b', components: this.boardComponents }).catch(() => {});
   }
 
   async conclude() {
@@ -172,14 +157,14 @@ class DCLightsUp extends LightsUp {
     const message = this.strings.endMessages;
     let content;
     switch (this.status.now) {
-      case "JACKPOT":
-        content = format(message.jackpot, { player: `<@${this.winner.id}>` });
-        break;
       case "WIN":
-        content = format(this._answered ? message.win.answered : message.win.unanswered, { player: `<@${this.winner.id}>` });
+        content = format(message.win, { player: `<@${this.winner.id}>` });
         break;
       case "IDLE":
         content = message.idle;
+        break;
+      case "DRAW":
+        content = message.draw;
         break;
       case "STOPPED":
         content = message.stopped;
@@ -203,19 +188,19 @@ class DCLightsUp extends LightsUp {
         actionRows[i].addComponents(this._board[i][j]);
       }
     }
-    return actionRows;
-  }
 
-  get answerContent() {
-    this._answered = true;
-    let content = '';
-    for (let i = 0; i < this.boardSize; i++) {
-      for (let j = 0; j < this.boardSize; j++)
-        content += this.strings.answer[this.answer[i][j] ? 1 : 0];
-      content += '\n';
+    if (!this.ended) {
+      actionRows.push(this._controller);
     }
-    return content;
+    return actionRows;
   }
 }
 
-module.exports = DCLightsUp;
+const getQuery = (content) => {
+  content = content.toLowerCase();
+  const row = content.substr(1, 2) - 1;
+  const col = content.substr(0, 1).charCodeAt() - 'a'.charCodeAt();
+  return [row, col];
+}
+
+module.exports = DjsTicTacToe;

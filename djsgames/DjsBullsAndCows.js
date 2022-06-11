@@ -1,20 +1,19 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
-const Gomoku = require('../games/Gomoku.js');
+const BullsAndCows = require('../games/BullsAndCows.js');
 const { createEndEmbed, getInput } = require('../util/DjsUtil.js');
 const { format, overwrite } = require('../util/Functions.js');
-const { gomoku } = require('../util/strings.json');
+const { bullsAndCows } = require('../util/strings.json');
 
-const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-class DCGomoku extends Gomoku {
-  constructor({ players, boardSize = 9, time, strings }) {
-    super({ players, boardSize });
+class DjsBullsAndCows extends BullsAndCows {
+  constructor({ players, hardmode, answerLength, time, strings }) {
+    super({ players, hardmode, answerLength });
 
     this.time = time;
-    this.strings = overwrite(JSON.parse(JSON.stringify(gomoku)), strings);
+    this.strings = overwrite(JSON.parse(JSON.stringify(bullsAndCows)), strings);
 
     this.client = null;
     this.source = null;
+    this.content = '';
     this.mainMessage = null;
 
     this._controller = null;
@@ -27,22 +26,22 @@ class DCGomoku extends Gomoku {
         .setCustomId('ctrl_stop')
         .setLabel(this.strings.controller.stop)
         .setStyle("DANGER")
-    )
+    );
 
     super.initialize();
 
     this.source = source;
     this.client = source?.client;
-    const content = format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
+    this.content = format(this.strings.initial, { player: this.playerManager.nowPlayer.username });
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
         await source.deferReply();
       }
-      this.mainMessage = await source.editReply({ content: content + '\n' + this.boardContent, components: [this._controller] });
+      this.mainMessage = await source.editReply({ content: this.content, components: [this._controller] });
     }
     else if (source.constructor.name === Message.name) {
-      this.mainMessage = await source.channel.send({ content: content + '\n' + this.boardContent, components: [this._controller] });
+      this.mainMessage = await source.channel.send({ content: this.content, components: [this._controller] });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
@@ -51,11 +50,11 @@ class DCGomoku extends Gomoku {
 
   _messageFilter = async message => {
     if (message.author.id !== this.playerManager.nowPlayer.id) return false;
-    if (!(/^[A-Za-z]\d{1,2}$/.test(message.content))) return false;
 
-    const [row, col] = getQuery(message.content);
-    if (!(0 <= row && row < this.boardSize && 0 <= col && col < this.boardSize)) return false;
-    return this.playground[row][col] === null;
+    if (message.content.length !== this.answerLength) return false;
+    if (!/^\d+$/.test(message.content)) return false;
+    const query = getQuery(message.content);
+    return (new Set(query)).size === message.content.length;
   }
 
   _buttonFilter = async interaction => {
@@ -66,10 +65,9 @@ class DCGomoku extends Gomoku {
     const input = await getInput(this);
     let endStatus = null;
 
-    let content = '\u200b';
+    let content = this.hardmode ? this.mainMessage.content : this.content;
     if (input === null) {
       nowPlayer.status.set("IDLE");
-      content += format(this.strings.previous.idle, { player: nowPlayer.username }) + '\n';
     }
     else if (input.customId?.startsWith('ctrl_')) {
       const [, ...args] = input.customId.split('_');
@@ -77,7 +75,6 @@ class DCGomoku extends Gomoku {
       if (args[0] === 'stop') {
         await input.update({});
         nowPlayer.status.set("LEAVING");
-        content += format(this.strings.previous.leaving, { player: nowPlayer.username }) + '\n';
       }
     }
     else {
@@ -86,23 +83,19 @@ class DCGomoku extends Gomoku {
 
       const message = input.first();
       await message.delete().catch(() => {});
-      const [row, col] = getQuery(message.content);
-      this.fill(row, col);
+      const query = getQuery(message.content);
+      const status = this.guess(query);
 
-      if (this.win(row, col)) {
+      if (this.win(status)) {
         this.winner = nowPlayer;
         endStatus = "WIN";
       }
-      else if (this.draw()) {
-        endStatus = "DRAW";
-      }
 
-      content = format(this.strings.previous.move, { col: alphabets[col], row: row + 1, player: nowPlayer.username }) + '\n';
+      content += '\n' + format(this.strings.query, { a: status.a, b: status.b, query: message.content });
+      this.content += '\n' + format(this.strings.query, { a: status.a, b: status.b, query: message.content });
     }
 
     this.playerManager.next();
-    content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol }) + '\n';
-    content += this.boardContent;
     await this.mainMessage.edit({ content }).catch(() => {
       this.end("DELETED");
     });
@@ -134,7 +127,7 @@ class DCGomoku extends Gomoku {
   async end(status) {
     super.end(status);
 
-    await this.mainMessage.edit({ content: this.boardContent, components: [] }).catch(() => {});
+    await this.mainMessage.edit({ components: [] }).catch(() => {});
   }
 
   async conclude() {
@@ -146,13 +139,10 @@ class DCGomoku extends Gomoku {
     let content;
     switch (this.status.now) {
       case "WIN":
-        content = format(message.win, { player: `<@${this.winner.id}>` });
+        content = format(message.win, { player: `<@${this.winner.id}>`, answer: this.answer.join('') });
         break;
       case "IDLE":
         content = message.idle;
-        break;
-      case "DRAW":
-        content = message.draw;
         break;
       case "STOPPED":
         content = message.stopped;
@@ -167,27 +157,14 @@ class DCGomoku extends Gomoku {
       this.source.channel.send({ content, embeds });
     });
   }
+}
 
-  get boardContent() {
-    let content = `${this.strings.corner}`;
-    for (let i = 0; i < this.boardSize; i++) {
-      content += '\u200b' + this.strings.columns[i];
-    }
-
-    for (let i = this.boardSize - 1; i >= 0; i--) {
-      content += '\n' + this.strings.rows[i];
-      for (let j = 0; j < this.boardSize; j++)
-        content += this.playground[i][j] !== null ? this.playground[i][j] : this.strings.grid;
-    }
-    return content;
+const getQuery = (number) => {
+  const query = [];
+  for (let c of number) {
+    query.push(+c);
   }
+  return query;
 }
 
-const getQuery = (content) => {
-  let [, col, row] = content.toLowerCase().match(/([a-z])(\d{1,2})/);
-  col = col[0].charCodeAt() - 'a'.charCodeAt();
-  row = row - 1;
-  return [row, col];
-}
-
-module.exports = DCGomoku;
+module.exports = DjsBullsAndCows;

@@ -1,39 +1,25 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
-const TicTacToe = require('../games/TicTacToe.js');
+const FinalCode = require('../games/FinalCode.js');
 const { createEndEmbed, getInput } = require('../util/DjsUtil.js');
 const { format, overwrite } = require('../util/Functions.js');
-const { ticTacToe } = require('../util/strings.json');
+const { finalCode } = require('../util/strings.json');
 
-class DCTicTacToe extends TicTacToe {
-  constructor({ players, boardSize = 3, time, strings }) {
-    if (boardSize > 4)
-      throw new Error('The size of the board should be at most 4.');
-
-    super({ players, boardSize });
+class DjsFinalCode extends FinalCode {
+  constructor({ players, min, max, time, strings }) {
+    super({ players, min, max });
 
     this.time = time;
-    this.strings = overwrite(JSON.parse(JSON.stringify(ticTacToe)), strings);
+    this.strings = overwrite(JSON.parse(JSON.stringify(finalCode)), strings);
 
     this.client = null;
     this.source = null;
     this.mainMessage = null;
 
-    this._board = [];
     this._controller = null;
-    this._inputMode = 0b100;
+    this._inputMode = 0b101;
   }
 
   async initialize(source) {
-    for (let i = 0; i < this.boardSize; i++) {
-      this._board.push([]);
-      for (let j = 0; j < this.boardSize; j++) {
-        this._board[i].push(new MessageButton()
-          .setCustomId(`game_${i}_${j}`)
-          .setLabel(this.strings.labels[i][j])
-          .setStyle("PRIMARY")
-        );
-      }
-    }
     this._controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('ctrl_stop')
@@ -45,20 +31,29 @@ class DCTicTacToe extends TicTacToe {
 
     this.source = source;
     this.client = source?.client;
-    const content = format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
+    let content = format(this.strings.interval, { min: this.min, max: this.max }) + '\n';
+    content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>` });
 
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
         await source.deferReply();
       }
-      this.mainMessage = await source.editReply({ content: content, components: this.boardComponents });
+      this.mainMessage = await source.editReply({ content: content, components: [this._controller] });
     }
     else if (source.constructor.name === Message.name) {
-      this.mainMessage = await source.channel.send({ content: content, components: this.boardComponents });
+      this.mainMessage = await source.channel.send({ content: content, components: [this._controller] });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
     }
+  }
+
+  _messageFilter = async message => {
+    if (message.author.id !== this.playerManager.nowPlayer.id) return false;
+
+    const query = +message.content;
+    if (isNaN(query) || query !== ~~query) return false;
+    return this.min < query && query < this.max;
   }
 
   _buttonFilter = async interaction => {
@@ -84,25 +79,29 @@ class DCTicTacToe extends TicTacToe {
       }
     }
     else {
-      await input.update({});
       nowPlayer.status.set("PLAYING");
       nowPlayer.addStep();
 
-      const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
-      this.fill(args[0], args[1]);
+      const message = input.first();
+      await message.delete().catch(() => {});
+      const query = +message.content;
+      const result = this.guess(query);
 
-      if (this.win(args[0], args[1])) {
+      if (result === 0) {
         this.winner = nowPlayer;
         endStatus = "WIN";
       }
-      else if (this.draw()) {
-        endStatus = "DRAW";
+      else {
+        content += result > 0 ?
+          format(this.strings.previous.guess.large, { query }) + '\n' :
+          format(this.strings.previous.guess.small, { query }) + '\n';
       }
     }
 
     this.playerManager.next();
-    content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
-    await this.mainMessage.edit({ content, components: this.boardComponents }).catch(() => {
+    content += format(this.strings.interval, { min: this.min, max: this.max }) + '\n';
+    content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>` });
+    await this.mainMessage.edit({ content }).catch(() => {
       this.end("DELETED");
     });
 
@@ -130,23 +129,10 @@ class DCTicTacToe extends TicTacToe {
     }
   }
 
-  fill(row, col) {
-    super.fill(row, col);
-
-    this._board[row][col]
-      .setDisabled(true)
-      .setLabel(this.playground[row][col]);
-  }
-
   async end(status) {
     super.end(status);
 
-    this._board.forEach(row => {
-      row.forEach(button => {
-        button.setDisabled(true);
-      })
-    });
-    await this.mainMessage.edit({ content: '\u200b', components: this.boardComponents }).catch(() => {});
+    await this.mainMessage.edit({ content: format(this.strings.interval, { min: this.min, max: this.max }), components: [] }).catch(() => {});
   }
 
   async conclude() {
@@ -158,13 +144,10 @@ class DCTicTacToe extends TicTacToe {
     let content;
     switch (this.status.now) {
       case "WIN":
-        content = format(message.win, { player: `<@${this.winner.id}>` });
+        content = format(message.win, { player: `<@${this.winner.id}>`, answer: this.answer });
         break;
       case "IDLE":
         content = message.idle;
-        break;
-      case "DRAW":
-        content = message.draw;
         break;
       case "STOPPED":
         content = message.stopped;
@@ -179,28 +162,6 @@ class DCTicTacToe extends TicTacToe {
       this.source.channel.send({ content, embeds });
     });
   }
-
-  get boardComponents() {
-    const actionRows = [];
-    for (let i = 0; i < this.boardSize; i++) {
-      actionRows.push(new MessageActionRow());
-      for (let j = 0; j < this.boardSize; j++) {
-        actionRows[i].addComponents(this._board[i][j]);
-      }
-    }
-
-    if (!this.ended) {
-      actionRows.push(this._controller);
-    }
-    return actionRows;
-  }
 }
 
-const getQuery = (content) => {
-  content = content.toLowerCase();
-  const row = content.substr(1, 2) - 1;
-  const col = content.substr(0, 1).charCodeAt() - 'a'.charCodeAt();
-  return [row, col];
-}
-
-module.exports = DCTicTacToe;
+module.exports = DjsFinalCode;

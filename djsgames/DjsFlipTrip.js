@@ -1,26 +1,40 @@
 const { CommandInteraction, Message, MessageActionRow, MessageButton } = require('discord.js');
-const BullsAndCows = require('../games/BullsAndCows.js');
+const FlipTrip = require('../games/FlipTrip.js');
 const { createEndEmbed, getInput } = require('../util/DjsUtil.js');
 const { format, overwrite } = require('../util/Functions.js');
-const { bullsAndCows } = require('../util/strings.json');
+const { flipTrip } = require('../util/strings.json');
 
-class DCBullsAndCows extends BullsAndCows {
-  constructor({ players, hardmode, answerLength, time, strings }) {
-    super({ players, hardmode, answerLength });
+const MAX_BUTTON_PER_ROW = 5;
+
+class DjsFlipTrip extends FlipTrip {
+  constructor({ players, boardSize, time, strings }) {
+    super({ players, boardSize });
 
     this.time = time;
-    this.strings = overwrite(JSON.parse(JSON.stringify(bullsAndCows)), strings);
+    this.strings = overwrite(JSON.parse(JSON.stringify(flipTrip)), strings);
 
     this.client = null;
     this.source = null;
-    this.content = '';
     this.mainMessage = null;
 
+    this._board = [];
     this._controller = null;
-    this._inputMode = 0b101;
+    this._inputMode = 0b100;
   }
 
   async initialize(source) {
+    for (let i = 0; i < this.boardSize; i++) {
+      if (i % MAX_BUTTON_PER_ROW === 0) {
+        this._board.push(new MessageActionRow());
+      }
+
+      this._board[~~(i / MAX_BUTTON_PER_ROW)].addComponents(
+        new MessageButton()
+          .setCustomId(`game_${this.boardSize - 1 - i}`)
+          .setLabel(`${this.boardSize - i}`)
+          .setStyle("PRIMARY")
+      );
+    }
     this._controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('ctrl_stop')
@@ -32,29 +46,19 @@ class DCBullsAndCows extends BullsAndCows {
 
     this.source = source;
     this.client = source?.client;
-    this.content = format(this.strings.initial, { player: this.playerManager.nowPlayer.username });
-
     if (source.constructor.name === CommandInteraction.name) {
       if (!source.deferred) {
         await source.deferReply();
       }
-      this.mainMessage = await source.editReply({ content: this.content, components: [this._controller] });
+
+      this.mainMessage = await source.editReply({ content: this.boardContent, components: [...this._board, this._controller] });
     }
     else if (source.constructor.name === Message.name) {
-      this.mainMessage = await source.channel.send({ content: this.content, components: [this._controller] });
+      this.mainMessage = await source.channel.send({ content: this.boardContent, components: [...this._board, this._controller] });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
     }
-  }
-
-  _messageFilter = async message => {
-    if (message.author.id !== this.playerManager.nowPlayer.id) return false;
-
-    if (message.content.length !== this.answerLength) return false;
-    if (!/^\d+$/.test(message.content)) return false;
-    const query = getQuery(message.content);
-    return (new Set(query)).size === message.content.length;
   }
 
   _buttonFilter = async interaction => {
@@ -65,7 +69,6 @@ class DCBullsAndCows extends BullsAndCows {
     const input = await getInput(this);
     let endStatus = null;
 
-    let content = this.hardmode ? this.mainMessage.content : this.content;
     if (input === null) {
       nowPlayer.status.set("IDLE");
     }
@@ -78,25 +81,25 @@ class DCBullsAndCows extends BullsAndCows {
       }
     }
     else {
+      await input.update({});
       nowPlayer.status.set("PLAYING");
       nowPlayer.addStep();
 
-      const message = input.first();
-      await message.delete().catch(() => {});
-      const query = getQuery(message.content);
-      const status = this.guess(query);
+      const [, ...args] = input.customId.split('_').map(a => parseInt(a, 10));
+      const legal = this.flip(args[0]);
 
-      if (this.win(status)) {
+      if (!legal) {
+        this.loser = nowPlayer;
+        endStatus = "LOSE";
+      }
+      else if (this.win()) {
         this.winner = nowPlayer;
         endStatus = "WIN";
       }
-
-      content += '\n' + format(this.strings.query, { a: status.a, b: status.b, query: message.content });
-      this.content += '\n' + format(this.strings.query, { a: status.a, b: status.b, query: message.content });
     }
 
     this.playerManager.next();
-    await this.mainMessage.edit({ content }).catch(() => {
+    await this.mainMessage.edit({ content: this.boardContent }).catch(() => {
       this.end("DELETED");
     });
 
@@ -139,7 +142,10 @@ class DCBullsAndCows extends BullsAndCows {
     let content;
     switch (this.status.now) {
       case "WIN":
-        content = format(message.win, { player: `<@${this.winner.id}>`, answer: this.answer.join('') });
+        content = format(message.win, { player: `<@${this.winner.id}>`, size: this.boardSize });
+        break;
+      case "LOSE":
+        content = format(message.lose, { player: `<@${this.loser.id}>`, state: this.pieces, perm: this._permutationCount - this.playerManager.totalSteps });
         break;
       case "IDLE":
         content = message.idle;
@@ -157,14 +163,26 @@ class DCBullsAndCows extends BullsAndCows {
       this.source.channel.send({ content, embeds });
     });
   }
-}
 
-const getQuery = (number) => {
-  const query = [];
-  for (let c of number) {
-    query.push(+c);
+
+  get boardContent() {
+    let boardContent = '';
+    for (let i = this.boardSize - 1; i >= 0; i--) {
+      boardContent += this.strings.numbers[i];
+    }
+    boardContent += '\n';
+    boardContent += this.pieces;
+
+    return boardContent;
   }
-  return query;
+
+  get pieces() {
+    let result = '';
+    for (let i = this.boardSize - 1; i >= 0; i--) {
+      result += this.strings.pieces[(this.state & (1 << i)) ? 1 : 0];
+    }
+    return result;
+  }
 }
 
-module.exports = DCBullsAndCows;
+module.exports = DjsFlipTrip;

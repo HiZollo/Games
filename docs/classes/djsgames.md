@@ -11,7 +11,7 @@ This is the documentations for all game classes that implemented with [discord.j
 
 
 # DjsBullsAndCows
-> extends [Game](./struct.md/#Game)
+> extends [BullsAndCows](./games.md/#BullsAndCows)
 
 The class for *Bulls and Cows*, discord.js version.
 
@@ -135,7 +135,7 @@ new DjsBullsAndCows(djsBullsAndCowsOptions);
 
 
 # DjsFinalCode
-> extends [Game](./struct.md/#Game)
+> extends [FinalCode](./games.md/#FinalCode)
 
 The class for *Final Code*, discord.js version.
 
@@ -248,7 +248,7 @@ new DjsFinalCode(djsFinalCodeOptions);
 
 
 # DjsFlipTrip
-> extends [Game](./struct.md/#Game)
+> extends [FlipTrip](./games.md/#FlipTrip)
 
 The class for *Flip Trip*, discord.js version.
 
@@ -364,7 +364,7 @@ new DjsFinalCode(djsFlipTripOptions);
 
 
 # DjsGomoku
-> extends [Game](./struct.md/#Game)
+> extends [Gomoku](./games.md/#Gomoku)
 
 The class for *Gomoku*, discord.js version.
 
@@ -486,7 +486,7 @@ new DjsGomoku(djsGomokuOptions);
 
 
 # DjsLightsUp
-> extends [Game](./struct.md/#Game)
+> extends [LightsUp](./games.md/#LightsUp)
 
 The class for *Lights-up*, discord.js version.
 
@@ -608,7 +608,7 @@ new DjsLightsUp(djsLightsUpOptions);
 
 
 # DjsTicTacToe
-> extends [Game](./struct.md/#Game)
+> extends [TicTacToe](./games.md/#TicTacToe)
 
 The class for *Tic-tac-toe*, discord.js version.
 

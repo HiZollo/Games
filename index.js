@@ -13,12 +13,12 @@ module.exports = {
   LightsUp: require('./games/LightsUp.js'),
   TicTacToe: require('./games/TicTacToe.js'),
 
-  DCBullsAndCows: require('./djsgames/DCBullsAndCows.js'),
-  DCGomoku: require('./djsgames/DCGomoku.js'),
-  DCFinalCode: require('./djsgames/DCFinalCode.js'),
-  DCFlipTrip: require('./djsgames/DCFlipTrip.js'),
-  DCLightsUp: require('./djsgames/DCLightsUp.js'),
-  DCTicTacToe: require('./djsgames/DCTicTacToe.js'),
+  DjsBullsAndCows: require('./djsgames/DjsBullsAndCows.js'),
+  DjsGomoku: require('./djsgames/DjsGomoku.js'),
+  DjsFinalCode: require('./djsgames/DjsFinalCode.js'),
+  DjsFlipTrip: require('./djsgames/DjsFlipTrip.js'),
+  DjsLightsUp: require('./djsgames/DjsLightsUp.js'),
+  DjsTicTacToe: require('./djsgames/DjsTicTacToe.js'),
 
   GameUtil: require('./util/GameUtil.js')
 };
