@@ -7,7 +7,7 @@ class BullsAndCows extends Game {
       throw new Error('Parameter answerLength should be less than or equal to 10');
     }
 
-    super({ players, playerCountRange: { min: 1, max: 1 } });
+    super({ players, playerCountRange: [1, 1] });
 
     this.answer = [];
     this.answerLength = answerLength;

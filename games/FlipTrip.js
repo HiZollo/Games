@@ -5,7 +5,7 @@ class FlipTrip extends Game {
     if (boardSize > 10)
       throw new Error('The size of the board should be at most 10.');
 
-    super({ players, playerCountRange: { min: 1, max: 1 } });
+    super({ players, playerCountRange: [1, 1] });
 
     this.boardSize = boardSize;
     this._permutationCount = 2 ** boardSize;

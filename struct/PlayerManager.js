@@ -1,7 +1,8 @@
 const Player = require('./Player.js');
 
 class PlayerManager {
-  constructor({ players, playerCountRange: { min = 1, max = Infinity }, requireSymbol = false, firstPlayerIndex = 0 }) {
+  constructor({ players, playerCountRange, requireSymbol = false, firstPlayerIndex = 0 }) {
+    const [min = 1, max = Infinity] = playerCountRange ?? [1, Infinity];
     if (players.length < min) {
       throw new Error(`The player count should be larger than or equal to ${min}`);
     }

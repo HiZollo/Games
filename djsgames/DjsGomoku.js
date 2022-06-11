@@ -55,7 +55,7 @@ class DjsGomoku extends Gomoku {
 
     const [row, col] = getQuery(message.content);
     if (!(0 <= row && row < this.boardSize && 0 <= col && col < this.boardSize)) return false;
-    return this.playground[row][col] === null;
+    return this.board[row][col] === null;
   }
 
   _buttonFilter = async interaction => {
@@ -177,7 +177,7 @@ class DjsGomoku extends Gomoku {
     for (let i = this.boardSize - 1; i >= 0; i--) {
       content += '\n' + this.strings.rows[i];
       for (let j = 0; j < this.boardSize; j++)
-        content += this.playground[i][j] !== null ? this.playground[i][j] : this.strings.grid;
+        content += this.board[i][j] !== null ? this.board[i][j] : this.strings.grid;
     }
     return content;
   }

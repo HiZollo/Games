@@ -36,12 +36,12 @@ This is the documentations for all options.
 
 
 # PlayerManagerOptions
-| parameter        | type                                    | default                           | description                                |
-|------------------|-----------------------------------------|-----------------------------------|--------------------------------------------|
-| firstPlayerIndex | number                                  | `1`                               | The index of the first player              |
-| players          | Array\<[PlayerOptions](#PlayerOptions)> | *required*                        | All players' data                          |
-| playerCountRange | [Range](./others.md/#Range)             | *see [Range](./others.md/#Range)* | The range that the player count can be in  |
-| requireSymbol    | boolean                                 | `false`                           | Whether all players need their own symbols |
+| parameter        | type                                    | default         | description                                |
+|------------------|-----------------------------------------|-----------------|--------------------------------------------|
+| firstPlayerIndex | number                                  | `1`             | The index of the first player              |
+| players          | Array\<[PlayerOptions](#PlayerOptions)> | *required*      | All players' data                          |
+| playerCountRange | Array\<number>                          | `[1, Infinity]` | The range that the player count can be in  |
+| requireSymbol    | boolean                                 | `false`         | Whether all players need their own symbols |
 
 
 # BullsAndCowsOptions

@@ -135,7 +135,7 @@ class DjsTicTacToe extends TicTacToe {
 
     this._board[row][col]
       .setDisabled(true)
-      .setLabel(this.playground[row][col]);
+      .setLabel(this.board[row][col]);
   }
 
   async end(status) {
