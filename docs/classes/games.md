@@ -73,15 +73,15 @@ new BullsAndCows(bullsAndCowsOptions);
 - Type: ?[Player](./struct.md/#Player)
 
 ## methods
-### .initialize()
-- Initializes the game
-- Returns: void
-
 ### .end(status)
 | parameter | type   | default    | description                |
 |-----------|--------|------------|----------------------------|
 | status    | string | *required* | The end status of the game |
 - Ends the game with a certain status
+- Returns: void
+
+### .initialize()
+- Initializes the game
 - Returns: void
 
 ### .guess(query)
@@ -158,15 +158,15 @@ new FinalCode(finalCodeOptions);
 - Type: ?[Player](./struct.md/#Player)
 
 ## methods
-### .initialize()
-- Initializes the game
-- Returns: void
-
 ### .end(status)
 | parameter | type   | default    | description                |
 |-----------|--------|------------|----------------------------|
 | status    | string | *required* | The end status of the game |
 - Ends the game with a certain status
+- Returns: void
+
+### .initialize()
+- Initializes the game
 - Returns: void
 
 ### .guess(query)
@@ -236,10 +236,6 @@ new FinalCode(flipTripOptions);
 - Type: ?[Player](./struct.md/#Player)
 
 ## methods
-### .initialize()
-- Initializes the game
-- Returns: void
-
 ### .end(status)
 | parameter | type   | default    | description                |
 |-----------|--------|------------|----------------------------|
@@ -253,6 +249,10 @@ new FinalCode(flipTripOptions);
 | location  | number | *required* | The location of a piece |
 - Flips the `location`-th piece
 - Returns: boolean (whether the new state has appeared)
+
+### .initialize()
+- Initializes the game
+- Returns: void
 
 ### .win()
 - Checks if the game satisfies the winning conditions
@@ -314,10 +314,6 @@ new Gomoku(gomokuOptions);
 - Type: ?[Player](./struct.md/#Player)
 
 ## methods
-### .initialize()
-- Initializes the game
-- Returns: void
-
 ### .draw()
 - Checks if the game satisfies the draw conditions
 - Returns: boolean
@@ -335,6 +331,10 @@ new Gomoku(gomokuOptions);
 | row       | number | *required* | The row index    |
 | col       | number | *required* | The column index |
 - Fills location (`row`, `col`) with the current player's symbol
+- Returns: void
+
+### .initialize()
+- Initializes the game
 - Returns: void
 
 ### .win(row, col)
@@ -405,10 +405,6 @@ new LightsUp(lightsUpOptions);
 - Type: ?[Player](./struct.md/#Player)
 
 ## methods
-### .initialize()
-- Initializes the game
-- Returns: void
-
 ### .end(status)
 | parameter | type   | default    | description                |
 |-----------|--------|------------|----------------------------|
@@ -422,6 +418,10 @@ new LightsUp(lightsUpOptions);
 | row       | number | *required* | The row index    |
 | col       | number | *required* | The column index |
 - Flips (row, col) and its adjacent grids
+- Returns: void
+
+### .initialize()
+- Initializes the game
 - Returns: void
 
 ### .win()
@@ -484,10 +484,6 @@ new TicTacToe(ticTacToeOptions);
 - Type: ?[Player](./struct.md/#Player)
 
 ## methods
-### .initialize()
-- Initializes the game
-- Returns: void
-
 ### .draw()
 - Checks if the game satisfies the draw conditions
 - Returns: boolean
@@ -505,6 +501,10 @@ new TicTacToe(ticTacToeOptions);
 | row       | number | *required* | The row index    |
 | col       | number | *required* | The column index |
 - Fills location (`row`, `col`) with the current player's symbol
+- Returns: void
+
+### .initialize()
+- Initializes the game
 - Returns: void
 
 ### .win(row, col)

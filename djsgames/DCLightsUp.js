@@ -58,11 +58,11 @@ class DCLightsUp extends LightsUp {
         await source.deferReply();
       }
 
-      this.mainMessage = await source.editReply({ content: '\u200b', components: this.components });
+      this.mainMessage = await source.editReply({ content: '\u200b', components: this.boardComponents });
       this.controllerMessage = await source.followUp({ content: '\u200b', components: [this._controller] });
     }
     else if (source.constructor.name === Message.name) {
-      this.mainMessage = await source.channel.send({ content: '\u200b', components: this.components });
+      this.mainMessage = await source.channel.send({ content: '\u200b', components: this.boardComponents });
       this.controllerMessage = await this.mainMessage.reply({ content: '\u200b', components: [this._controller] });
     }
     else {
@@ -108,7 +108,7 @@ class DCLightsUp extends LightsUp {
     }
 
     this.playerManager.next();
-    await this.mainMessage.edit({ components: this.components }).catch(() => {
+    await this.mainMessage.edit({ components: this.boardComponents }).catch(() => {
       this.end("DELETED");
     });
 
@@ -160,7 +160,7 @@ class DCLightsUp extends LightsUp {
         button.setDisabled(true);
       })
     });
-    await this.mainMessage.edit({ components: this.components }).catch(() => {});
+    await this.mainMessage.edit({ components: this.boardComponents }).catch(() => {});
     await this.controllerMessage.delete().catch(() => {});
   }
 
@@ -195,7 +195,7 @@ class DCLightsUp extends LightsUp {
     });
   }
 
-  get components() {
+  get boardComponents() {
     const actionRows = [];
     for (let i = 0; i < this.boardSize; i++) {
       actionRows.push(new MessageActionRow());

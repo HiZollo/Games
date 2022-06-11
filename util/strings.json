@@ -52,16 +52,16 @@
   "flipTrip": {
     "name": "Flip Trip",
     "numbers": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"],
-    "checks": ["⚪", "⚫"],
+    "pieces": ["⚪", "⚫"],
     "controller": {
       "stop": "Stop"
     },
     "endMessages": {
-      "win": "<player>, you make a full trip with <size> checks!",
+      "win": "<player>, you make a full trip with <size> piece(s)!",
       "lose": "<player>, `<state>` had appeared once before. Only <perm> permutation(s) left!",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
-      "deleted": "Wait? I can't see the checks, where does it go?",
+      "deleted": "Wait? I can't see the board, where does it go?",
       "gameStats": {
         "header": "Game Stats - <game>",
         "message": "**Total Time**: <min>:<sec>\n**Total Attempt(s)**: <step>"

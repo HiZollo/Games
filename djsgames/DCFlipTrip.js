@@ -145,7 +145,7 @@ class DCFlipTrip extends FlipTrip {
         content = format(message.win, { player: `<@${this.winner.id}>`, size: this.boardSize });
         break;
       case "LOSE":
-        content = format(message.lose, { player: `<@${this.loser.id}>`, state: this.checks, perm: this._permutationCount - this.playerManager.totalSteps });
+        content = format(message.lose, { player: `<@${this.loser.id}>`, state: this.pieces, perm: this._permutationCount - this.playerManager.totalSteps });
         break;
       case "IDLE":
         content = message.idle;
@@ -171,15 +171,15 @@ class DCFlipTrip extends FlipTrip {
       boardContent += this.strings.numbers[i];
     }
     boardContent += '\n';
-    boardContent += this.checks;
+    boardContent += this.pieces;
 
     return boardContent;
   }
 
-  get checks() {
+  get pieces() {
     let result = '';
     for (let i = this.boardSize - 1; i >= 0; i--) {
-      result += this.strings.checks[(this.state & (1 << i)) ? 1 : 0];
+      result += this.strings.pieces[(this.state & (1 << i)) ? 1 : 0];
     }
     return result;
   }

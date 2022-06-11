@@ -51,10 +51,10 @@ class DCTicTacToe extends TicTacToe {
       if (!source.deferred) {
         await source.deferReply();
       }
-      this.mainMessage = await source.editReply({ content: content, components: this.components });
+      this.mainMessage = await source.editReply({ content: content, components: this.boardComponents });
     }
     else if (source.constructor.name === Message.name) {
-      this.mainMessage = await source.channel.send({ content: content, components: this.components });
+      this.mainMessage = await source.channel.send({ content: content, components: this.boardComponents });
     }
     else {
       throw new Error('The source is neither an instance of CommandInteraction nor an instance of Message.');
@@ -102,7 +102,7 @@ class DCTicTacToe extends TicTacToe {
 
     this.playerManager.next();
     content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
-    await this.mainMessage.edit({ content, components: this.components }).catch(() => {
+    await this.mainMessage.edit({ content, components: this.boardComponents }).catch(() => {
       this.end("DELETED");
     });
 
@@ -146,7 +146,7 @@ class DCTicTacToe extends TicTacToe {
         button.setDisabled(true);
       })
     });
-    await this.mainMessage.edit({ content: '\u200b', components: this.components }).catch(() => {});
+    await this.mainMessage.edit({ content: '\u200b', components: this.boardComponents }).catch(() => {});
   }
 
   async conclude() {
@@ -180,7 +180,7 @@ class DCTicTacToe extends TicTacToe {
     });
   }
 
-  get components() {
+  get boardComponents() {
     const actionRows = [];
     for (let i = 0; i < this.boardSize; i++) {
       actionRows.push(new MessageActionRow());

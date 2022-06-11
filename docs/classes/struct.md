@@ -56,15 +56,15 @@ new Game(gameOptions, gameStatus);
 - Type: ?[Player](#Player)
 
 ## methods
-### .initialize()
-- Initializes the game
-- Returns: void
-
 ### .end(status)
 | parameter | type   | default    | description                |
 |-----------|--------|------------|----------------------------|
 | status    | string | *required* | The end status of the game |
 - Ends the game with a certain status
+- Returns: void
+
+### .initialize()
+- Initializes the game
 - Returns: void
 
 
