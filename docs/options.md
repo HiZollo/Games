@@ -99,46 +99,46 @@ This is the documentations for all options.
 
 
 # DjsFinalCodeOptions
-| parameter | type                                    | default                         | description                        |
-|-----------|-----------------------------------------|---------------------------------|------------------------------------|
-| min       | number                                  | `1`                             | The lower bound of the answer      |
-| max       | number                                  | `1000`                          | The upper bound of the answer      |
-| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                      | All players' data                  |
-| strings   | Object                                  | [strings.json](../strings.json) | The display strings                |
-| time      | number                                  | `60e3`                          | How long to consider a player idle |
+| parameter | type                                    | default                              | description                        |
+|-----------|-----------------------------------------|--------------------------------------|------------------------------------|
+| min       | number                                  | `1`                                  | The lower bound of the answer      |
+| max       | number                                  | `1000`                               | The upper bound of the answer      |
+| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                           | All players' data                  |
+| strings   | Object                                  | [strings.json](../util/strings.json) | The display strings                |
+| time      | number                                  | `60e3`                               | How long to consider a player idle |
 
 
 # DjsFlipTripOptions
-| parameter | type                                    | default                         | description                        |
-|-----------|-----------------------------------------|---------------------------------|------------------------------------|
-| boardSize | number                                  | `3`                             | The number of the pieces           |
-| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                      | All players' data                  |
-| strings   | Object                                  | [strings.json](../strings.json) | The display strings                |
-| time      | number                                  | `60e3`                          | How long to consider a player idle |
+| parameter | type                                    | default                              | description                        |
+|-----------|-----------------------------------------|--------------------------------------|------------------------------------|
+| boardSize | number                                  | `3`                                  | The number of the pieces           |
+| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                           | All players' data                  |
+| strings   | Object                                  | [strings.json](../util/strings.json) | The display strings                |
+| time      | number                                  | `60e3`                               | How long to consider a player idle |
 
 
 # DjsGomokuOptions
-| parameter | type                                    | default                         | description                        |
-|-----------|-----------------------------------------|---------------------------------|------------------------------------|
-| boardSize | number                                  | `9`                             | The number of the pieces           |
-| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                      | All players' data                  |
-| strings   | Object                                  | [strings.json](../strings.json) | The display strings                |
-| time      | number                                  | `60e3`                          | How long to consider a player idle |
+| parameter | type                                    | default                              | description                        |
+|-----------|-----------------------------------------|--------------------------------------|------------------------------------|
+| boardSize | number                                  | `9`                                  | The dimensions of the board        |
+| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                           | All players' data                  |
+| strings   | Object                                  | [strings.json](../util/strings.json) | The display strings                |
+| time      | number                                  | `60e3`                               | How long to consider a player idle |
 
 
 # DjsLightsUpOptions
-| parameter | type                                    | default                         | description                        |
-|-----------|-----------------------------------------|---------------------------------|------------------------------------|
-| boardSize | number                                  | `5`                             | The number of the pieces           |
-| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                      | All players' data                  |
-| strings   | Object                                  | [strings.json](../strings.json) | The display strings                |
-| time      | number                                  | `60e3`                          | How long to consider a player idle |
+| parameter | type                                    | default                              | description                        |
+|-----------|-----------------------------------------|--------------------------------------|------------------------------------|
+| boardSize | number                                  | `5`                                  | The dimensions of the board        |
+| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                           | All players' data                  |
+| strings   | Object                                  | [strings.json](../util/strings.json) | The display strings                |
+| time      | number                                  | `60e3`                               | How long to consider a player idle |
 
 
 # DjsTicTacToeOptions
-| parameter | type                                    | default                         | description                        |
-|-----------|-----------------------------------------|---------------------------------|------------------------------------|
-| boardSize | number                                  | `3`                             | The number of the pieces           |
-| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                      | All players' data                  |
-| strings   | Object                                  | [strings.json](../strings.json) | The display strings                |
-| time      | number                                  | `60e3`                          | How long to consider a player idle |
+| parameter | type                                    | default                              | description                        |
+|-----------|-----------------------------------------|--------------------------------------|------------------------------------|
+| boardSize | number                                  | `3`                                  | The dimensions of the board        |
+| players   | Array\<[PlayerOptions](#PlayerOptions)> | *required*                           | All players' data                  |
+| strings   | Object                                  | [strings.json](../util/strings.json) | The display strings                |
+| time      | number                                  | `60e3`                               | How long to consider a player idle |
