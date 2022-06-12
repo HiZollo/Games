@@ -42,10 +42,10 @@ client.on('messageCreate', async message => {
 });
 ```
 - To host a game, you need to create an instance of the class first. Then sequentially call `initialize()`, `start()` and `conclude()`, and await them.
-- Passing either a `CommandInteraction` instance or a `Message` instance to `initialize()` works.
+- Passing either a [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) instance or a [Message](https://discord.js.org/#/docs/main/stable/class/Message) instance to `initialize()` works.
 - For different games, you should pass corresponding options to the constructor. Those information are detailed in [this section](#Options).
 - You can, but are not recommended to, let bots join the game, since the bot will not and cannot play the game for themselves.
-- **Player that joins multiple games in the same channel may cause problems, so it's recommended to block them off if they are trying to do so**.
+- **Player who joins multiple games in the same channel may cause problems, so it's recommended to block them off if they are trying to do so**.
 
 # Documentations
 - [Basic Structures](./docs/classes/struct.md)
@@ -57,7 +57,7 @@ client.on('messageCreate', async message => {
 - [Misc.](./docs/others.md)
 
 # Quick Examples
-Games that do not require symbols. You can directly pass a discord.js `User` object to `player` parameter.
+Games that do not require symbols. You can directly pass a discord.js [User](https://discord.js.org/#/docs/main/stable/class/User) object to `player` parameter.
 ```js
 const mystrings = require('./your/path/to/mystrings.json');
 
@@ -73,7 +73,7 @@ await game.start();
 await game.conclude();
 ```
 
-Games that require symbols. It's recommended to pass a new object to `player` parameter.
+Games that require symbols. It's recommended to pass a new object to `players` parameter.
 ```js
 const mystrings = require('./your/path/to/mystrings.json');
 

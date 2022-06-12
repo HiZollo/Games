@@ -162,9 +162,9 @@ new PlayerManager(playerManagerOptions);
 
 ## methods
 ### .assign(n)
-| parameter | type           | default    | description |
-|-----------|----------------|------------|-------------|
-| n         | number         | *required* |             |
+| parameter | type           | default    | description             |
+|-----------|----------------|------------|-------------------------|
+| n         | number         | *required* | The index of the player |
 - Assigns a player as the current player
 - Returns: void
 
@@ -172,14 +172,14 @@ new PlayerManager(playerManagerOptions);
 | parameter | type           | default | description |
 |-----------|----------------|---------|-------------|
 | n         | number         | `1`     |             |
-- Changes the current player to the next `n` player
+- Changes the current player to the `n`-th next player
 - Returns: void
 
 ### .prev(n)
 | parameter | type           | default | description |
 |-----------|----------------|---------|-------------|
 | n         | number         | `1`     |             |
-- Changes the current player to the previous `n` player
+- Changes the current player to the `n`-th previous player
 - Returns: void
 
 
