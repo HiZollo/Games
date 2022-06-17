@@ -52,6 +52,7 @@ client.on('messageCreate', async message => {
 - [Games](./docs/classes/games.md)
 - [Discord.js Games](./docs/classes/djsgames.md)
 - [Options](./docs/options.md)
+- [Utilities](./docs/util.md)
 - [Game Rules](./docs/rules.md)
 - [Customize Strings](./docs/strings.md)
 - [Misc.](./docs/others.md)
