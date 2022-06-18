@@ -2,7 +2,6 @@ This is the documentations for all options.
 
 
 # Table of Contents
-- [GameOptions](#GameOptions)
 - [PlayerOptions](#PlayerOptions)
 - [PlayerManagerOptions](#PlayerManagerOptions)
 - [BullsAndCowsOptions](#BullsAndCowsOptions)
@@ -17,13 +16,6 @@ This is the documentations for all options.
 - [DjsGomokuOptions](#DjsGomokuOptions)
 - [DjsLightsUpOptions](#DjsLightsUpOptions)
 - [DjsTicTacToeOptions](#DjsTicTacToeOptions)
-
-
-# GameOptions
-| parameter            | type                                          | default    | description                |
-|----------------------|-----------------------------------------------|------------|----------------------------|
-| gameStatus           | Array\<string>                                | `[]`       | Extra statuses of the game |
-| playerManagerOptions | [PlayerManagerOptions](#PlayerManagerOptions) | *required* | Options for players        |
 
 
 # PlayerOptions

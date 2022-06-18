@@ -15,12 +15,12 @@ The base class for all games.
 
 ## constructor
 ```js
-new Game(gameOptions, gameStatus);
+new Game(playerManagerOptions, gameStatus);
 ```
-| parameter   | type                                      | default    | description                 |
-|-------------|-------------------------------------------|------------|-----------------------------|
-| gameOptions | [GameOptions](../options.md/#GameOptions) | *required* | Options for the game        |
-| gameStatus  | Array\<string>                            | `[]`       | Extra statuses for the game |
+| parameter            | type                                                        | default    | description                 |
+|----------------------|-------------------------------------------------------------|------------|-----------------------------|
+| playerManagerOptions | [PlayerManagerOptions](../options.md/#PlayerManagerOptions) | *required* | Options for the game        |
+| gameStatus           | Array\<string>                                              | `[]`       | Extra statuses for the game |
 
 ## properties
 ### .duration

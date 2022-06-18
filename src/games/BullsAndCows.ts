@@ -1,21 +1,28 @@
-const Game = require('../struct/Game.js');
-const GameUtil = require('../util/GameUtil.js');
+import { BullsAndCowsInterface, BullsAndCowsOptions, BullsAndCowsResult } from '../types/interfaces'
+import { Game } from '../struct/Game';
+import { Range } from '../struct/Range';
+import { GameUtil } from '../util/GameUtil';
 
-class BullsAndCows extends Game {
-  constructor({ players, hardmode = false, answerLength = 4 }) {
+export class BullsAndCows extends Game implements BullsAndCowsInterface {
+  public answer: number[];
+  public answerLength: number;
+  public numberCount: number;
+  public hardMode: boolean;
+
+  constructor({ players, hardMode = false, answerLength = 4 }: BullsAndCowsOptions) {
     if (answerLength > 10) {
       throw new Error('Parameter answerLength should be less than or equal to 10');
     }
 
-    super({ players, playerCountRange: [1, 1] });
+    super({ playerManagerOptions: { players, playerCountRange: new Range(1, 1) } });
 
     this.answer = [];
     this.answerLength = answerLength;
     this.numberCount = 10;
-    this.hardmode = hardmode;
+    this.hardMode = hardMode;
   }
 
-  initialize() {
+  initialize(): void {
     super.initialize();
 
     const numbers = [];
@@ -30,7 +37,7 @@ class BullsAndCows extends Game {
     }
   }
 
-  guess(query) {
+  guess(query: number[]): BullsAndCowsResult {
     if (query.length !== this.answerLength) {
       throw new Error(`The number count in query ${query} is different with the answer's length (${this.answerLength}).`);
     }
@@ -49,9 +56,7 @@ class BullsAndCows extends Game {
     return result;
   }
 
-  win(result) {
+  win(result: BullsAndCowsResult): boolean {
     return result.a === this.answerLength;
   }
 }
-
-module.exports = BullsAndCows;

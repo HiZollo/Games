@@ -1,9 +1,9 @@
-class GameUtil extends null {
+export class GameUtil extends null {
   /**
    * Shuffles an Array.
    * @param {Array<*>} array
    */
-  static shuffle(array) {
+  static shuffle(array: any[]): void {
     for (let i = array.length - 1; i > 0; i--) {
       const j = GameUtil.randomInt(0, i);
       [array[i], array[j]] = [array[j], array[i]];
@@ -12,14 +12,14 @@ class GameUtil extends null {
 
   /**
    * Checks if a specific grid in 2D Array is lined up.
-   * @param {Array<Array<*>>} board
+   * @param {Array<Array<string | null>>} board
    * @param {number} row the row index
    * @param {number} col the column index
    * @param {number} amount the minimum number for a symbol to make a line
    * @param {Array<Array<number>>} directions the possible directions to make a line
-   * @returns {?*} the symbol if it is lined up, null if not
+   * @returns {string | null} the symbol if it is lined up, null if not
    */
-  static checkStrike(board, row, col, totalStrike, directions = [[1, 1], [1, 0], [0, 1], [-1, 1]]) {
+  static checkStrike(board: (string | null)[][], row: number, col: number, amount: number, directions = [[1, 1], [1, 0], [0, 1], [-1, 1]]): string | null {
     const symbol = board[row][col];
     const rowCount = board.length;
     const colCount = board[row].length;
@@ -36,7 +36,7 @@ class GameUtil extends null {
       let negSame = (0 <= negRow && negRow < rowCount) && (0 <= negCol && negCol < colCount) && board[negRow][negCol] === symbol;
       let posSame = (0 <= posRow && posRow < rowCount) && (0 <= posCol && posCol < colCount) && board[posRow][posCol] === symbol;
 
-      while (currentStrike < totalStrike && (negSame || posSame)) {
+      while (currentStrike < amount && (negSame || posSame)) {
         if (negSame) {
           currentStrike++;
           negRow -= dr, negCol -= dc;
@@ -49,7 +49,7 @@ class GameUtil extends null {
         }
       }
 
-      if (currentStrike >= totalStrike) {
+      if (currentStrike >= amount) {
         return symbol;
       }
     }
@@ -63,9 +63,7 @@ class GameUtil extends null {
    * @param {number} max
    * @returns {number}
    */
-  static randomInt(min, max) {
+  static randomInt(min: number, max: number): number {
     return Math.floor((max - min + 1) * Math.random()) + min;
   }
 }
-
-module.exports = GameUtil;
