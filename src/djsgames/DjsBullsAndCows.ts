@@ -98,6 +98,11 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
     return result.a === this.answerLength;
   }
 
+  async end(status: string): Promise<void> {
+    super.end(status);
+    await this.mainMessage?.edit({ components: [] }).catch(() => {});
+  }
+
   getEndContent(): string {
     const message = this.strings.endMessages;
     switch (this.status.now) {

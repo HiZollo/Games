@@ -79,11 +79,6 @@ export abstract class DjsGame extends Game {
     }
   }
 
-  async end(status: string): Promise<void> {
-    super.end(status);
-    await this.mainMessage?.edit({ components: [] }).catch(() => {});
-  }
-
   async conclude(): Promise<void> {
     if (this.ongoing) {
       throw new Error('The game has not ended.');
@@ -161,12 +156,12 @@ export abstract class DjsGame extends Game {
       return null;
     }
     if (input.customId) {
-      input.update({});
+      await input.update({});
       return input.customId;
     }
 
     const message = input.first();
-    message.delete(() => {});
+    await message.delete(() => {});
     return message.content;
   }
 }

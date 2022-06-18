@@ -104,6 +104,19 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
     return true;
   }
 
+  async end(status: string): Promise<void> {
+    super.end(status);
+
+    this.boardButtons.forEach(row => {
+      row.forEach(button => {
+        button.setDisabled(true);
+      })
+    });
+
+    await this.mainMessage?.edit({ components: this.displayBoard });
+    await this.controllerMessage?.delete().catch(() => {});
+  }
+
   getEndContent(): string {
     const message = this.strings.endMessages;
     switch (this.status.now) {
