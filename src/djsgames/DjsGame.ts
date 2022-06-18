@@ -1,9 +1,8 @@
-import { ButtonInteraction, Client, CommandInteraction, Message, MessageActionRow, MessageEmbed } from 'discord.js';
-import { DjsGameOptions, DjsInputResult } from '../types/interfaces';
+import { ButtonInteraction, Client, CommandInteraction, InteractionReplyOptions, Message, MessageActionRow, MessageEmbed } from 'discord.js';
+import { DjsGameOptions, DjsInputResult, GameStrings } from '../types/interfaces';
 import { Game } from '../struct/Game';
 import { Player } from '../struct/Player';
 import { fixedDigits, format, sleep } from '../util/Functions';
-import { GameStrings } from '../types/types';
 
 export abstract class DjsGame extends Game {
   public client: Client;
@@ -12,7 +11,6 @@ export abstract class DjsGame extends Game {
 
   // actual displaying things
   public abstract strings: GameStrings;
-  public abstract content: string;
   public abstract mainMessage: Message | void;
   public abstract controller: MessageActionRow;
   public abstract controllerMessage: Message | void;
@@ -25,7 +23,7 @@ export abstract class DjsGame extends Game {
   protected abstract idleToDo(nowPlayer: Player): DjsInputResult;
   protected abstract buttonToDo(nowPlayer: Player, input: string): DjsInputResult;
   protected abstract messageToDo(nowPlayer: Player, input: string): DjsInputResult;
-  protected abstract update(result: DjsInputResult): DjsInputResult;
+  protected abstract update(result: DjsInputResult): Promise<DjsInputResult>;
 
 
   constructor({ playerManagerOptions, source, time = 60e3, gameStatus = [] }: DjsGameOptions) {
@@ -55,7 +53,7 @@ export abstract class DjsGame extends Game {
       result = this.messageToDo(nowPlayer, input);
     }
 
-    result = this.update(result);
+    result = await this.update(result);
 
     if (result.endStatus) {
       this.end(result.endStatus);
@@ -96,6 +94,13 @@ export abstract class DjsGame extends Game {
     await this.mainMessage?.reply({ content, embeds }).catch(() => {
       this.source.channel?.send({ content, embeds });
     });
+  }
+
+  protected ephemeralFollowUp(options: InteractionReplyOptions): void {
+    if ('followUp' in this.source) {
+      options.ephemeral = true;
+      this.source.followUp(options);
+    }
   }
 
 
@@ -157,7 +162,6 @@ export abstract class DjsGame extends Game {
     }
     if (input.customId) {
       input.update({});
-      input.replied = false;
       return input.customId;
     }
 

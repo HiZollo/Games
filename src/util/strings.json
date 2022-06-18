@@ -103,7 +103,7 @@
   },
   "lightsUp": {
     "name": "Lights-up",
-    "answer": ["🔴", "🟡"],
+    "answerSymbols": ["🔴", "🟡"],
     "currentAnswer": "The answer to the board is: \n<answer>",
     "controller": {
       "answer": "Answer",
@@ -111,10 +111,8 @@
     },
     "endMessages": {
       "jackpot": "JACKPOT! All bulbs are lighted up in the first place!",
-      "win": {
-        "answered": "Congrats, <player>! You lighted up all bulbs!",
-        "unanswered": "Congrats, <player>! You lighted up all bulbs without checking the answer!"
-      },
+      "win": "Congrats, <player>! You lighted up all bulbs!",
+      "unansweredWin": "Congrats, <player>! You lighted up all bulbs without checking the answer!",
       "idle": "The game has been stopped because of idleness.",
       "stopped": "The game has been stopped manually.",
       "deleted": "Wait? I can't see the chess board, where does it go?",

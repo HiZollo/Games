@@ -1,12 +1,11 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
-import { DjsGame } from './DjsGame';
-import { BullsAndCowsInterface, BullsAndCowsResult, DjsBullsAndCowsOptions, DjsInputResult } from '../types/interfaces';
-import { BullsAndCowsStrings } from '../types/types';
+import { BullsAndCowsInterface, DjsBullsAndCowsOptions, BullsAndCowsResult, BullsAndCowsStrings, DjsInputResult } from '../types/interfaces';
 import { format, overwrite } from '../util/Functions';
 import { GameUtil } from '../util/GameUtil';
 import { bullsAndCows } from '../util/strings.json';
 import { Player } from '../struct/Player';
 import { Range } from '../struct/Range';
+import { DjsGame } from './DjsGame';
 
 export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
   public answer: number[];
@@ -44,7 +43,7 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
     this.mainMessage = undefined;
     this.controllerMessage = undefined;
 
-    this.inputMode = 0b11;
+    this.inputMode = 0b01;
   }
 
   async initialize(): Promise<void> {
@@ -61,12 +60,19 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
       this.answer.push(numbers[i]);
     }
 
-    const mainMessage = await this.source.reply({ content: this.content, components: [this.controller] });
-    if (!mainMessage) {
-      throw new Error('Something went wrong when sending reply.')
+    if ('editReply' in this.source) {
+      if (!this.source.inCachedGuild()) { // type guard
+        throw new Error('The guild is not cached.');
+      }
+      if (!this.source.deferred) {
+        await this.source.deferReply();
+      }
+
+      this.mainMessage = await this.source.editReply({ content: this.content, components: [this.controller] });
     }
-    this.mainMessage = mainMessage;
-    this.controllerMessage = mainMessage;
+    else {
+      this.mainMessage = await this.source.channel.send({ content: this.content, components: [this.controller] });
+    }
   }
 
   guess(query: number[]): BullsAndCowsResult {
@@ -139,7 +145,7 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
     if (!this.mainMessage) {
       throw new Error('Something went wrong when sending reply.');
     }
-    if (!input.startsWith('HZG_CTRL_stop')) {
+    if (!input.startsWith('HZG_CTRL_')) {
       throw new Error('Invalid button received.');
     }
 
@@ -178,7 +184,7 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
     };
   }
 
-  protected update(result: DjsInputResult): DjsInputResult {
+  protected async update(result: DjsInputResult): Promise<DjsInputResult> {
     if (!this.mainMessage) {
       throw new Error('Something went wrong when sending reply.');
     }

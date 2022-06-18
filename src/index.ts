@@ -7,6 +7,7 @@ export { GameStatusManager } from './struct/GameStatusManager';
 export { PlayerStatusManager } from './struct/PlayerStatusManager';
 
 export { BullsAndCows } from './games/BullsAndCows';
+export { LightsUp } from './games/LightsUp';
 
 export { DjsGame } from './djsgames/DjsGame';
-export { DjsBullsAndCows } from './djsgames/DjsBullsAndCows';
+export { DjsLightsUp } from './djsgames/DjsLightsUp';

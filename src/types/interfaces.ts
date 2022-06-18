@@ -1,10 +1,9 @@
 import { CommandInteraction, Message, MessageActionRow } from 'discord.js';
 import { Range } from '../struct/Range';
 
-export interface GameOptions {
-  playerManagerOptions: PlayerManagerOptions, 
-  gameStatus?: string[]
-}
+
+
+// basic structure options
 
 export interface PlayerOptions {
   id: number | string, 
@@ -20,19 +19,9 @@ export interface PlayerManagerOptions {
   firstPlayerIndex?: number
 }
 
-export interface BullsAndCowsOptions {
-  players: PlayerOptions[], 
-  hardMode?: boolean, 
-  answerLength?: number
-}
-
-/**
- * @property `a` the number of a's
- * @property `b` the number of b's
- */
-export interface BullsAndCowsResult {
-  a: number, 
-  b: number
+export interface GameOptions {
+  playerManagerOptions: PlayerManagerOptions, 
+  gameStatus?: string[]
 }
 
 export interface DjsGameOptions extends GameOptions {
@@ -40,21 +29,114 @@ export interface DjsGameOptions extends GameOptions {
   time: number
 }
 
-export interface DjsBullsAndCowsOptions extends DjsGameOptions, BullsAndCowsOptions {
-  strings: string
+
+
+// implemented game options
+
+export interface BullsAndCowsOptions {
+  players: PlayerOptions[], 
+  hardMode?: boolean, 
+  answerLength?: number
 }
+
+export interface LightsUpOptions {
+  players: PlayerOptions[], 
+  boardSize: number
+}
+
+
+
+// implemented discord.js game options
+
+export interface DjsBullsAndCowsOptions extends DjsGameOptions, BullsAndCowsOptions {
+  strings: BullsAndCowsStrings
+}
+
+export interface DjsLightsUpOptions extends DjsGameOptions, LightsUpOptions {
+  strings: LightsUpStrings
+}
+
+
+
+// interfaces to implement
 
 export interface BullsAndCowsInterface {
   answer: number[], 
   answerLength: number, 
   numberCount: number, 
   hardMode: boolean, 
-  win(result: BullsAndCowsResult): boolean, 
-  guess(query: number[]): BullsAndCowsResult
+  guess(query: number[]): BullsAndCowsResult, 
+  win(result: BullsAndCowsResult): boolean
 }
+
+export interface LightsUpInterface {
+  answer: boolean[][], 
+  board: boolean[][], 
+  boardSize: number, 
+  flip(row: number, col: number): void, 
+  win(): boolean
+}
+
+
+
+// function returned results
 
 export interface DjsInputResult {
   components: MessageActionRow[], 
   content: string, 
   endStatus: string
+}
+
+export interface BullsAndCowsResult {
+  a: number, 
+  b: number
+}
+
+
+
+// strings
+
+export interface GameStrings {
+  name: string,
+  controller: ControllerStrings,
+  endMessages: EndMessageStrings
+}
+
+export interface ControllerStrings {
+  stop: string
+}
+
+export interface EndMessageStrings {
+  win: string,
+  idle: string,
+  stopped: string,
+  deleted: string,
+  gameStats: {
+    header: string, 
+    message: string
+  }, 
+  playerStats: {
+    message: string
+  }
+}
+
+export interface BullsAndCowsStrings extends GameStrings {
+  initial: string, 
+  query: string
+}
+
+export interface LightsUpStrings extends GameStrings {
+  answerSymbols: string[], 
+  currentAnswer: string, 
+  controller: LightsUpConstollerStrings
+  endMessages: LightsUpEndMessageStrings
+}
+
+export interface LightsUpConstollerStrings extends ControllerStrings {
+  answer: string
+}
+
+export interface LightsUpEndMessageStrings extends EndMessageStrings {
+  jackpot: string, 
+  unansweredWin: string
 }
