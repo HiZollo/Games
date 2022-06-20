@@ -44,5 +44,3 @@ export class FlipTrip extends Game implements FlipTripInterface {
     return this.playerManager.totalSteps === this.permutationCount - 1;
   }
 }
-
-module.exports = FlipTrip;

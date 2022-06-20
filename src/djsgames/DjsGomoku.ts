@@ -23,7 +23,7 @@ export class DjsGomoku extends DjsGame implements GomokuInterface {
 
   
   constructor({ boardSize = 9, players, source, strings, time }: DjsGomokuOptions) {
-    super({ playerManagerOptions: { players, playerCountRange: new Range(1, Infinity) }, source, time });
+    super({ playerManagerOptions: { players, playerCountRange: new Range(2, Infinity) }, source, time });
     if (boardSize > 19) {
       throw new Error('The size of the board should be at most 19.');
     }

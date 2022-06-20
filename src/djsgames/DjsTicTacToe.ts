@@ -1,43 +1,38 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
-import { LightsUpInterface, DjsLightsUpOptions, LightsUpStrings, DjsInputResult } from '../types/interfaces';
+import { TicTacToeInterface, DjsTicTacToeOptions, TicTacToeStrings, DjsInputResult } from '../types/interfaces';
 import { format, overwrite } from '../util/Functions';
 import { GameUtil } from '../util/GameUtil';
-import { lightsUp } from '../util/strings.json';
+import { ticTacToe } from '../util/strings.json';
 import { Player } from '../struct/Player';
 import { Range } from '../struct/Range';
 import { DjsGame } from './DjsGame';
 
-export class DjsLightsUp extends DjsGame implements LightsUpInterface {
-  public answer: boolean[][];
-  public board: boolean[][];
+export class DjsTicTacToe extends DjsGame implements TicTacToeInterface {
+  public board: (string | null)[][];
   public boardSize: number;
 
-  public strings: LightsUpStrings;
+  public strings: TicTacToeStrings;
   public mainMessage: Message | void;
   public controller: MessageActionRow;
   public controllerMessage: Message | void;
 
   private boardButtons: MessageButton[][];
-  protected answered: boolean;
+  protected occupiedCount: number;
   protected inputMode: number;
 
-  constructor({ boardSize = 5, players, source, strings, time }: DjsLightsUpOptions) {
-    super({ playerManagerOptions: { players, playerCountRange: new Range(1, 1) }, source, time });
-    if (boardSize > 5) {
-      throw new Error('The size of the board should be at most 5.');
+  
+  constructor({ boardSize = 3, players, source, strings, time }: DjsTicTacToeOptions) {
+    super({ playerManagerOptions: { players, playerCountRange: new Range(2, Infinity) }, source, time });
+    if (boardSize > 4) {
+      throw new Error('The size of the board should be at most 4.');
     }
 
-    this.answer = [];
     this.board = [];
     this.boardSize = boardSize;
 
-    this.strings = overwrite(JSON.parse(JSON.stringify(lightsUp)), strings);
+    this.strings = overwrite(JSON.parse(JSON.stringify(ticTacToe)), strings);
     this.boardButtons = [];
     this.controller = new MessageActionRow().addComponents(
-      new MessageButton()
-        .setCustomId('HZG_CTRL_answer')
-        .setLabel(this.strings.controller.answer)
-        .setStyle("SUCCESS"), 
       new MessageButton()
         .setCustomId('HZG_CTRL_stop')
         .setLabel(this.strings.controller.stop)
@@ -47,8 +42,8 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
     this.mainMessage = undefined;
     this.controllerMessage = undefined;
 
-    this.answered = false;
-    this.inputMode = 0b10;
+    this.occupiedCount = 0;
+    this.inputMode = 0b01;
   }
 
   async initialize(): Promise<void> {
@@ -56,31 +51,18 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
 
     for (let i = 0; i < this.boardSize; i++) {
       this.board.push([]);
-      for (let j = 0; j < this.boardSize; j++)
-        this.board[i].push(true);
-    }
-
-    for (let i = 0; i < this.boardSize; i++) {
-      this.answer.push([]);
-      for (let j = 0; j < this.boardSize; j++) {
-        this.answer[i].push(false);
-        if (GameUtil.randomInt(0, 1)) {
-          this.flip(i, j);
-        }
-      }
-    }
-
-    for (let i = 0; i < this.boardSize; i++) {
       this.boardButtons.push([]);
       for (let j = 0; j < this.boardSize; j++) {
+        this.board[i].push(null);
         this.boardButtons[i].push(new MessageButton()
-          .setCustomId(`HZG_PLAY_${i}_${j}`)
-          .setLabel('\u200b')
-          .setStyle("PRIMARY")
-        );
+        .setCustomId(`HZG_PLAY_${i}_${j}`)
+        .setLabel(this.strings.labels[i][j])
+        .setStyle("PRIMARY")
+      );
       }
     }
 
+    const content = format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
     if ('editReply' in this.source) {
       if (!this.source.inCachedGuild()) { // type guard
         throw new Error('The guild is not cached.');
@@ -88,31 +70,32 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
       if (!this.source.deferred) {
         await this.source.deferReply();
       }
-      this.mainMessage = await this.source.editReply({ content: '\u200b', components: this.displayBoard });
-      this.controllerMessage = await this.source.followUp({ content: '\u200b', components: [this.controller] });
+      this.mainMessage = await this.source.editReply({ content: content, components: [...this.displayBoard, this.controller] });
+      this.controllerMessage = this.mainMessage;
     }
     else {
-      this.mainMessage = await this.source.channel.send({ content: '\u200b', components: this.displayBoard });
-      this.controllerMessage = await this.mainMessage.reply({ content: '\u200b', components: [this.controller] });
+      this.mainMessage = await this.source.channel.send({ content: content, components: [...this.displayBoard, this.controller] });
+      this.controllerMessage = this.mainMessage;
     }
   }
 
-  flip(row: number, col: number): void {
-    [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dr, dc]) => {
-      const nr = row + dr, nc = col + dc;
-      if (0 <= nr && nr < this.boardSize && 0 <= nc && nc < this.boardSize) {
-        this.board[nr][nc] = !this.board[nr][nc];
-        this.boardButtons[nr][nc].setStyle(this.board[nr][nc] ? "PRIMARY" : "SECONDARY");
-      }
-    });
-    this.answer[row][col] = !this.answer[row][col];
+  fill(row: number, col: number): void {
+    if (this.board[row][col] !== null)
+      throw new Error(`Trying to fill board[${row}][${col}] that has already been filled.`);
+
+    this.board[row][col] = this.playerManager.nowPlayer.symbol;
+    this.boardButtons[row][col]
+      .setDisabled(true)
+      .setLabel(this.board[row][col] ?? this.strings.labels[row][col]);
+    this.occupiedCount++;
+    }
+
+  win(row: number, col: number): (string | null) {
+    return GameUtil.checkStrike(this.board, row, col, this.boardSize);
   }
 
-  win(): boolean {
-    for (let i = 0; i < this.boardSize; i++)
-      for (let j = 0; j < this.boardSize; j++)
-        if (!this.board[i][j]) return false;
-    return true;
+  draw(): boolean {
+    return this.occupiedCount === this.boardSize ** 2;
   }
 
   async end(status: string): Promise<void> {
@@ -123,20 +106,18 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
         button.setDisabled(true);
       })
     });
-
-    await this.mainMessage?.edit({ components: this.displayBoard }).catch(() => {});
-    await this.controllerMessage?.delete().catch(() => {});
+    await this.mainMessage?.edit({ content: '\u200b', components: this.displayBoard }).catch(() => {});
   }
 
   getEndContent(): string {
     const message = this.strings.endMessages;
     switch (this.status.now) {
-      case "JACKPOT":
-        return format(message.jackpot, { player: `<@${this.winner?.id}>` });
       case "WIN":
-        return format(this.answered ? message.win : message.unansweredWin, { player: `<@${this.winner?.id}>` });
+        return format(message.win, { player: `<@${this.winner?.id}>` });
       case "IDLE":
         return message.idle;
+      case "DRAW":
+        return message.draw;
       case "STOPPED":
         return message.stopped;
       case "DELETED":
@@ -162,7 +143,7 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
 
     nowPlayer.status.set("IDLE");
     return {
-      components: this.displayBoard, 
+      content: format(this.strings.previous.idle, { player: nowPlayer.username }) + '\n', 
     };
   }
 
@@ -172,34 +153,34 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
     }
     const args = input.split('_');
 
+    let content = '';
+    let endStatus = "";
     if (args[0] !== "HZG") {
       throw new Error('Invalid button received.');
     }
-    
-    let endStatus = "";
     if (args[1] === "CTRL") {
-      if (args[2] === 'stop') {
-        nowPlayer.status.set("LEAVING");
-      }
-      if (args[2] === 'answer') {
-        nowPlayer.status.set("PLAYING");
-        this.ephemeralFollowUp({ content: format(this.strings.currentAnswer, { answer: this.answerContent }) });
-      }
+      nowPlayer.status.set("LEAVING");
+      content = format(this.strings.previous.leaving, { player: nowPlayer.username }) + '\n';
     }
     else if (args[1] === "PLAY") {
       nowPlayer.status.set("PLAYING");
       nowPlayer.addStep();
 
-      this.flip(parseInt(args[2], 10), parseInt(args[3], 10));
+      const [row, col] = [parseInt(args[2]), parseInt(args[3])];
+      this.fill(row, col);
 
-      if (this.win()) {
+      if (this.win(row, col)) {
         this.winner = nowPlayer;
         endStatus = "WIN";
+      }
+      else if (this.draw()) {
+        endStatus = "DRAW";
       }
     }
 
     return {
-      components: this.displayBoard, 
+      components: [...this.displayBoard, this.controller], 
+      content: content, 
       endStatus: endStatus
     };
   }
@@ -214,11 +195,13 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
     }
 
     this.playerManager.next();
+    result.content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
     await this.mainMessage.edit(result).catch(() => {
       result.endStatus = "DELETED";
     });
     return result;
   }
+
 
   private get displayBoard(): MessageActionRow[] {
     const actionRows = [];
@@ -229,16 +212,5 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
       }
     }
     return actionRows;
-  }
-
-  private get answerContent(): string {
-    this.answered = true;
-    let content = '';
-    for (let i = 0; i < this.boardSize; i++) {
-      for (let j = 0; j < this.boardSize; j++)
-        content += this.strings.answerSymbols[this.answer[i][j] ? 1 : 0];
-      content += '\n';
-    }
-    return content;
   }
 }

@@ -129,7 +129,7 @@ export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
   }
 
   protected messageFilter = (): boolean => {
-    return true;
+    return false;
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {

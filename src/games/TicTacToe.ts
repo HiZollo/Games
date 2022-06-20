@@ -1,17 +1,17 @@
-import { GomokuInterface, GomokuOptions } from '../types/interfaces'
+import { TicTacToeInterface, TicTacToeOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
 import { GameUtil } from '../util/GameUtil';
 
-export class Gomoku extends Game implements GomokuInterface {
+export class TicTacToe extends Game implements TicTacToeInterface {
   public board: (string | null)[][];
   public boardSize: number;
 
   private occupiedCount: number;
 
-  constructor({ players, boardSize = 19 }: GomokuOptions ) {
-    if (boardSize > 19) {
-      throw new Error('The size of the board should be at most 19.');
+  constructor({ players, boardSize = 3 }: TicTacToeOptions ) {
+    if (boardSize > 5) {
+      throw new Error('The size of the board should be at most 5.');
     }
 
     super({ playerManagerOptions: { players, playerCountRange: new Range(2, Infinity), requireSymbol: true } });
@@ -22,7 +22,7 @@ export class Gomoku extends Game implements GomokuInterface {
     this.occupiedCount = 0;
   }
 
-  initialize(): void {
+  initialize() {
     super.initialize();
 
     for (let i = 0; i < this.boardSize; i++) {
@@ -41,7 +41,7 @@ export class Gomoku extends Game implements GomokuInterface {
   }
 
   win(row: number, col: number): (string | null) {
-    return GameUtil.checkStrike(this.board, row, col, 5);
+    return GameUtil.checkStrike(this.board, row, col, this.boardSize);
   }
 
   draw(): boolean {

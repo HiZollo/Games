@@ -59,6 +59,11 @@ export interface LightsUpOptions {
   boardSize: number
 }
 
+export interface TicTacToeOptions {
+  players: PlayerOptions[], 
+  boardSize: number
+}
+
 
 
 // implemented discord.js game options
@@ -81,6 +86,10 @@ export interface DjsGomokuOptions extends DjsGameOptions, GomokuOptions {
 
 export interface DjsLightsUpOptions extends DjsGameOptions, LightsUpOptions {
   strings: LightsUpStrings
+}
+
+export interface DjsTicTacToeOptions extends DjsGameOptions, LightsUpOptions {
+  strings: TicTacToeStrings
 }
 
 
@@ -112,8 +121,8 @@ export interface FlipTripInterface {
 }
 
 export interface GomokuInterface {
+  board: (string | null)[][], 
   boardSize: number, 
-  board: (string | null)[][]
   fill(row: number, col: number): void, 
   win(row: number, col: number): (string | null), 
   draw(): boolean
@@ -125,6 +134,14 @@ export interface LightsUpInterface {
   boardSize: number, 
   flip(row: number, col: number): void, 
   win(): boolean
+}
+
+export interface TicTacToeInterface {
+  board: (string | null)[][], 
+  boardSize: number, 
+  fill(row: number, col: number): void, 
+  win(row: number, col: number): (string | null), 
+  draw(): boolean
 }
 
 
@@ -232,4 +249,20 @@ export interface LightsUpConstollerStrings extends ControllerStrings {
 export interface LightsUpEndMessageStrings extends EndMessageStrings {
   jackpot: string, 
   unansweredWin: string
+}
+
+export interface TicTacToeStrings extends GameStrings {
+  labels: string[][], 
+  previous: TicTacToePreviousStrings, 
+  nowPlayer: string, 
+  endMessages: TicTacToeEndMessageStrings
+}
+
+export interface TicTacToePreviousStrings {
+  idle: string, 
+  leaving: string
+}
+
+export interface TicTacToeEndMessageStrings extends EndMessageStrings {
+  draw: string
 }
