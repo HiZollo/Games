@@ -13,7 +13,7 @@ export abstract class Game {
   private initialized: boolean;
   private ended: boolean;
 
-  abstract win(...args: any[]): {};
+  abstract win(...args: any[]): void;
 
   
   constructor({ playerManagerOptions, gameStatus = [] }: GameOptions) {

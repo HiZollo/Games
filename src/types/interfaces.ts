@@ -49,6 +49,11 @@ export interface FlipTripOptions {
   boardSize: number
 }
 
+export interface GomokuOptions {
+  players: PlayerOptions[], 
+  boardSize: number
+}
+
 export interface LightsUpOptions {
   players: PlayerOptions[], 
   boardSize: number
@@ -68,6 +73,10 @@ export interface DjsFinalCodeOptions extends DjsGameOptions, FinalCodeOptions {
 
 export interface DjsFlipTripOptions extends DjsGameOptions, FlipTripOptions {
   strings: FlipTripStrings
+}
+
+export interface DjsGomokuOptions extends DjsGameOptions, GomokuOptions {
+  strings: GomokuStrings
 }
 
 export interface DjsLightsUpOptions extends DjsGameOptions, LightsUpOptions {
@@ -100,6 +109,14 @@ export interface FlipTripInterface {
   appearedStates: number[]
   flip(location: number): boolean, 
   win(): boolean
+}
+
+export interface GomokuInterface {
+  boardSize: number, 
+  board: (string | null)[][]
+  fill(row: number, col: number): void, 
+  win(row: number, col: number): (string | null), 
+  draw(): boolean
 }
 
 export interface LightsUpInterface {
@@ -179,6 +196,26 @@ export interface FlipTripStrings extends GameStrings {
 
 export interface FlipTripEndMessageStrings extends EndMessageStrings {
   lose: string
+}
+
+export interface GomokuStrings extends GameStrings {
+  rows: string[], 
+  columns: string[], 
+  grid: string, 
+  corner: string, 
+  previous: GomokuPreviousStrings, 
+  nowPlayer: string, 
+  endMessages: GomokuSEndMessageStrings
+}
+
+export interface GomokuPreviousStrings {
+  move: string, 
+  idle: string, 
+  leaving: string
+}
+
+export interface GomokuSEndMessageStrings extends EndMessageStrings {
+  draw: string
 }
 
 export interface LightsUpStrings extends GameStrings {

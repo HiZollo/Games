@@ -22,7 +22,7 @@ export function fixedDigits(integer: number, length: number): string {
  * console.log(string);
  * // I love tea and pizza!
  */
-export function format(formatString: string, specifiers: {[key: string]: boolean | number | string}): string {
+export function format(formatString: string, specifiers: {[key: string]: boolean | number | string | null}): string {
   for (let key in specifiers) {
     const regexp = new RegExp(`<${key}>`, 'g');
     formatString = formatString.replaceAll(regexp, `${specifiers[key]}`);

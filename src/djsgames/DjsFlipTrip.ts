@@ -138,7 +138,7 @@ export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
     }
 
     nowPlayer.status.set("IDLE");
-      return {
+    return {
       content: this.boardContent, 
     };
   }

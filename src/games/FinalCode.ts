@@ -19,7 +19,7 @@ export class FinalCode extends Game implements FinalCodeInterface {
     this.range = range;
   }
 
-  initialize() {
+  initialize(): void {
     super.initialize();
 
     this.answer = GameUtil.randomInt(this.range.min + 1, this.range.max - 1);

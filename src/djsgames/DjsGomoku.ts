@@ -1,34 +1,37 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
-import { FinalCodeInterface, DjsFinalCodeOptions, FinalCodeStrings, DjsInputResult } from '../types/interfaces';
+import { GomokuInterface, DjsGomokuOptions, GomokuStrings, DjsInputResult } from '../types/interfaces';
 import { format, overwrite } from '../util/Functions';
 import { GameUtil } from '../util/GameUtil';
-import { finalCode } from '../util/strings.json';
+import { gomoku } from '../util/strings.json';
 import { Player } from '../struct/Player';
 import { Range } from '../struct/Range';
 import { DjsGame } from './DjsGame';
 
-export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
-  public answer: number;
-  public range: Range;
+const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  public strings: FinalCodeStrings;
+export class DjsGomoku extends DjsGame implements GomokuInterface {
+  public board: (string | null)[][];
+  public boardSize: number;
+
+  public strings: GomokuStrings;
   public mainMessage: Message | void;
   public controller: MessageActionRow;
   public controllerMessage: Message | void;
 
+  protected occupiedCount: number;
   protected inputMode: number;
 
-
-  constructor({ range = new Range(1, 1000), players, source, strings, time }: DjsFinalCodeOptions) {
+  
+  constructor({ boardSize = 9, players, source, strings, time }: DjsGomokuOptions) {
     super({ playerManagerOptions: { players, playerCountRange: new Range(1, Infinity) }, source, time });
-    if (range.interval <= 2) {
-      throw new Error('The length of the interval should be larger than 2.');
+    if (boardSize > 19) {
+      throw new Error('The size of the board should be at most 19.');
     }
 
-    this.answer = 0;
-    this.range = range;
+    this.board = [];
+    this.boardSize = boardSize;
 
-    this.strings = overwrite(JSON.parse(JSON.stringify(finalCode)), strings);
+    this.strings = overwrite(JSON.parse(JSON.stringify(gomoku)), strings);
     this.controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('HZG_CTRL_stop')
@@ -39,16 +42,21 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
     this.mainMessage = undefined;
     this.controllerMessage = undefined;
 
+    this.occupiedCount = 0;
     this.inputMode = 0b01;
   }
 
   async initialize(): Promise<void> {
     super.initialize();
 
-    this.answer = GameUtil.randomInt(this.range.min + 1, this.range.max - 1);
-    let content = format(this.strings.interval, { min: this.range.min, max: this.range.max }) + '\n';
-                + format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>` });
+    for (let i = 0; i < this.boardSize; i++) {
+      this.board.push([]);
+      for (let j = 0; j < this.boardSize; j++)
+        this.board[i].push(null);
+    }
 
+    const content = format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol })
+                  + '\n' + this.boardContent
     if ('editReply' in this.source) {
       if (!this.source.inCachedGuild()) { // type guard
         throw new Error('The guild is not cached.');
@@ -65,39 +73,37 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
     }
   }
 
-  guess(query: number): 1 | 0 | -1 {
-    if (query !== ~~query) {
-      throw new Error(`The query should be an integer.`);
-    }
+  fill(row: number, col: number): void {
+    if (this.board[row][col] !== null)
+      throw new Error(`Trying to fill board[${row}][${col}] that has already been filled.`);
 
-    if (this.range.inOpenRange(query)) {
-      if (query <= this.answer) this.range.min = query;
-      if (query >= this.answer) this.range.max = query;
-    }
-
-    if (query > this.answer) return 1
-    if (query < this.answer) return -1
-    return 0;
+    this.board[row][col] = this.playerManager.nowPlayer.symbol;
+    this.occupiedCount++;
   }
 
-  win() {
-    return this.range.min === this.range.max;
+  win(row: number, col: number): (string | null) {
+    return GameUtil.checkStrike(this.board, row, col, 5);
+  }
+
+  draw(): boolean {
+    return this.occupiedCount === this.boardSize ** 2;
   }
 
   async end(status: string): Promise<void> {
     super.end(status);
 
-    const content = format(this.strings.interval, { min: this.range.min, max: this.range.max })
-    await this.mainMessage?.edit({ content: content, components: [] }).catch(() => {});
+    await this.mainMessage?.edit({ content: this.boardContent, components: [] }).catch(() => {});
   }
 
   getEndContent(): string {
     const message = this.strings.endMessages;
     switch (this.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.winner?.id}>`, answer: this.answer });
+        return format(message.win, { player: `<@${this.winner?.id}>` });
       case "IDLE":
         return message.idle;
+      case "DRAW":
+        return message.draw;
       case "STOPPED":
         return message.stopped;
       case "DELETED":
@@ -114,10 +120,11 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
 
   protected messageFilter = (m: Message): boolean => {
     if (m.author.id !== this.playerManager.nowPlayer.id) return false;
+    if (!(/^[A-Za-z]\d{1,2}$/.test(m.content))) return false;
 
-    const query = +m.content;
-    if (isNaN(query) || query !== ~~query) return false;
-    return this.range.inOpenRange(query);
+    const [row, col] = this.getQuery(m.content);
+    if (!(0 <= row && row < this.boardSize && 0 <= col && col < this.boardSize)) return false;
+    return this.board[row][col] === null;
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
@@ -143,7 +150,7 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
 
     nowPlayer.status.set("LEAVING");
     return {
-      content: format(this.strings.previous.leaving, { player: nowPlayer.username }) + '\n', 
+      content: format(this.strings.previous.leaving, { player: nowPlayer.username }) + '\n'
     };
   }
 
@@ -151,23 +158,20 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
     nowPlayer.status.set("PLAYING");
     nowPlayer.addStep();
 
-    const query = +input;
-    const result = this.guess(query);
-    let content = '';
+    const [row, col] = this.getQuery(input);
     let endStatus = "";
+    this.fill(row, col);
 
-    if (result === 0) {
+    if (this.win(row, col)) {
       this.winner = nowPlayer;
       endStatus = "WIN";
     }
-    else {
-      content = result > 0 ?
-        format(this.strings.previous.tooLarge, { query }) + '\n' :
-        format(this.strings.previous.tooSmall, { query }) + '\n';
+    else if (this.draw()) {
+      endStatus = "DRAW";
     }
 
     return {
-      content: content ? content : '\u200b', 
+      content: format(this.strings.previous.move, { col: alphabets[col], row: row + 1, player: nowPlayer.username }) + '\n', 
       endStatus: endStatus
     };
   }
@@ -178,11 +182,31 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
     }
 
     this.playerManager.next();
-    result.content += format(this.strings.interval, { min: this.range.min, max: this.range.max }) + '\n';
-    result.content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>` });
+    result.content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol })
+                    + '\n' + this.boardContent;
     await this.mainMessage.edit(result).catch(() => {
       result.endStatus = "DELETED";
     });
     return result;
+  }
+
+
+  private get boardContent(): string {
+    let content = `${this.strings.corner}`;
+    for (let i = 0; i < this.boardSize; i++) {
+      content += '\u200b' + this.strings.columns[i];
+    }
+
+    for (let i = this.boardSize - 1; i >= 0; i--) {
+      content += '\n' + this.strings.rows[i];
+      for (let j = 0; j < this.boardSize; j++)
+        content += this.board[i][j] !== null ? this.board[i][j] : this.strings.grid;
+    }
+    return content;
+  }
+
+  private getQuery(content: string): number[] {
+    let [_, col, row] = content.toLowerCase().match(/([a-z])(\d{1,2})/) ?? ['', 'Z', '100'];
+    return [parseInt(row, 10) - 1, col.charCodeAt(0) - 'a'.charCodeAt(0)];
   }
 }

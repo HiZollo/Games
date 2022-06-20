@@ -9,10 +9,12 @@ export { PlayerStatusManager } from './struct/PlayerStatusManager';
 export { BullsAndCows } from './games/BullsAndCows';
 export { FinalCode } from './games/FinalCode';
 export { FlipTrip } from './games/FlipTrip';
+export { Gomoku } from './games/Gomoku';
 export { LightsUp } from './games/LightsUp';
 
 export { DjsGame } from './djsgames/DjsGame';
 export { DjsBullsAndCows } from './djsgames/DjsBullsAndCows';
 export { DjsFinalCode } from './djsgames/DjsFinalCode';
 export { DjsFlipTrip } from './djsgames/DjsFlipTrip';
+export { DjsGomoku } from './djsgames/DjsGomoku';
 export { DjsLightsUp } from './djsgames/DjsLightsUp';

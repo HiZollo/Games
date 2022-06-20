@@ -3,7 +3,7 @@ export class Range {
   public max: number;
 
   
-  constructor(min: number, max: number) {
+  constructor(min: number = -Infinity, max: number = Infinity) {
     this.min = min;
     this.max = max;
   }

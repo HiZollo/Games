@@ -22,7 +22,7 @@ export class FlipTrip extends Game implements FlipTripInterface {
     this.permutationCount = 2 ** boardSize;
   }
 
-  initialize() {
+  initialize(): void {
     super.initialize();
 
     for (let i = 0; i < this.permutationCount; i++)
