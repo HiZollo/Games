@@ -39,14 +39,19 @@ export interface BullsAndCowsOptions {
   answerLength?: number
 }
 
-export interface LightsUpOptions {
+export interface FinalCodeOptions {
+  players: PlayerOptions[], 
+  range: Range
+}
+
+export interface FlipTripOptions {
   players: PlayerOptions[], 
   boardSize: number
 }
 
-export interface FinalCodeOptions {
+export interface LightsUpOptions {
   players: PlayerOptions[], 
-  range: Range
+  boardSize: number
 }
 
 
@@ -57,12 +62,16 @@ export interface DjsBullsAndCowsOptions extends DjsGameOptions, BullsAndCowsOpti
   strings: BullsAndCowsStrings
 }
 
-export interface DjsLightsUpOptions extends DjsGameOptions, LightsUpOptions {
-  strings: LightsUpStrings
-}
-
 export interface DjsFinalCodeOptions extends DjsGameOptions, FinalCodeOptions {
   strings: FinalCodeStrings
+}
+
+export interface DjsFlipTripOptions extends DjsGameOptions, FlipTripOptions {
+  strings: FlipTripStrings
+}
+
+export interface DjsLightsUpOptions extends DjsGameOptions, LightsUpOptions {
+  strings: LightsUpStrings
 }
 
 
@@ -78,6 +87,21 @@ export interface BullsAndCowsInterface {
   win(result: BullsAndCowsResult): boolean
 }
 
+export interface FinalCodeInterface {
+  answer: number, 
+  range: Range, 
+  guess(query: number): 1 | 0 | -1, 
+  win(): boolean
+}
+
+export interface FlipTripInterface {
+  boardSize: number, 
+  state: number,
+  appearedStates: number[]
+  flip(location: number): boolean, 
+  win(): boolean
+}
+
 export interface LightsUpInterface {
   answer: boolean[][], 
   board: boolean[][], 
@@ -86,21 +110,14 @@ export interface LightsUpInterface {
   win(): boolean
 }
 
-export interface FinalCodeInterface {
-  answer: number, 
-  range: Range, 
-  guess(query: number): 1 | 0 | -1, 
-  win(): boolean
-}
-
 
 
 // function returned results
 
 export interface DjsInputResult {
-  components: MessageActionRow[], 
-  content: string, 
-  endStatus: string
+  components?: MessageActionRow[], 
+  content?: string, 
+  endStatus?: string
 }
 
 export interface BullsAndCowsResult {
@@ -141,6 +158,29 @@ export interface BullsAndCowsStrings extends GameStrings {
   query: string
 }
 
+export interface FinalCodeStrings extends GameStrings {
+  previous: FinalCodePreviousStrings, 
+  interval: string, 
+  nowPlayer: string
+}
+
+export interface FinalCodePreviousStrings {
+  tooSmall: string, 
+  tooLarge: string, 
+  idle: string, 
+  leaving: string
+}
+
+export interface FlipTripStrings extends GameStrings {
+  numbers: string[], 
+  pieces: string[], 
+  endMessages: FlipTripEndMessageStrings
+}
+
+export interface FlipTripEndMessageStrings extends EndMessageStrings {
+  lose: string
+}
+
 export interface LightsUpStrings extends GameStrings {
   answerSymbols: string[], 
   currentAnswer: string, 
@@ -155,17 +195,4 @@ export interface LightsUpConstollerStrings extends ControllerStrings {
 export interface LightsUpEndMessageStrings extends EndMessageStrings {
   jackpot: string, 
   unansweredWin: string
-}
-
-export interface FinalCodeStrings extends GameStrings {
-  previous: FinalCodePreviousStrings, 
-  interval: string, 
-  nowPlayer: string
-}
-
-export interface FinalCodePreviousStrings {
-  tooSmall: string, 
-  tooLarge: string, 
-  idle: string, 
-  leaving: string
 }

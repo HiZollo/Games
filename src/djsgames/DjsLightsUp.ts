@@ -32,7 +32,7 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
     this.boardSize = boardSize;
 
     this.strings = overwrite(JSON.parse(JSON.stringify(lightsUp)), strings);
-    this.boardButtons = this.getBoardButtons();
+    this.boardButtons = [];
     this.controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('HZG_CTRL_answer')
@@ -67,6 +67,17 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
         if (GameUtil.randomInt(0, 1)) {
           this.flip(i, j);
         }
+      }
+    }
+
+    for (let i = 0; i < this.boardSize; i++) {
+      this.boardButtons.push([]);
+      for (let j = 0; j < this.boardSize; j++) {
+        this.boardButtons[i].push(new MessageButton()
+          .setCustomId(`HZG_PLAY_${i}_${j}`)
+          .setLabel('\u200b')
+          .setStyle("PRIMARY")
+        );
       }
     }
 
@@ -152,8 +163,6 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
     nowPlayer.status.set("IDLE");
     return {
       components: this.displayBoard, 
-      content: '\u200b', 
-      endStatus: ""
     };
   }
 
@@ -163,7 +172,7 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
     }
     const args = input.split('_');
 
-    if (args[0] != "HZG") {
+    if (args[0] !== "HZG") {
       throw new Error('Invalid button received.');
     }
     
@@ -191,17 +200,12 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
 
     return {
       components: this.displayBoard, 
-      content: '\u200b', 
       endStatus: endStatus
     };
   }
 
   protected messageToDo(): DjsInputResult {
-    return {
-      components: [this.controller], 
-      content: '\u200b', 
-      endStatus: ""
-    };
+    return {};
   }
 
   protected async update(result: DjsInputResult): Promise<DjsInputResult> {
@@ -236,20 +240,5 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
       content += '\n';
     }
     return content;
-  }
-
-  private getBoardButtons(): MessageButton[][] {
-    const board: MessageButton[][] = [];
-    for (let i = 0; i < this.boardSize; i++) {
-      board.push([]);
-      for (let j = 0; j < this.boardSize; j++) {
-        board[i].push(new MessageButton()
-          .setCustomId(`HZG_PLAY_${i}_${j}`)
-          .setLabel('\u200b')
-          .setStyle("PRIMARY")
-        );
-      }
-    }
-    return board;
   }
 }

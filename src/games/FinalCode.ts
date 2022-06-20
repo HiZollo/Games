@@ -7,6 +7,7 @@ export class FinalCode extends Game implements FinalCodeInterface {
   public answer: number;
   public range: Range;
 
+  
   constructor({ players, range = new Range(1, 1000) }: FinalCodeOptions) {
     if (range.interval <= 2) {
       throw new Error('The length of the interval should be larger than 2.');

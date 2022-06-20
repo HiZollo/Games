@@ -18,6 +18,7 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
 
   protected inputMode: number;
 
+
   constructor({ range = new Range(1, 1000), players, source, strings, time }: DjsFinalCodeOptions) {
     super({ playerManagerOptions: { players, playerCountRange: new Range(1, Infinity) }, source, time });
     if (range.interval <= 2) {
@@ -126,9 +127,7 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
 
     nowPlayer.status.set("IDLE");
       return {
-      components: [this.controller], 
       content: format(this.strings.previous.idle, { player: nowPlayer.username }) + '\n', 
-      endStatus: ""
     };
   }
 
@@ -138,15 +137,13 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
     }
     const args = input.split('_');
 
-    if (args[0] != "HZG") {
+    if (args[0] !== "HZG") {
       throw new Error('Invalid button received.');
     }
 
     nowPlayer.status.set("LEAVING");
     return {
-      components: [this.controller], 
       content: format(this.strings.previous.leaving, { player: nowPlayer.username }) + '\n', 
-      endStatus: ""
     };
   }
 
@@ -170,7 +167,6 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
     }
 
     return {
-      components: [this.controller], 
       content: content ? content : '\u200b', 
       endStatus: endStatus
     };

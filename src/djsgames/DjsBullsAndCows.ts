@@ -69,9 +69,11 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
       }
 
       this.mainMessage = await this.source.editReply({ content: this.content, components: [this.controller] });
+      this.controllerMessage = this.mainMessage;
     }
     else {
       this.mainMessage = await this.source.channel.send({ content: this.content, components: [this.controller] });
+      this.controllerMessage = this.mainMessage;
     }
   }
 
@@ -140,9 +142,7 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
 
     nowPlayer.status.set("IDLE");
     return {
-      components: [this.controller], 
       content: this.hardMode ? this.gameHeader : this.content, 
-      endStatus: ""
     };
   }
 
@@ -150,15 +150,15 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
     if (!this.mainMessage) {
       throw new Error('Something went wrong when sending reply.');
     }
-    if (!input.startsWith('HZG_CTRL_')) {
+    const args = input.split('_');
+
+    if (args[0] !== "HZG") {
       throw new Error('Invalid button received.');
     }
 
     nowPlayer.status.set("LEAVING");
     return {
-      components: [this.controller], 
       content: this.hardMode ? this.gameHeader : this.content, 
-      endStatus: ""
     };
   }
 
@@ -183,7 +183,6 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
     this.content += '\n' + format(this.strings.query, { a: status.a, b: status.b, query: input });
 
     return {
-      components: [this.controller], 
       content: content, 
       endStatus: endStatus
     };
