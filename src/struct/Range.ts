@@ -8,6 +8,10 @@ export class Range {
     this.max = max;
   }
 
+  get interval(): number {
+    return this.max - this.min
+  }
+
   inOpenRange(value: number): boolean {
     return this.min < value && value < this.max;
   }

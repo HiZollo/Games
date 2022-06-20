@@ -21,8 +21,8 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
   protected answered: boolean;
   protected inputMode: number;
 
-  constructor({ boardSize = 5, players, source, strings, time, gameStatus = [] }: DjsLightsUpOptions) {
-    super({ playerManagerOptions: { players, playerCountRange: new Range(1, 1) }, source, time, gameStatus });
+  constructor({ boardSize = 5, players, source, strings, time }: DjsLightsUpOptions) {
+    super({ playerManagerOptions: { players, playerCountRange: new Range(1, 1) }, source, time });
     if (boardSize > 5) {
       throw new Error('The size of the board should be at most 5.');
     }
@@ -113,7 +113,7 @@ export class DjsLightsUp extends DjsGame implements LightsUpInterface {
       })
     });
 
-    await this.mainMessage?.edit({ components: this.displayBoard });
+    await this.mainMessage?.edit({ components: this.displayBoard }).catch(() => {});
     await this.controllerMessage?.delete().catch(() => {});
   }
 

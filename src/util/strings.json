@@ -23,10 +23,8 @@
   "finalCode": {
     "name": "Final Code",
     "previous": {
-      "guess": {
-        "small": "<query> is too small!",
-        "large": "<query> is too large!"
-      },
+      "tooSmall": "<query> is too small!",
+      "tooLarge": "<query> is too large!", 
       "idle": "<player> lost their turn.",
       "leaving": "<player> wanted to end the game now."
     },

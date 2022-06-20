@@ -44,6 +44,11 @@ export interface LightsUpOptions {
   boardSize: number
 }
 
+export interface FinalCodeOptions {
+  players: PlayerOptions[], 
+  range: Range
+}
+
 
 
 // implemented discord.js game options
@@ -54,6 +59,10 @@ export interface DjsBullsAndCowsOptions extends DjsGameOptions, BullsAndCowsOpti
 
 export interface DjsLightsUpOptions extends DjsGameOptions, LightsUpOptions {
   strings: LightsUpStrings
+}
+
+export interface DjsFinalCodeOptions extends DjsGameOptions, FinalCodeOptions {
+  strings: FinalCodeStrings
 }
 
 
@@ -74,6 +83,13 @@ export interface LightsUpInterface {
   board: boolean[][], 
   boardSize: number, 
   flip(row: number, col: number): void, 
+  win(): boolean
+}
+
+export interface FinalCodeInterface {
+  answer: number, 
+  range: Range, 
+  guess(query: number): 1 | 0 | -1, 
   win(): boolean
 }
 
@@ -139,4 +155,17 @@ export interface LightsUpConstollerStrings extends ControllerStrings {
 export interface LightsUpEndMessageStrings extends EndMessageStrings {
   jackpot: string, 
   unansweredWin: string
+}
+
+export interface FinalCodeStrings extends GameStrings {
+  previous: FinalCodePreviousStrings, 
+  interval: string, 
+  nowPlayer: string
+}
+
+export interface FinalCodePreviousStrings {
+  tooSmall: string, 
+  tooLarge: string, 
+  idle: string, 
+  leaving: string
 }

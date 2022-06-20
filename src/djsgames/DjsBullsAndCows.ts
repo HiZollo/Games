@@ -23,8 +23,8 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
   protected inputMode: number;
   
 
-  constructor({ answerLength = 4, hardMode = false, players, source, strings, time, gameStatus = [] }: DjsBullsAndCowsOptions) {
-    super({ playerManagerOptions: { players, playerCountRange: new Range(1, 1) }, source, time, gameStatus });
+  constructor({ answerLength = 4, hardMode = false, players, source, strings, time }: DjsBullsAndCowsOptions) {
+    super({ playerManagerOptions: { players, playerCountRange: new Range(1, 1) }, source, time });
 
     this.answer = []
     this.answerLength = answerLength;

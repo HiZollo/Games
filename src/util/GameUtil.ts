@@ -1,16 +1,5 @@
 export class GameUtil extends null {
   /**
-   * Shuffles an Array.
-   * @param {Array<*>} array
-   */
-  static shuffle(array: any[]): void {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = GameUtil.randomInt(0, i);
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
-
-  /**
    * Checks if a specific grid in 2D Array is lined up.
    * @param {Array<Array<string | null>>} board
    * @param {number} row the row index
@@ -55,6 +44,17 @@ export class GameUtil extends null {
     }
 
     return null;
+  }
+
+  /**
+   * Shuffles an Array.
+   * @param {Array<*>} array
+   */
+  static shuffle(array: any[]): void {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = GameUtil.randomInt(0, i);
+      [array[i], array[j]] = [array[j], array[i]];
+    }
   }
 
   /**
