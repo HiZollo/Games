@@ -47,14 +47,6 @@ export class PlayerManager {
     return this.players.some(p => p.status.now === "PLAYING");
   }
 
-  prev(n = 1): void {
-    this.assign(this.index - n)
-  }
-
-  next(n = 1): void {
-    this.assign(this.index + n)
-  }
-
   assign(nextIndex: number): void {
     const time = Date.now();
     this.nowPlayer.addTime(time - this.lastMoveTime);
@@ -62,5 +54,13 @@ export class PlayerManager {
 
     const index = nextIndex % this.playerCount;
     this.index = index < 0 ? index + this.playerCount : index;
+  }
+
+  next(n = 1): void {
+    this.assign(this.index + n)
+  }
+
+  prev(n = 1): void {
+    this.assign(this.index - n)
   }
 }

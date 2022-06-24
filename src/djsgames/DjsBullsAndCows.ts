@@ -24,7 +24,7 @@ export class DjsBullsAndCows extends DjsGame implements BullsAndCowsInterface {
   
 
   constructor({ answerLength = 4, hardMode = false, players, source, strings, time }: DjsBullsAndCowsOptions) {
-    super({ playerManagerOptions: { players, playerCountRange: new Range(1, 1) }, source, time });
+    super({ players, playerCountRange: new Range(1, 1), source, time });
 
     this.answer = []
     this.answerLength = answerLength;

@@ -11,7 +11,6 @@ const MAX_BUTTON_PER_ROW = 5;
 export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
   public boardSize: number;
   public state: number;
-  public appearedStates: number[];
 
   public strings: FlipTripStrings;
   public mainMessage: Message | void;
@@ -19,12 +18,13 @@ export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
   public controllerMessage: Message | void;
 
   private boardButtons: MessageActionRow[];
+  protected appearedStates: number[];
   protected permutationCount: number;
   protected inputMode: number;
 
   
   constructor({ boardSize = 3, players, source, strings, time }: DjsFlipTripOptions) {
-    super({ playerManagerOptions: { players, playerCountRange: new Range(1, Infinity) }, source, time });
+    super({ players, playerCountRange: new Range(1, Infinity), source, time });
     if (boardSize > 10) {
       throw new Error('The size of the board should be at most 10.');
     }

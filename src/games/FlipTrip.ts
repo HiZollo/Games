@@ -5,8 +5,8 @@ import { Range } from '../struct/Range';
 export class FlipTrip extends Game implements FlipTripInterface {
   public boardSize: number;
   public state: number;
-  public appearedStates: number[];
-
+  
+  protected appearedStates: number[];
   protected permutationCount: number;
 
   constructor({ players, boardSize = 3 }: FlipTripOptions ) {

@@ -26,8 +26,8 @@ export abstract class DjsGame extends Game {
   protected abstract update(result: DjsInputResult): Promise<DjsInputResult>;
 
 
-  constructor({ playerManagerOptions, source, time = 60e3, gameStatus = [] }: DjsGameOptions) {
-    super({ playerManagerOptions, gameStatus });
+  constructor({ players, playerCountRange, source, time = 60e3, gameStatus = [] }: DjsGameOptions) {
+    super({ playerManagerOptions: { players, playerCountRange }, gameStatus });
     if (!source.channel) {
       throw new Error('This channel is invalid.');
     }

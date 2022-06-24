@@ -24,7 +24,10 @@ export interface GameOptions {
   gameStatus?: string[]
 }
 
-export interface DjsGameOptions extends GameOptions {
+export interface DjsGameOptions {
+  gameStatus?: string[], 
+  players: PlayerOptions[], 
+  playerCountRange?: Range, 
   source: CommandInteraction | Message, 
   time: number
 }
@@ -115,7 +118,6 @@ export interface FinalCodeInterface {
 export interface FlipTripInterface {
   boardSize: number, 
   state: number,
-  appearedStates: number[]
   flip(location: number): boolean, 
   win(): boolean
 }

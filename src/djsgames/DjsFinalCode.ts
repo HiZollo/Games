@@ -20,7 +20,7 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
 
 
   constructor({ range = new Range(1, 1000), players, source, strings, time }: DjsFinalCodeOptions) {
-    super({ playerManagerOptions: { players, playerCountRange: new Range(1, Infinity) }, source, time });
+    super({ players, playerCountRange: new Range(1, Infinity), source, time });
     if (range.interval <= 2) {
       throw new Error('The length of the interval should be larger than 2.');
     }

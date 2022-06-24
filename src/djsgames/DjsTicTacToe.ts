@@ -22,7 +22,7 @@ export class DjsTicTacToe extends DjsGame implements TicTacToeInterface {
 
   
   constructor({ boardSize = 3, players, source, strings, time }: DjsTicTacToeOptions) {
-    super({ playerManagerOptions: { players, playerCountRange: new Range(2, Infinity) }, source, time });
+    super({ players, playerCountRange: new Range(2, Infinity), source, time });
     if (boardSize > 4) {
       throw new Error('The size of the board should be at most 4.');
     }
