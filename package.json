@@ -1,6 +1,6 @@
 {
   "name": "@hizollo/games",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A package that provides various games for discord.js.",
   "main": "./dist/esm/index.js",
   "module": "./dist/index.mjs",
