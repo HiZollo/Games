@@ -10,13 +10,13 @@
 
 # Usage
 ```js
-const { DCGameName } = require('@hizollo/games'); // There isn't a game called DCGameName in this package. It is just for demonstration.
+const { DjsGameName } = require('@hizollo/games'); // There isn't a game called DjsGameName in this package. It is just for demonstration.
 
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
 
   if (interaction.commandname === 'game') {
-    const game = new DCGameName({
+    const game = new DjsGameName({
       /* Options */
     });
 
@@ -31,7 +31,7 @@ client.on('messageCreate', async message => {
 
   const args = message.content.slice('your-prefix'.length).trim().split(/ +/);
   if (args[0] === 'game') {
-    const game = new DCGameName({
+    const game = new DjsGameName({
       /* Options */
     });
 
@@ -62,7 +62,7 @@ Games that do not require symbols. You can directly pass a discord.js [User](htt
 ```js
 const mystrings = require('./your/path/to/mystrings.json');
 
-const game = new DCBullsAndCows({
+const game = new DjsBullsAndCows({
   players: [interaction.user],
   time: 60e3,
   strings: mystrings.bullsAndCows,   
@@ -78,7 +78,7 @@ Games that require symbols. It's recommended to pass a new object to `players` p
 ```js
 const mystrings = require('./your/path/to/mystrings.json');
 
-const game = new DCGomoku({
+const game = new DjsGomoku({
   players: [{
     username: interaction.user.username,
     id: interaction.user.id,
