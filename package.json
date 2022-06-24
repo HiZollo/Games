@@ -2,20 +2,21 @@
   "name": "@hizollo/games",
   "version": "1.0.1",
   "description": "A package that provides various games for discord.js.",
-  "main": "./dist/index.js",
+  "main": "./dist/esm/index.js",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "start": "tsc --watch"
+    "start": "tsc --watch --project tsconfig.esm.json & tsc --watch --project tsconfig.cjs.json"
   },
   "repository": {
     "type": "git",
