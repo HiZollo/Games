@@ -15,25 +15,24 @@ The base class for all games.
 
 ## constructor
 ```js
-new Game(playerManagerOptions, gameStatus);
+new Game(gameOptions);
 ```
-| parameter            | type                                                        | default    | description                 |
-|----------------------|-------------------------------------------------------------|------------|-----------------------------|
-| playerManagerOptions | [PlayerManagerOptions](../options.md/#PlayerManagerOptions) | *required* | Options for the game        |
-| gameStatus           | Array\<string>                                              | `[]`       | Extra statuses for the game |
+| parameter   | type                                      | default    | description                 |
+|-------------|-------------------------------------------|------------|-----------------------------|
+| gameOptions | [GameOptions](../options.md/#GameOptions) | *required* | Options for the game        |
 
 ## properties
 ### .duration
 - The duration of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .endTime
 - The end time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .loser
 - The loser of the game
-- Type: ?[Player](#Player)
+- Type: [Player](#Player) | null
 
 ### .ongoing
 - Whether the game is ongoing
@@ -45,7 +44,7 @@ new Game(playerManagerOptions, gameStatus);
 
 ### .startTime
 - The start time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .status
 - The status manager of the game
@@ -53,7 +52,7 @@ new Game(playerManagerOptions, gameStatus);
 
 ### .winner
 - The winner of the game
-- Type: ?[Player](#Player)
+- Type: [Player](#Player) | null
 
 ## methods
 ### .end(status)
@@ -80,9 +79,13 @@ new Player(playerOptions);
 | playerOptions | [PlayerOptions](../options.md/#PlayerOptions) | *required* | the options for the player |
 
 ## properties
+### .bot
+- Whether the player is a bot
+- Type: boolean
+
 ### .id
 - The id of the player
-- Type: ?*
+- Type: number | string
 
 ### .status
 - The status of the player
@@ -94,7 +97,7 @@ new Player(playerOptions);
 
 ### .symbol
 - The symbol for the player
-- Type: ?string
+- Type: string | null
 
 ### .time
 - The amount of time the player has spent when it is their turn (in millisecond)
@@ -138,7 +141,11 @@ new PlayerManager(playerManagerOptions);
 
 ### .ids
 - The ids of the players
-- Array\<?*>
+- Type: (number | string)[]
+
+### .index
+- The index of the current player
+- Type: number
 
 ### .nowPlayer
 - The current player
@@ -150,7 +157,7 @@ new PlayerManager(playerManagerOptions);
 
 ### .players
 - The players
-- Type: Array\<[Player](#Player)>
+- Type: [Player](#Player)[]
 
 ### .totalSteps
 - The total number of steps that all players have made
@@ -158,7 +165,7 @@ new PlayerManager(playerManagerOptions);
 
 ### .usernames
 - The usernames of the players
-- Type: Array\<string>
+- Type: string[]
 
 ## methods
 ### .assign(n)
@@ -190,9 +197,9 @@ The base class for all status manager.
 ```js
 new StatusManager(...status);
 ```
-| parameter | type           | default | description      |
-|-----------|----------------|---------|------------------|
-| status    | Array\<string> | `[]`    | Initial statuses |
+| parameter | type     | default | description      |
+|-----------|----------|---------|------------------|
+| status    | string[] | `[]`    | Initial statuses |
 
 ## properties
 ### .now
@@ -205,22 +212,22 @@ new StatusManager(...status);
 
 ### .statusPool
 - The status pool
-- Type: Set
+- Type: Set\<string>
 
 ## methods
 ### .append(...status)
-| parameter | type           | default | description            |
-|-----------|----------------|---------|------------------------|
-| status    | Array\<string> | `[]`    | The statuses to append |
+| parameter | type     | default | description            |
+|-----------|----------|---------|------------------------|
+| status    | string[] | `[]`    | The statuses to append |
 - Adds statuses into the status pool
 - Returns: void
 
 ### .has(status)
-| parameter | type   | default | description                           |
-|-----------|--------|---------|---------------------------------------|
-| status    | string | *none*  | The status to test for existence      |
+| parameter | type   | default | description                      |
+|-----------|--------|---------|----------------------------------|
+| status    | string | *none*  | The status to test for existence |
 - Tests if a status is in the status pool
-- Returns: void
+- Returns: boolean
 
 ### .set(status)
 | parameter | type   | default    | description          |
@@ -239,9 +246,9 @@ The status manager for games, with a status pool initialized with `"ONGOING"`, `
 ```js
 new GameStatusManager(...status);
 ```
-| parameter | type           | default | description      |
-|-----------|----------------|---------|------------------|
-| status    | Array\<string> | `[]`    | Initial statuses |
+| parameter | type     | default | description      |
+|-----------|----------|---------|------------------|
+| status    | string[] | `[]`    | Initial statuses |
 
 ## properties
 ### .now
@@ -254,22 +261,22 @@ new GameStatusManager(...status);
 
 ### .statusPool
 - The status pool
-- Type: Set
+- Type: Set\<string>
 
 ## methods
 ### .append(...status)
-| parameter | type           | default | description            |
-|-----------|----------------|---------|------------------------|
-| status    | Array\<string> | `[]`    | The statuses to append |
+| parameter | type     | default | description            |
+|-----------|----------|---------|------------------------|
+| status    | string[] | `[]`    | The statuses to append |
 - Adds statuses into the status pool
 - Returns: void
 
 ### .has(status)
-| parameter | type   | default | description                           |
-|-----------|--------|---------|---------------------------------------|
-| status    | string | *none*  | The status to test for existence      |
+| parameter | type   | default | description                      |
+|-----------|--------|---------|----------------------------------|
+| status    | string | *none*  | The status to test for existence |
 - Tests if a status is in the status pool
-- Returns: void
+- Returns: boolean
 
 ### .set(status)
 | parameter | type   | default    | description          |
@@ -288,9 +295,9 @@ The status manager for players, with a status pool initialized with `"PLAYING"`,
 ```js
 new GameStatusManager(...status);
 ```
-| parameter | type           | default | description      |
-|-----------|----------------|---------|------------------|
-| status    | Array\<string> | `[]`    | Initial statuses |
+| parameter | type     | default | description      |
+|-----------|----------|---------|------------------|
+| status    | string[] | `[]`    | Initial statuses |
 
 ## properties
 ### .now
@@ -303,22 +310,22 @@ new GameStatusManager(...status);
 
 ### .statusPool
 - The status pool
-- Type: Set
+- Type: Set\<string>
 
 ## methods
 ### .append(...status)
-| parameter | type           | default | description            |
-|-----------|----------------|---------|------------------------|
-| status    | Array\<string> | `[]`    | The statuses to append |
+| parameter | type     | default | description            |
+|-----------|----------|---------|------------------------|
+| status    | string[] | `[]`    | The statuses to append |
 - Adds statuses into the status pool
 - Returns: void
 
 ### .has(status)
-| parameter | type   | default | description                           |
-|-----------|--------|---------|---------------------------------------|
-| status    | string | *none*  | The status to test for existence      |
+| parameter | type   | default | description                      |
+|-----------|--------|---------|----------------------------------|
+| status    | string | *none*  | The status to test for existence |
 - Tests if a status is in the status pool
-- Returns: void
+- Returns: boolean
 
 ### .set(status)
 | parameter | type   | default    | description          |
@@ -326,3 +333,44 @@ new GameStatusManager(...status);
 | status    | string | *required* | The status to set to |
 - Sets the current status
 - Returns: void
+
+
+# Range
+The class that represents a range of numbers.
+
+## constructor
+```js
+new Range(...status);
+```
+| parameter | type   | default     | description                     |
+|-----------|--------|-------------|---------------------------------|
+| min       | number | `-Infinity` | The lower bound of the interval |
+| max       | number | `Infinity`  | The upper bound of the interval |
+
+## properties
+### .interval
+- The length of the interval
+- Type: number
+
+### .max
+- The upper bound of the interval
+- Type: number
+
+### .min
+- The lower bound of the interval
+- Type: number
+
+## methods
+### .inClosedRange(value)
+| parameter | type   | default    | description        |
+|-----------|--------|------------|--------------------|
+| value     | number | *required* | The value to check |
+- Checks if the value lies in the closed range
+- Returns: boolean
+
+### .inOpenRange(value)
+| parameter | type   | default    | description        |
+|-----------|--------|------------|--------------------|
+| value     | number | *required* | The value to check |
+- Checks if the value lies in the open range
+- Returns: boolean

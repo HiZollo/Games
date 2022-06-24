@@ -11,7 +11,7 @@ This is the documentations for all game classes.
 
 
 # BullsAndCows
-> extends [Game](./struct.md/#Game)
+> extends [Game](./struct.md/#Game) implements [BullsAndCowsInterface](./interfaces.md/#BullsAndCowsInterface)
 
 The class for *Bulls and Cows*.
 
@@ -26,7 +26,7 @@ new BullsAndCows(bullsAndCowsOptions);
 ## properties
 ### .answer
 - The answer of the game
-- Type: Array\<number>
+- Type: number[]
 
 ### .answerLength
 - The length of the answer
@@ -34,19 +34,19 @@ new BullsAndCows(bullsAndCowsOptions);
 
 ### .duration
 - The duration of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .endTime
 - The end time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
-### .hardmode
+### .hardMode
 - Whether the game is in hard mode
 - Type: boolean
 
 ### .loser
 - The loser of the game
-- Type: ?[Player](./struct.md/#Player)
+- Type: [Player](./struct.md/#Player) | null
 
 ### .numberCount
 - The number of digits that can possibly appear in the answer
@@ -62,7 +62,7 @@ new BullsAndCows(bullsAndCowsOptions);
 
 ### .startTime
 - The start time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .status
 - The status manager of the game
@@ -70,7 +70,7 @@ new BullsAndCows(bullsAndCowsOptions);
 
 ### .winner
 - The winner of the game
-- Type: ?[Player](./struct.md/#Player)
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .end(status)
@@ -85,9 +85,9 @@ new BullsAndCows(bullsAndCowsOptions);
 - Returns: void
 
 ### .guess(query)
-| parameter | type           | default    | description                           |
-|-----------|----------------|------------|---------------------------------------|
-| query     | Array\<number> | *required* | An array with a digit in each element |
+| parameter | type     | default    | description                           |
+|-----------|----------|------------|---------------------------------------|
+| query     | number[] | *required* | An array with a digit in each element |
 - Compares the query with the answer
 - Returns: [BullsAndCowsGuessResult](../others.md/#BullsAndCowsGuessResult)
 
@@ -100,7 +100,7 @@ new BullsAndCows(bullsAndCowsOptions);
 
 
 # FinalCode
-> extends [Game](./struct.md/#Game)
+> extends [Game](./struct.md/#Game) implements [FinalCodeInterface](./interfaces.md/#FinalCodeInterface)
 
 The class for *Final Code*.
 
@@ -119,23 +119,19 @@ new FinalCode(finalCodeOptions);
 
 ### .duration
 - The duration of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .endTime
 - The end time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .loser
 - The loser of the game
-- Type: ?[Player](./struct.md/#Player)
+- Type: [Player](./struct.md/#Player) | null
 
-### .max
-- The upper bound of the answer
-- Type: number
-
-### .min
-- The lower bound of the answer
-- Type: number
+### .range
+- The range of the answer
+- Type: [Range](./struct.md/#Range)
 
 ### .ongoing
 - Whether the game is ongoing
@@ -147,7 +143,7 @@ new FinalCode(finalCodeOptions);
 
 ### .startTime
 - The start time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .status
 - The status manager of the game
@@ -155,7 +151,7 @@ new FinalCode(finalCodeOptions);
 
 ### .winner
 - The winner of the game
-- Type: ?[Player](./struct.md/#Player)
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .end(status)
@@ -174,7 +170,7 @@ new FinalCode(finalCodeOptions);
 |-----------|--------|------------|------------------------|
 | query     | number | *required* | The query from players |
 - Compares the query with the answer
-- Returns: number (positive if query is larger than the answer, negative if smaller, `0` if equal)
+- Returns: 1 | 0 | -1 (1 if the query is larger than the answer, -1 if smaller, 0 if equal)
 
 ### .win()
 - Checks if the game satisfies the winning conditions
@@ -182,7 +178,7 @@ new FinalCode(finalCodeOptions);
 
 
 # FlipTrip
-> extends [Game](./struct.md/#Game)
+> extends [Game](./struct.md/#Game) implements [FlipTripInterface](./interfaces.md/#FlipTripInterface)
 
 The class for *Flip Trip*.
 
@@ -201,15 +197,15 @@ new FinalCode(flipTripOptions);
 
 ### .duration
 - The duration of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .endTime
 - The end time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .loser
 - The loser of the game
-- Type: ?[Player](./struct.md/#Player)
+- Type: [Player](./struct.md/#Player) | null
 
 ### .ongoing
 - Whether the game is ongoing
@@ -221,7 +217,7 @@ new FinalCode(flipTripOptions);
 
 ### .startTime
 - The start time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .state
 - The current state of all pieces, expressed in bit form
@@ -233,7 +229,7 @@ new FinalCode(flipTripOptions);
 
 ### .winner
 - The winner of the game
-- Type: ?[Player](./struct.md/#Player)
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .end(status)
@@ -260,7 +256,7 @@ new FinalCode(flipTripOptions);
 
 
 # Gomoku
-> extends [Game](./struct.md/#Game)
+> extends [Game](./struct.md/#Game) implements [GomokuInterface](./interfaces.md/#GomokuInterface)
 
 The class for *Gomoku*.
 
@@ -275,7 +271,7 @@ new Gomoku(gomokuOptions);
 ## properties
 ### .board
 - The current state of the board
-- Type: Array\<Array\<?*>>
+- Type: (string | null)[][]
 
 ### .boardSize
 - The dimensions of the board
@@ -283,15 +279,15 @@ new Gomoku(gomokuOptions);
 
 ### .duration
 - The duration of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .endTime
 - The end time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .loser
 - The loser of the game
-- Type: ?[Player](./struct.md/#Player)
+- Type: [Player](./struct.md/#Player) | null
 
 ### .ongoing
 - Whether the game is ongoing
@@ -303,7 +299,7 @@ new Gomoku(gomokuOptions);
 
 ### .startTime
 - The start time of the game (in millisecond)
-- Type: ?number
+- Type: number | null
 
 ### .status
 - The status manager of the game
@@ -311,177 +307,7 @@ new Gomoku(gomokuOptions);
 
 ### .winner
 - The winner of the game
-- Type: ?[Player](./struct.md/#Player)
-
-## methods
-### .draw()
-- Checks if the game satisfies the draw conditions
-- Returns: boolean
-
-### .end(status)
-| parameter | type   | default    | description                |
-|-----------|--------|------------|----------------------------|
-| status    | string | *required* | The end status of the game |
-- Ends the game with a certain status
-- Returns: void
-
-### .fill(row, col)
-| parameter | type   | default    | description      |
-|-----------|--------|------------|------------------|
-| row       | number | *required* | The row index    |
-| col       | number | *required* | The column index |
-- Fills location (`row`, `col`) with the current player's symbol
-- Returns: void
-
-### .initialize()
-- Initializes the game
-- Returns: void
-
-### .win(row, col)
-| parameter | type   | default    | description      |
-|-----------|--------|------------|------------------|
-| row       | number | *required* | The row index    |
-| col       | number | *required* | The column index |
-- Fills location (`row`, `col`) with the current player's symbol
-- Returns: boolean
-
-
-# LightsUp
-> extends [Game](./struct.md/#Game)
-
-The class for *Lights-up*.
-
-## constructor
-```js
-new LightsUp(lightsUpOptions);
-```
-| parameter       | type                                              | default    | description          |
-|-----------------|---------------------------------------------------|------------|----------------------|
-| lightsUpOptions | [LightsUpOptions](../options.md/#LightsUpOptions) | *required* | Options for the game |
-
-## properties
-### .answer
-- The answer to the board
-- Type: Array\<Array\<boolean>>
-
-### .board
-- The current state of the board
-- Type: Array\<Array\<boolean>>
-
-### .boardSize
-- The dimensions of the board
-- Type: number
-
-### .duration
-- The duration of the game (in millisecond)
-- Type: ?number
-
-### .endTime
-- The end time of the game (in millisecond)
-- Type: ?number
-
-### .loser
-- The loser of the game
-- Type: ?[Player](./struct.md/#Player)
-
-### .ongoing
-- Whether the game is ongoing
-- Type: boolean
-
-### .playerManager
-- The player manager for the game
-- Type: [PlayerManager](./struct.md/#PlayerManager)
-
-### .startTime
-- The start time of the game (in millisecond)
-- Type: ?number
-
-### .status
-- The status manager of the game
-- Type: [GameStatusManager](./struct.md/#GameStatusManager)
-
-### .winner
-- The winner of the game
-- Type: ?[Player](./struct.md/#Player)
-
-## methods
-### .end(status)
-| parameter | type   | default    | description                |
-|-----------|--------|------------|----------------------------|
-| status    | string | *required* | The end status of the game |
-- Ends the game with a certain status
-- Returns: void
-
-### .flip(row, col)
-| parameter | type   | default    | description      |
-|-----------|--------|------------|------------------|
-| row       | number | *required* | The row index    |
-| col       | number | *required* | The column index |
-- Flips (row, col) and its adjacent grids
-- Returns: void
-
-### .initialize()
-- Initializes the game
-- Returns: void
-
-### .win()
-- Checks if the game satisfies the winning conditions
-- Returns: boolean
-
-
-# TicTacToe
-> extends [Game](./struct.md/#Game)
-
-The class for *Tic-tac-toe*.
-
-## constructor
-```js
-new TicTacToe(ticTacToeOptions);
-```
-| parameter        | type                                                | default    | description          |
-|------------------|-----------------------------------------------------|------------|----------------------|
-| ticTacToeOptions | [TicTacToeOptions](../options.md/#TicTacToeOptions) | *required* | Options for the game |
-
-## properties
-### .board
-- The current state of the board
-- Type: Array\<Array\<?*>>
-
-### .boardSize
-- The dimensions of the board
-- Type: number
-
-### .duration
-- The duration of the game (in millisecond)
-- Type: ?number
-
-### .endTime
-- The end time of the game (in millisecond)
-- Type: ?number
-
-### .loser
-- The loser of the game
-- Type: ?[Player](./struct.md/#Player)
-
-### .ongoing
-- Whether the game is ongoing
-- Type: boolean
-
-### .playerManager
-- The player manager for the game
-- Type: [PlayerManager](./struct.md/#PlayerManager)
-
-### .startTime
-- The start time of the game (in millisecond)
-- Type: ?number
-
-### .status
-- The status manager of the game
-- Type: [GameStatusManager](./struct.md/#GameStatusManager)
-
-### .winner
-- The winner of the game
-- Type: ?[Player](./struct.md/#Player)
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .draw()
@@ -513,4 +339,174 @@ new TicTacToe(ticTacToeOptions);
 | row       | number | *required* | The row index    |
 | col       | number | *required* | The column index |
 - Checks if any lines passing through (`row`, `col`) satisfies winning conditions
+- Returns: string | null (the winner's symbol if valid)
+
+
+# LightsUp
+> extends [Game](./struct.md/#Game) implements [LightsUpInterface](./interfaces.md/#LightsUpInterface)
+
+The class for *Lights-up*.
+
+## constructor
+```js
+new LightsUp(lightsUpOptions);
+```
+| parameter       | type                                              | default    | description          |
+|-----------------|---------------------------------------------------|------------|----------------------|
+| lightsUpOptions | [LightsUpOptions](../options.md/#LightsUpOptions) | *required* | Options for the game |
+
+## properties
+### .answer
+- The answer to the board
+- Type: boolean[][]
+
+### .board
+- The current state of the board
+- Type: boolean[][]
+
+### .boardSize
+- The dimensions of the board
+- Type: number
+
+### .duration
+- The duration of the game (in millisecond)
+- Type: number | null
+
+### .endTime
+- The end time of the game (in millisecond)
+- Type: number | null
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
+
+### .ongoing
+- Whether the game is ongoing
+- Type: boolean
+
+### .playerManager
+- The player manager for the game
+- Type: [PlayerManager](./struct.md/#PlayerManager)
+
+### .startTime
+- The start time of the game (in millisecond)
+- Type: number | null
+
+### .status
+- The status manager of the game
+- Type: [GameStatusManager](./struct.md/#GameStatusManager)
+
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
+
+## methods
+### .end(status)
+| parameter | type   | default    | description                |
+|-----------|--------|------------|----------------------------|
+| status    | string | *required* | The end status of the game |
+- Ends the game with a certain status
+- Returns: void
+
+### .flip(row, col)
+| parameter | type   | default    | description      |
+|-----------|--------|------------|------------------|
+| row       | number | *required* | The row index    |
+| col       | number | *required* | The column index |
+- Flips (row, col) and its adjacent grids
+- Returns: void
+
+### .initialize()
+- Initializes the game
+- Returns: void
+
+### .win()
+- Checks if the game satisfies the winning conditions
 - Returns: boolean
+
+
+# TicTacToe
+> extends [Game](./struct.md/#Game) implements [TicTacToeInterface](./interfaces.md/#TicTacToeInterface)
+
+The class for *Tic-tac-toe*.
+
+## constructor
+```js
+new TicTacToe(ticTacToeOptions);
+```
+| parameter        | type                                                | default    | description          |
+|------------------|-----------------------------------------------------|------------|----------------------|
+| ticTacToeOptions | [TicTacToeOptions](../options.md/#TicTacToeOptions) | *required* | Options for the game |
+
+## properties
+### .board
+- The current state of the board
+- Type: (string | null)[][]
+
+### .boardSize
+- The dimensions of the board
+- Type: number
+
+### .duration
+- The duration of the game (in millisecond)
+- Type: number | null
+
+### .endTime
+- The end time of the game (in millisecond)
+- Type: number | null
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
+
+### .ongoing
+- Whether the game is ongoing
+- Type: boolean
+
+### .playerManager
+- The player manager for the game
+- Type: [PlayerManager](./struct.md/#PlayerManager)
+
+### .startTime
+- The start time of the game (in millisecond)
+- Type: number | null
+
+### .status
+- The status manager of the game
+- Type: [GameStatusManager](./struct.md/#GameStatusManager)
+
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
+
+## methods
+### .draw()
+- Checks if the game satisfies the draw conditions
+- Returns: boolean
+
+### .end(status)
+| parameter | type   | default    | description                |
+|-----------|--------|------------|----------------------------|
+| status    | string | *required* | The end status of the game |
+- Ends the game with a certain status
+- Returns: void
+
+### .fill(row, col)
+| parameter | type   | default    | description      |
+|-----------|--------|------------|------------------|
+| row       | number | *required* | The row index    |
+| col       | number | *required* | The column index |
+- Fills location (`row`, `col`) with the current player's symbol
+- Returns: void
+
+### .initialize()
+- Initializes the game
+- Returns: void
+
+### .win(row, col)
+| parameter | type   | default    | description      |
+|-----------|--------|------------|------------------|
+| row       | number | *required* | The row index    |
+| col       | number | *required* | The column index |
+- Checks if any lines passing through (`row`, `col`) satisfies winning conditions
+- Returns: string | null (the winner's symbol if valid)
