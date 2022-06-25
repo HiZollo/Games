@@ -1,35 +1,29 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
-import { GomokuInterface, DjsGomokuOptions, GomokuStrings, DjsInputResult } from '../types/interfaces';
-import { format, overwrite } from '../util/Functions';
-import { GameUtil } from '../util/GameUtil';
-import { gomoku } from '../util/strings.json';
+import { DjsGameWrapper } from './DjsGameWrapper';
+import { Gomoku } from '../games/Gomoku';
 import { Player } from '../struct/Player';
-import { Range } from '../struct/Range';
-import { DjsGame } from './DjsGame';
+import { DjsGomokuOptions, GomokuStrings, DjsInputResult } from '../types/interfaces';
+import { format, overwrite } from '../util/Functions';
+import { gomoku } from '../util/strings.json';
 
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-export class DjsGomoku extends DjsGame implements GomokuInterface {
-  public board: (string | null)[][];
-  public boardSize: number;
-
+export class DjsGomoku extends DjsGameWrapper {
   public strings: GomokuStrings;
   public mainMessage: Message | void;
   public controller: MessageActionRow;
   public controllerMessage: Message | void;
 
-  protected occupiedCount: number;
+  protected game: Gomoku;
   protected inputMode: number;
 
   
-  constructor({ boardSize = 9, players, source, strings, time }: DjsGomokuOptions) {
-    super({ players, playerCountRange: new Range(2, Infinity), source, time });
+  constructor({ players, boardSize = 9, source, time, strings }: DjsGomokuOptions) {
+    super({ source, time });
     if (boardSize > 19) {
       throw new Error('The size of the board should be at most 19.');
     }
-
-    this.board = [];
-    this.boardSize = boardSize;
+    this.game = new Gomoku({ players, boardSize });
 
     this.strings = overwrite(JSON.parse(JSON.stringify(gomoku)), strings);
     this.controller = new MessageActionRow().addComponents(
@@ -42,20 +36,13 @@ export class DjsGomoku extends DjsGame implements GomokuInterface {
     this.mainMessage = undefined;
     this.controllerMessage = undefined;
 
-    this.occupiedCount = 0;
     this.inputMode = 0b01;
   }
 
   async initialize(): Promise<void> {
-    super.initialize();
+    this.game.initialize();
 
-    for (let i = 0; i < this.boardSize; i++) {
-      this.board.push([]);
-      for (let j = 0; j < this.boardSize; j++)
-        this.board[i].push(null);
-    }
-
-    const content = format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol })
+    const content = format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>`, symbol: this.game.playerManager.nowPlayer.symbol })
                   + '\n' + this.boardContent
     if ('editReply' in this.source) {
       if (!this.source.inCachedGuild()) { // type guard
@@ -73,33 +60,11 @@ export class DjsGomoku extends DjsGame implements GomokuInterface {
     }
   }
 
-  fill(row: number, col: number): void {
-    if (this.board[row][col] !== null)
-      throw new Error(`Trying to fill board[${row}][${col}] that has already been filled.`);
-
-    this.board[row][col] = this.playerManager.nowPlayer.symbol;
-    this.occupiedCount++;
-  }
-
-  win(row: number, col: number): (string | null) {
-    return GameUtil.checkStrike(this.board, row, col, 5);
-  }
-
-  draw(): boolean {
-    return this.occupiedCount === this.boardSize ** 2;
-  }
-
-  async end(status: string): Promise<void> {
-    super.end(status);
-
-    await this.mainMessage?.edit({ content: this.boardContent, components: [] }).catch(() => {});
-  }
-
   getEndContent(): string {
     const message = this.strings.endMessages;
-    switch (this.status.now) {
+    switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.winner?.id}>` });
+        return format(message.win, { player: `<@${this.game.winner?.id}>` });
       case "IDLE":
         return message.idle;
       case "DRAW":
@@ -115,16 +80,16 @@ export class DjsGomoku extends DjsGame implements GomokuInterface {
 
 
   protected buttonFilter = (i: ButtonInteraction): boolean => {
-    return i.user.id === this.playerManager.nowPlayer.id;
+    return i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter = (m: Message): boolean => {
-    if (m.author.id !== this.playerManager.nowPlayer.id) return false;
+    if (m.author.id !== this.game.playerManager.nowPlayer.id) return false;
     if (!(/^[A-Za-z]\d{1,2}$/.test(m.content))) return false;
 
     const [row, col] = this.getQuery(m.content);
-    if (!(0 <= row && row < this.boardSize && 0 <= col && col < this.boardSize)) return false;
-    return this.board[row][col] === null;
+    if (!(0 <= row && row < this.game.boardSize && 0 <= col && col < this.game.boardSize)) return false;
+    return this.game.board[row][col] === null;
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
@@ -160,13 +125,13 @@ export class DjsGomoku extends DjsGame implements GomokuInterface {
 
     const [row, col] = this.getQuery(input);
     let endStatus = "";
-    this.fill(row, col);
+    this.game.fill(row, col);
 
-    if (this.win(row, col)) {
-      this.winner = nowPlayer;
+    if (this.game.win(row, col)) {
+      this.game.winner = nowPlayer;
       endStatus = "WIN";
     }
-    else if (this.draw()) {
+    else if (this.game.draw()) {
       endStatus = "DRAW";
     }
 
@@ -181,8 +146,8 @@ export class DjsGomoku extends DjsGame implements GomokuInterface {
       throw new Error('Something went wrong when sending reply.');
     }
 
-    this.playerManager.next();
-    result.content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol })
+    this.game.playerManager.next();
+    result.content += format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>`, symbol: this.game.playerManager.nowPlayer.symbol })
                     + '\n' + this.boardContent;
     await this.mainMessage.edit(result).catch(() => {
       result.endStatus = "DELETED";
@@ -190,17 +155,23 @@ export class DjsGomoku extends DjsGame implements GomokuInterface {
     return result;
   }
 
+  protected async end(status: string): Promise<void> {
+    this.game.end(status);
+
+    await this.mainMessage?.edit({ content: this.boardContent, components: [] }).catch(() => {});
+  }
+
 
   private get boardContent(): string {
     let content = `${this.strings.corner}`;
-    for (let i = 0; i < this.boardSize; i++) {
+    for (let i = 0; i < this.game.boardSize; i++) {
       content += '\u200b' + this.strings.columns[i];
     }
 
-    for (let i = this.boardSize - 1; i >= 0; i--) {
+    for (let i = this.game.boardSize - 1; i >= 0; i--) {
       content += '\n' + this.strings.rows[i];
-      for (let j = 0; j < this.boardSize; j++)
-        content += this.board[i][j] !== null ? this.board[i][j] : this.strings.grid;
+      for (let j = 0; j < this.game.boardSize; j++)
+        content += this.game.board[i][j] !== null ? this.game.board[i][j] : this.strings.grid;
     }
     return content;
   }

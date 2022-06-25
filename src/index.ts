@@ -13,9 +13,10 @@ export { Gomoku } from './games/Gomoku';
 export { LightsUp } from './games/LightsUp';
 export { TicTacToe } from './games/TicTacToe';
 
-export { DjsGame } from './djsgames/DjsGame';
+export { DjsGameWrapper } from './djsgames/DjsGameWrapper';
 export { DjsBullsAndCows } from './djsgames/DjsBullsAndCows';
 export { DjsFinalCode } from './djsgames/DjsFinalCode';
 export { DjsFlipTrip } from './djsgames/DjsFlipTrip';
 export { DjsGomoku } from './djsgames/DjsGomoku';
+export { DjsLightsUp } from './djsgames/DjsLightsUp';
 export { DjsTicTacToe } from './djsgames/DjsTicTacToe';

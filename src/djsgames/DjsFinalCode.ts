@@ -1,32 +1,24 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
-import { FinalCodeInterface, DjsFinalCodeOptions, FinalCodeStrings, DjsInputResult } from '../types/interfaces';
-import { format, overwrite } from '../util/Functions';
-import { GameUtil } from '../util/GameUtil';
-import { finalCode } from '../util/strings.json';
+import { DjsGameWrapper } from './DjsGameWrapper';
+import { FinalCode } from '../games/FinalCode';
 import { Player } from '../struct/Player';
-import { Range } from '../struct/Range';
-import { DjsGame } from './DjsGame';
+import { DjsFinalCodeOptions, FinalCodeStrings, DjsInputResult } from '../types/interfaces';
+import { format, overwrite } from '../util/Functions';
+import { finalCode } from '../util/strings.json';
 
-export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
-  public answer: number;
-  public range: Range;
-
+export class DjsFinalCode extends DjsGameWrapper {
   public strings: FinalCodeStrings;
   public mainMessage: Message | void;
   public controller: MessageActionRow;
   public controllerMessage: Message | void;
 
+  protected game: FinalCode;
   protected inputMode: number;
 
 
-  constructor({ range = new Range(1, 1000), players, source, strings, time }: DjsFinalCodeOptions) {
-    super({ players, playerCountRange: new Range(1, Infinity), source, time });
-    if (range.interval <= 2) {
-      throw new Error('The length of the interval should be larger than 2.');
-    }
-
-    this.answer = 0;
-    this.range = range;
+  constructor({ players, range, source, time, strings }: DjsFinalCodeOptions) {
+    super({ source, time });
+    this.game = new FinalCode({ players, range });
 
     this.strings = overwrite(JSON.parse(JSON.stringify(finalCode)), strings);
     this.controller = new MessageActionRow().addComponents(
@@ -43,11 +35,10 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
   }
 
   async initialize(): Promise<void> {
-    super.initialize();
+    this.game.initialize();
 
-    this.answer = GameUtil.randomInt(this.range.min + 1, this.range.max - 1);
-    let content = format(this.strings.interval, { min: this.range.min, max: this.range.max }) + '\n';
-                + format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>` });
+    const content = format(this.strings.interval, { min: this.game.range.min, max: this.game.range.max }) + '\n';
+                  + format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` });
 
     if ('editReply' in this.source) {
       if (!this.source.inCachedGuild()) { // type guard
@@ -65,37 +56,11 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
     }
   }
 
-  guess(query: number): 1 | 0 | -1 {
-    if (query !== ~~query) {
-      throw new Error(`The query should be an integer.`);
-    }
-
-    if (this.range.inOpenRange(query)) {
-      if (query <= this.answer) this.range.min = query;
-      if (query >= this.answer) this.range.max = query;
-    }
-
-    if (query > this.answer) return 1
-    if (query < this.answer) return -1
-    return 0;
-  }
-
-  win() {
-    return this.range.min === this.range.max;
-  }
-
-  async end(status: string): Promise<void> {
-    super.end(status);
-
-    const content = format(this.strings.interval, { min: this.range.min, max: this.range.max })
-    await this.mainMessage?.edit({ content: content, components: [] }).catch(() => {});
-  }
-
   getEndContent(): string {
     const message = this.strings.endMessages;
-    switch (this.status.now) {
+    switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.winner?.id}>`, answer: this.answer });
+        return format(message.win, { player: `<@${this.game.winner?.id}>`, answer: this.game.answer });
       case "IDLE":
         return message.idle;
       case "STOPPED":
@@ -109,15 +74,15 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
 
 
   protected buttonFilter = (i: ButtonInteraction): boolean => {
-    return i.user.id === this.playerManager.nowPlayer.id;
+    return i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter = (m: Message): boolean => {
-    if (m.author.id !== this.playerManager.nowPlayer.id) return false;
+    if (m.author.id !== this.game.playerManager.nowPlayer.id) return false;
 
     const query = +m.content;
     if (isNaN(query) || query !== ~~query) return false;
-    return this.range.inOpenRange(query);
+    return this.game.range.inOpenRange(query);
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
@@ -152,12 +117,12 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
     nowPlayer.addStep();
 
     const query = +input;
-    const result = this.guess(query);
+    const result = this.game.guess(query);
     let content = '';
     let endStatus = "";
 
     if (result === 0) {
-      this.winner = nowPlayer;
+      this.game.winner = nowPlayer;
       endStatus = "WIN";
     }
     else {
@@ -177,12 +142,19 @@ export class DjsFinalCode extends DjsGame implements FinalCodeInterface {
       throw new Error('Something went wrong when sending reply.');
     }
 
-    this.playerManager.next();
-    result.content += format(this.strings.interval, { min: this.range.min, max: this.range.max }) + '\n';
-    result.content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>` });
+    this.game.playerManager.next();
+    result.content += format(this.strings.interval, { min: this.game.range.min, max: this.game.range.max }) + '\n';
+    result.content += format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` });
     await this.mainMessage.edit(result).catch(() => {
       result.endStatus = "DELETED";
     });
     return result;
+  }
+
+  protected async end(status: string): Promise<void> {
+    this.game.end(status);
+
+    const content = format(this.strings.interval, { min: this.game.range.min, max: this.game.range.max })
+    await this.mainMessage?.edit({ content: content, components: [] }).catch(() => {});
   }
 }

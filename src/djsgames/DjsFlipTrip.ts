@@ -1,41 +1,29 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
-import { FlipTripInterface, DjsFlipTripOptions, FlipTripStrings, DjsInputResult } from '../types/interfaces';
+import { DjsGameWrapper } from './DjsGameWrapper';
+import { FlipTrip } from '../games/FlipTrip';
+import { Player } from '../struct/Player';
+import { DjsFlipTripOptions, FlipTripStrings, DjsInputResult } from '../types/interfaces';
 import { format, overwrite } from '../util/Functions';
 import { flipTrip } from '../util/strings.json';
-import { Player } from '../struct/Player';
-import { Range } from '../struct/Range';
-import { DjsGame } from './DjsGame';
 
 const MAX_BUTTON_PER_ROW = 5;
 
-export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
-  public boardSize: number;
-  public state: number;
-
+export class DjsFlipTrip extends DjsGameWrapper {
   public strings: FlipTripStrings;
   public mainMessage: Message | void;
   public controller: MessageActionRow;
   public controllerMessage: Message | void;
 
-  private boardButtons: MessageActionRow[];
-  protected appearedStates: number[];
-  protected permutationCount: number;
+  protected game: FlipTrip;
   protected inputMode: number;
+  protected boardButtons: MessageActionRow[];
 
   
-  constructor({ boardSize = 3, players, source, strings, time }: DjsFlipTripOptions) {
-    super({ players, playerCountRange: new Range(1, Infinity), source, time });
-    if (boardSize > 10) {
-      throw new Error('The size of the board should be at most 10.');
-    }
-
-    this.boardSize = boardSize;
-    this.state = 0;
-    this.appearedStates = [];
-    this.permutationCount = 2 ** boardSize;
+  constructor({ players, boardSize, source, time, strings }: DjsFlipTripOptions) {
+    super({ source, time });
+    this.game = new FlipTrip({ players, boardSize });
 
     this.strings = overwrite(JSON.parse(JSON.stringify(flipTrip)), strings);
-    this.boardButtons = [];
     this.controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('HZG_CTRL_stop')
@@ -47,24 +35,20 @@ export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
     this.controllerMessage = undefined;
 
     this.inputMode = 0b10;
+    this.boardButtons = [];
   }
 
   async initialize(): Promise<void> {
-    super.initialize();
-
-    for (let i = 0; i < this.permutationCount; i++)
-      this.appearedStates.push(0);
-    this.appearedStates[this.state] = 1;
+    this.game.initialize();
     
-    for (let i = 0; i < this.boardSize; i++) {
+    for (let i = 0; i < this.game.boardSize; i++) {
       if (i % MAX_BUTTON_PER_ROW === 0) {
         this.boardButtons.push(new MessageActionRow());
       }
-
       this.boardButtons[~~(i / MAX_BUTTON_PER_ROW)].addComponents(
         new MessageButton()
-          .setCustomId(`HZG_PLAY_${this.boardSize - 1 - i}`)
-          .setLabel(`${this.boardSize - i}`)
+          .setCustomId(`HZG_PLAY_${this.game.boardSize - 1 - i}`)
+          .setLabel(`${this.game.boardSize - i}`)
           .setStyle("PRIMARY")
       );
     }
@@ -85,33 +69,13 @@ export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
     }
   }
 
-  flip(location: number): boolean {
-    this.state ^= (1 << location);
-
-    if (this.appearedStates[this.state]) {
-      return false;
-    }
-    this.appearedStates[this.state] = 1;
-    return true;
-  }
-
-  win(): boolean {
-    return this.playerManager.totalSteps === this.permutationCount - 1;
-  }
-
-  async end(status: string): Promise<void> {
-    super.end(status);
-
-    await this.mainMessage?.edit({ components: [] }).catch(() => {});
-  }
-
   getEndContent(): string {
     const message = this.strings.endMessages;
-    switch (this.status.now) {
+    switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.winner?.id}>`, size: this.boardSize });
+        return format(message.win, { player: `<@${this.game.winner?.id}>`, size: this.game.boardSize });
       case "LOSE":
-        return format(message.lose, { player: `<@${this.loser?.id}>`, state: this.pieces, perm: this.permutationCount - this.playerManager.totalSteps });
+        return format(message.lose, { player: `<@${this.game.loser?.id}>`, state: this.pieces, perm: this.game.permutationCount - this.game.playerManager.totalSteps });
       case "IDLE":
         return message.idle;
       case "STOPPED":
@@ -125,7 +89,7 @@ export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
 
 
   protected buttonFilter = (i: ButtonInteraction): boolean => {
-    return i.user.id === this.playerManager.nowPlayer.id;
+    return i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter = (): boolean => {
@@ -161,14 +125,14 @@ export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
       nowPlayer.status.set("PLAYING");
       nowPlayer.addStep();
 
-      const legal = this.flip(parseInt(args[2], 10));
+      const legal = this.game.flip(parseInt(args[2], 10));
 
       if (!legal) {
-        this.loser = nowPlayer;
+        this.game.loser = nowPlayer;
         endStatus = "LOSE";
       }
-      else if (this.win()) {
-        this.winner = nowPlayer;
+      else if (this.game.win()) {
+        this.game.winner = nowPlayer;
         endStatus = "WIN";
       }
     }
@@ -188,17 +152,23 @@ export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
       throw new Error('Something went wrong when sending reply.');
     }
 
-    this.playerManager.next();
+    this.game.playerManager.next();
     await this.mainMessage.edit(result).catch(() => {
       result.endStatus = "DELETED";
     });
     return result;
   }
 
+  protected async end(status: string): Promise<void> {
+    this.game.end(status);
+
+    await this.mainMessage?.edit({ components: [] }).catch(() => {});
+  }
+
 
   private get boardContent(): string {
     let boardContent = '';
-    for (let i = this.boardSize - 1; i >= 0; i--) {
+    for (let i = this.game.boardSize - 1; i >= 0; i--) {
       boardContent += this.strings.numbers[i];
     }
     boardContent += '\n';
@@ -209,8 +179,8 @@ export class DjsFlipTrip extends DjsGame implements FlipTripInterface {
 
   private get pieces() {
     let result = '';
-    for (let i = this.boardSize - 1; i >= 0; i--) {
-      result += this.strings.pieces[(this.state & (1 << i)) ? 1 : 0];
+    for (let i = this.game.boardSize - 1; i >= 0; i--) {
+      result += this.strings.pieces[(this.game.state & (1 << i)) ? 1 : 0];
     }
     return result;
   }

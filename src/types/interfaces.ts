@@ -24,27 +24,18 @@ export interface GameOptions {
   gameStatus?: string[]
 }
 
-export interface DjsGameOptions {
-  gameStatus?: string[], 
-  players: PlayerOptions[], 
-  playerCountRange?: Range, 
-  source: CommandInteraction | Message, 
-  time: number
-}
-
 
 
 // implemented game options
 
 export interface BullsAndCowsOptions {
   players: PlayerOptions[], 
-  hardMode?: boolean, 
   answerLength?: number
 }
 
 export interface FinalCodeOptions {
   players: PlayerOptions[], 
-  range: Range
+  range?: Range
 }
 
 export interface FlipTripOptions {
@@ -71,27 +62,34 @@ export interface TicTacToeOptions {
 
 // implemented discord.js game options
 
-export interface DjsBullsAndCowsOptions extends DjsGameOptions, BullsAndCowsOptions {
+export interface DjsGameWrapperOptions {
+  source: CommandInteraction | Message, 
+  time: number
+}
+
+export interface DjsBullsAndCowsOptions extends DjsGameWrapperOptions, BullsAndCowsOptions {
+  hardMode: boolean, 
   strings: BullsAndCowsStrings
 }
 
-export interface DjsFinalCodeOptions extends DjsGameOptions, FinalCodeOptions {
+export interface DjsFinalCodeOptions extends DjsGameWrapperOptions, FinalCodeOptions {
   strings: FinalCodeStrings
 }
 
-export interface DjsFlipTripOptions extends DjsGameOptions, FlipTripOptions {
+export interface DjsFlipTripOptions extends DjsGameWrapperOptions, FlipTripOptions {
   strings: FlipTripStrings
 }
 
-export interface DjsGomokuOptions extends DjsGameOptions, GomokuOptions {
+export interface DjsGomokuOptions extends DjsGameWrapperOptions, GomokuOptions {
   strings: GomokuStrings
 }
 
-export interface DjsLightsUpOptions extends DjsGameOptions, LightsUpOptions {
+export interface DjsLightsUpOptions extends DjsGameWrapperOptions, LightsUpOptions {
+  answered: boolean, 
   strings: LightsUpStrings
 }
 
-export interface DjsTicTacToeOptions extends DjsGameOptions, LightsUpOptions {
+export interface DjsTicTacToeOptions extends DjsGameWrapperOptions, LightsUpOptions {
   strings: TicTacToeStrings
 }
 
@@ -99,30 +97,29 @@ export interface DjsTicTacToeOptions extends DjsGameOptions, LightsUpOptions {
 
 // interfaces to implement
 
-export interface BullsAndCowsInterface {
+export interface IBullsAndCows {
   answer: number[], 
   answerLength: number, 
   numberCount: number, 
-  hardMode: boolean, 
   guess(query: number[]): BullsAndCowsResult, 
   win(result: BullsAndCowsResult): boolean
 }
 
-export interface FinalCodeInterface {
+export interface IFinalCode {
   answer: number, 
   range: Range, 
   guess(query: number): 1 | 0 | -1, 
   win(): boolean
 }
 
-export interface FlipTripInterface {
+export interface IFlipTrip {
   boardSize: number, 
   state: number,
   flip(location: number): boolean, 
   win(): boolean
 }
 
-export interface GomokuInterface {
+export interface IGomoku {
   board: (string | null)[][], 
   boardSize: number, 
   fill(row: number, col: number): void, 
@@ -130,7 +127,7 @@ export interface GomokuInterface {
   draw(): boolean
 }
 
-export interface LightsUpInterface {
+export interface ILightsUp {
   answer: boolean[][], 
   board: boolean[][], 
   boardSize: number, 
@@ -138,7 +135,7 @@ export interface LightsUpInterface {
   win(): boolean
 }
 
-export interface TicTacToeInterface {
+export interface ITicTacToe {
   board: (string | null)[][], 
   boardSize: number, 
   fill(row: number, col: number): void, 

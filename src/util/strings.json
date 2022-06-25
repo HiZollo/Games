@@ -62,10 +62,10 @@
       "deleted": "Wait? I can't see the board, where does it go?",
       "gameStats": {
         "header": "Game Stats - <game>",
-        "message": "**Total Time**: <min>:<sec>\n**Total Attempt(s)**: <step>"
+        "message": "**Total Time**: <min>:<sec>\n**Total Step(s)**: <step>"
       },
       "playerStats": {
-        "message": "**Time**: <min>:<sec>\n**Attempt(s)**: <step>"
+        "message": "**Time**: <min>:<sec>\n**Step(s)**: <step>"
       }
     }
   },

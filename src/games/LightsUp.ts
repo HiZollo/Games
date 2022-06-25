@@ -1,9 +1,9 @@
-import { LightsUpInterface, LightsUpOptions } from '../types/interfaces'
+import { ILightsUp, LightsUpOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
 import { GameUtil } from '../util/GameUtil';
 
-export class LightsUp extends Game implements LightsUpInterface {
+export class LightsUp extends Game implements ILightsUp {
   public answer: boolean[][];
   public board: boolean[][];
   public boardSize: number;

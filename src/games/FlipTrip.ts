@@ -1,13 +1,13 @@
-import { FlipTripInterface, FlipTripOptions } from '../types/interfaces'
+import { IFlipTrip, FlipTripOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
 
-export class FlipTrip extends Game implements FlipTripInterface {
+export class FlipTrip extends Game implements IFlipTrip {
   public boardSize: number;
   public state: number;
-  
-  protected appearedStates: number[];
-  protected permutationCount: number;
+  public appearedStates: number[];
+  public permutationCount: number;
+
 
   constructor({ players, boardSize = 3 }: FlipTripOptions ) {
     if (boardSize > 10) {

@@ -1,10 +1,10 @@
-import { ButtonInteraction, Client, CommandInteraction, InteractionReplyOptions, Message, MessageActionRow, MessageEmbed } from 'discord.js';
-import { DjsGameOptions, DjsInputResult, GameStrings } from '../types/interfaces';
+import { ButtonInteraction, Client, Collection, CommandInteraction, Message, MessageActionRow, MessageEmbed } from 'discord.js';
+import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types/interfaces';
 import { Game } from '../struct/Game';
 import { Player } from '../struct/Player';
 import { fixedDigits, format, sleep } from '../util/Functions';
 
-export abstract class DjsGame extends Game {
+export abstract class DjsGameWrapper {
   public client: Client;
   public source: CommandInteraction | Message;
   public time: number;
@@ -17,17 +17,18 @@ export abstract class DjsGame extends Game {
   public abstract getEndContent(): string;
   
   // logic implementation
+  protected abstract game: Game;
   protected abstract inputMode: number;
   protected abstract buttonFilter(i: ButtonInteraction): boolean;
   protected abstract messageFilter(m: Message): boolean;
   protected abstract idleToDo(nowPlayer: Player): DjsInputResult;
-  protected abstract buttonToDo(nowPlayer: Player, input: string): DjsInputResult;
-  protected abstract messageToDo(nowPlayer: Player, input: string): DjsInputResult;
+  protected abstract buttonToDo(nowPlayer: Player, input: string, interaction?: ButtonInteraction): DjsInputResult;
+  protected abstract messageToDo(nowPlayer: Player, input: string, message?: Message): DjsInputResult;
   protected abstract update(result: DjsInputResult): Promise<DjsInputResult>;
+  protected abstract end(status: string): Promise<void>;
 
 
-  constructor({ players, playerCountRange, source, time = 60e3, gameStatus = [] }: DjsGameOptions) {
-    super({ playerManagerOptions: { players, playerCountRange }, gameStatus });
+  constructor({ source, time = 60e3 }: DjsGameWrapperOptions) {
     if (!source.channel) {
       throw new Error('This channel is invalid.');
     }
@@ -41,33 +42,34 @@ export abstract class DjsGame extends Game {
   // main logic
   private async run(nowPlayer: Player): Promise<void> {
     const input = await this.getInput();
+    const parsedInput = this.parseInput(input);
     let result: DjsInputResult;
 
-    if (input === null) {
+    if (input === null || parsedInput === null) {
       result = this.idleToDo(nowPlayer);
     }
-    else if (input.startsWith("HZG_")) {
-      result = this.buttonToDo(nowPlayer, input);
+    else if ('customId' in input) {
+      result = this.buttonToDo(nowPlayer, parsedInput, input);
     }
     else {
-      result = this.messageToDo(nowPlayer, input);
+      result = this.messageToDo(nowPlayer, parsedInput, input);
     }
 
     result = await this.update(result);
 
     if (result.endStatus) {
-      this.end(result.endStatus);
+      await this.end(result.endStatus);
     }
   }
 
   async start(): Promise<void> {
-    let nowPlayer: Player = this.playerManager.nowPlayer;
-    while (this.ongoing && this.playerManager.alive) {
-      nowPlayer = this.playerManager.nowPlayer;
+    let nowPlayer: Player = this.game.playerManager.nowPlayer;
+    while (this.game.ongoing && this.game.playerManager.alive) {
+      nowPlayer = this.game.playerManager.nowPlayer;
       await this.run(nowPlayer);
     }
 
-    if (this.ongoing) {
+    if (this.game.ongoing) {
       switch (nowPlayer.status.now) {
         case "IDLE":
           return this.end("IDLE");
@@ -80,7 +82,7 @@ export abstract class DjsGame extends Game {
   }
 
   async conclude(): Promise<void> {
-    if (this.ongoing) {
+    if (this.game.ongoing) {
       throw new Error('The game has not ended.');
     }
 
@@ -91,30 +93,23 @@ export abstract class DjsGame extends Game {
     });
   }
 
-  protected ephemeralFollowUp(options: InteractionReplyOptions): void {
-    if ('followUp' in this.source) {
-      options.ephemeral = true;
-      this.source.followUp(options);
-    }
-  }
-
 
   private getEndEmbed(): MessageEmbed {
-    if (this.duration == null) {
+    if (this.game.duration == null) {
       throw new Error('The game has neither initiallized nor ended yet.')
     }
   
     const message = this.strings.endMessages;
-    const min = ~~(this.duration/60000);
-    const sec = fixedDigits(Math.round(this.duration/1000) % 60, 2);
+    const min = ~~(this.game.duration/60000);
+    const sec = fixedDigits(Math.round(this.game.duration/1000) % 60, 2);
   
     const embed = new MessageEmbed()
       .setAuthor({ name: format(message.gameStats.header, { game: this.strings.name }), iconURL: this.client.user?.displayAvatarURL() })
       .setColor(0x000000)
-      .setDescription(format(message.gameStats.message, { min, sec, step: this.playerManager.totalSteps }));
+      .setDescription(format(message.gameStats.message, { min, sec, step: this.game.playerManager.totalSteps }));
   
-    if (this.playerManager.playerCount > 1) {
-      for (const player of this.playerManager.players) {
+    if (this.game.playerManager.playerCount > 1) {
+      for (const player of this.game.playerManager.players) {
         const m = ~~(player.time/60000);
         const s = fixedDigits(Math.round(player.time/1000) % 60, 2);
         embed.addField(player.username, format(message.playerStats.message, { min: m, sec: s, step: player.steps }), true);
@@ -124,9 +119,9 @@ export abstract class DjsGame extends Game {
     return embed;
   }
 
-  private async getInput(): Promise<string | null> {
+  private async getInput(): Promise<ButtonInteraction | Message | null> {
     // Since awaitMessageComponent() may reject, a must-resolving Promise is needed
-    const promises: (Promise<any> | void)[] = [sleep(this.time, null)];
+    const promises: (Promise<ButtonInteraction> | Promise<Collection<string, Message>> | void)[] = [sleep(this.time, null)];
 
     // button input from controller message
     promises.push(this.controllerMessage?.awaitMessageComponent({
@@ -155,13 +150,29 @@ export abstract class DjsGame extends Game {
     if (input == null) {
       return null;
     }
-    if (input.customId) {
+    if ('update' in input) {
       await input.update({});
-      return input.customId;
+      return input;
     }
 
     const message = input.first();
-    await message.delete(() => {});
-    return message.content;
+    if (!message) {
+      return null;
+    }
+    await message.delete().catch(() => {});
+    return message;
+  }
+
+  private parseInput(input: ButtonInteraction | Message | null): string | null {
+    if (input === null) {
+      return null;
+    }
+    if ('customId' in input) {
+      return input.customId;
+    }
+    if ('content' in input) {
+      return input.content;
+    }
+    return null;
   }
 }

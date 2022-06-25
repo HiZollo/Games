@@ -1,9 +1,9 @@
-import { FinalCodeInterface, FinalCodeOptions } from '../types/interfaces'
+import { IFinalCode, FinalCodeOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
 import { GameUtil } from '../util/GameUtil';
 
-export class FinalCode extends Game implements FinalCodeInterface {
+export class FinalCode extends Game implements IFinalCode {
   public answer: number;
   public range: Range;
 

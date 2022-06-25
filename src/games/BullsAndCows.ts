@@ -1,15 +1,15 @@
-import { BullsAndCowsInterface, BullsAndCowsOptions, BullsAndCowsResult } from '../types/interfaces'
+import { IBullsAndCows, BullsAndCowsOptions, BullsAndCowsResult } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
 import { GameUtil } from '../util/GameUtil';
 
-export class BullsAndCows extends Game implements BullsAndCowsInterface {
+export class BullsAndCows extends Game implements IBullsAndCows {
   public answer: number[];
   public answerLength: number;
   public numberCount: number;
-  public hardMode: boolean;
 
-  constructor({ players, hardMode = false, answerLength = 4 }: BullsAndCowsOptions) {
+  
+  constructor({ players, answerLength = 4 }: BullsAndCowsOptions) {
     if (answerLength > 10) {
       throw new Error('Parameter answerLength should be less than or equal to 10');
     }
@@ -19,7 +19,6 @@ export class BullsAndCows extends Game implements BullsAndCowsInterface {
     this.answer = [];
     this.answerLength = answerLength;
     this.numberCount = 10;
-    this.hardMode = hardMode;
   }
 
   initialize(): void {

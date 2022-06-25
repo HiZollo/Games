@@ -1,13 +1,12 @@
-import { GomokuInterface, GomokuOptions } from '../types/interfaces'
+import { IGomoku, GomokuOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
 import { GameUtil } from '../util/GameUtil';
 
-export class Gomoku extends Game implements GomokuInterface {
+export class Gomoku extends Game implements IGomoku {
   public board: (string | null)[][];
   public boardSize: number;
-
-  private occupiedCount: number;
+  public occupiedCount: number;
 
   constructor({ players, boardSize = 19 }: GomokuOptions ) {
     if (boardSize > 19) {

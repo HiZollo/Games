@@ -1,37 +1,30 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
-import { TicTacToeInterface, DjsTicTacToeOptions, TicTacToeStrings, DjsInputResult } from '../types/interfaces';
-import { format, overwrite } from '../util/Functions';
-import { GameUtil } from '../util/GameUtil';
-import { ticTacToe } from '../util/strings.json';
+import { DjsGameWrapper } from './DjsGameWrapper';
+import { TicTacToe } from '../games/TicTacToe';
 import { Player } from '../struct/Player';
-import { Range } from '../struct/Range';
-import { DjsGame } from './DjsGame';
+import { DjsTicTacToeOptions, TicTacToeStrings, DjsInputResult } from '../types/interfaces';
+import { format, overwrite } from '../util/Functions';
+import { ticTacToe } from '../util/strings.json';
 
-export class DjsTicTacToe extends DjsGame implements TicTacToeInterface {
-  public board: (string | null)[][];
-  public boardSize: number;
-
+export class DjsTicTacToe extends DjsGameWrapper {
   public strings: TicTacToeStrings;
   public mainMessage: Message | void;
   public controller: MessageActionRow;
   public controllerMessage: Message | void;
 
-  private boardButtons: MessageButton[][];
-  protected occupiedCount: number;
+  protected game: TicTacToe;
   protected inputMode: number;
+  protected boardButtons: MessageButton[][];
 
   
-  constructor({ boardSize = 3, players, source, strings, time }: DjsTicTacToeOptions) {
-    super({ players, playerCountRange: new Range(2, Infinity), source, time });
+  constructor({ players, boardSize = 3, source, strings, time }: DjsTicTacToeOptions) {
+    super({ source, time });
     if (boardSize > 4) {
       throw new Error('The size of the board should be at most 4.');
     }
-
-    this.board = [];
-    this.boardSize = boardSize;
+    this.game = new TicTacToe({ players, boardSize });
 
     this.strings = overwrite(JSON.parse(JSON.stringify(ticTacToe)), strings);
-    this.boardButtons = [];
     this.controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('HZG_CTRL_stop')
@@ -42,18 +35,16 @@ export class DjsTicTacToe extends DjsGame implements TicTacToeInterface {
     this.mainMessage = undefined;
     this.controllerMessage = undefined;
 
-    this.occupiedCount = 0;
     this.inputMode = 0b01;
+    this.boardButtons = [];
   }
 
   async initialize(): Promise<void> {
-    super.initialize();
+    this.game.initialize();
 
-    for (let i = 0; i < this.boardSize; i++) {
-      this.board.push([]);
+    for (let i = 0; i < this.game.boardSize; i++) {
       this.boardButtons.push([]);
-      for (let j = 0; j < this.boardSize; j++) {
-        this.board[i].push(null);
+      for (let j = 0; j < this.game.boardSize; j++) {
         this.boardButtons[i].push(new MessageButton()
         .setCustomId(`HZG_PLAY_${i}_${j}`)
         .setLabel(this.strings.labels[i][j])
@@ -62,7 +53,7 @@ export class DjsTicTacToe extends DjsGame implements TicTacToeInterface {
       }
     }
 
-    const content = format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
+    const content = format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>`, symbol: this.game.playerManager.nowPlayer.symbol });
     if ('editReply' in this.source) {
       if (!this.source.inCachedGuild()) { // type guard
         throw new Error('The guild is not cached.');
@@ -80,40 +71,18 @@ export class DjsTicTacToe extends DjsGame implements TicTacToeInterface {
   }
 
   fill(row: number, col: number): void {
-    if (this.board[row][col] !== null)
-      throw new Error(`Trying to fill board[${row}][${col}] that has already been filled.`);
+    this.game.fill(row, col);
 
-    this.board[row][col] = this.playerManager.nowPlayer.symbol;
     this.boardButtons[row][col]
       .setDisabled(true)
-      .setLabel(this.board[row][col] ?? this.strings.labels[row][col]);
-    this.occupiedCount++;
-    }
-
-  win(row: number, col: number): (string | null) {
-    return GameUtil.checkStrike(this.board, row, col, this.boardSize);
-  }
-
-  draw(): boolean {
-    return this.occupiedCount === this.boardSize ** 2;
-  }
-
-  async end(status: string): Promise<void> {
-    super.end(status);
-
-    this.boardButtons.forEach(row => {
-      row.forEach(button => {
-        button.setDisabled(true);
-      })
-    });
-    await this.mainMessage?.edit({ content: '\u200b', components: this.displayBoard }).catch(() => {});
+      .setLabel(this.game.board[row][col] ?? this.strings.labels[row][col]);
   }
 
   getEndContent(): string {
     const message = this.strings.endMessages;
-    switch (this.status.now) {
+    switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.winner?.id}>` });
+        return format(message.win, { player: `<@${this.game.winner?.id}>` });
       case "IDLE":
         return message.idle;
       case "DRAW":
@@ -129,7 +98,7 @@ export class DjsTicTacToe extends DjsGame implements TicTacToeInterface {
 
 
   protected buttonFilter = (i: ButtonInteraction): boolean => {
-    return i.user.id === this.playerManager.nowPlayer.id;
+    return i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter = (): boolean => {
@@ -169,11 +138,11 @@ export class DjsTicTacToe extends DjsGame implements TicTacToeInterface {
       const [row, col] = [parseInt(args[2]), parseInt(args[3])];
       this.fill(row, col);
 
-      if (this.win(row, col)) {
-        this.winner = nowPlayer;
+      if (this.game.win(row, col)) {
+        this.game.winner = nowPlayer;
         endStatus = "WIN";
       }
-      else if (this.draw()) {
+      else if (this.game.draw()) {
         endStatus = "DRAW";
       }
     }
@@ -194,20 +163,31 @@ export class DjsTicTacToe extends DjsGame implements TicTacToeInterface {
       throw new Error('Something went wrong when sending reply.');
     }
 
-    this.playerManager.next();
-    result.content += format(this.strings.nowPlayer, { player: `<@${this.playerManager.nowPlayer.id}>`, symbol: this.playerManager.nowPlayer.symbol });
+    this.game.playerManager.next();
+    result.content += format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>`, symbol: this.game.playerManager.nowPlayer.symbol });
     await this.mainMessage.edit(result).catch(() => {
       result.endStatus = "DELETED";
     });
     return result;
   }
 
+  protected async end(status: string): Promise<void> {
+    this.game.end(status);
+
+    this.boardButtons.forEach(row => {
+      row.forEach(button => {
+        button.setDisabled(true);
+      })
+    });
+    await this.mainMessage?.edit({ content: '\u200b', components: this.displayBoard }).catch(() => {});
+  }
+
 
   private get displayBoard(): MessageActionRow[] {
     const actionRows = [];
-    for (let i = 0; i < this.boardSize; i++) {
+    for (let i = 0; i < this.game.boardSize; i++) {
       actionRows.push(new MessageActionRow());
-      for (let j = 0; j < this.boardSize; j++) {
+      for (let j = 0; j < this.game.boardSize; j++) {
         actionRows[i].addComponents(this.boardButtons[i][j]);
       }
     }

@@ -1,13 +1,12 @@
-import { TicTacToeInterface, TicTacToeOptions } from '../types/interfaces'
+import { ITicTacToe, TicTacToeOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
 import { GameUtil } from '../util/GameUtil';
 
-export class TicTacToe extends Game implements TicTacToeInterface {
+export class TicTacToe extends Game implements ITicTacToe {
   public board: (string | null)[][];
   public boardSize: number;
-
-  private occupiedCount: number;
+  public occupiedCount: number;
 
   constructor({ players, boardSize = 3 }: TicTacToeOptions ) {
     if (boardSize > 5) {
