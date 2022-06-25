@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "noImplicitAny": true,
+    "module": "commonjs",
     "rootDir": "./src",
     "resolveJsonModule": true,
     "declaration": true,
-    "declarationDir": "dist/types",
-    "moduleResolution": "Node",
     "sourceMap": true,
+    "outDir": "./dist",
     "removeComments": true,
     "noEmitOnError": true,
     "esModuleInterop": true,
@@ -16,6 +15,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "skipLibCheck": true, 
+    "skipLibCheck": true
   }
 }

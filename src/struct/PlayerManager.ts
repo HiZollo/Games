@@ -16,7 +16,6 @@ export class PlayerManager {
     if (!playerCountRange.inClosedRange(players.length)) {
       throw new Error(`The player count should be in interval [${playerCountRange.min}, ${playerCountRange.max}]`);
     }
-    console.log(players);
     this.players = players.map(p => new Player(p));
     if (requireSymbol && this.players.find(p => p.symbol == null)) {
       throw new Error('You should provide symbols for all players');
