@@ -97,48 +97,48 @@ This is the documentation for all options.
 # DjsBullsAndCowsOptions
 > extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [BullsAndCowsOptions](#BullsAndCowsOptions)
 
-| parameter    | type                                                     | default                                      | description                 |
-|--------------|----------------------------------------------------------|----------------------------------------------|-----------------------------|
-| hardmode     | boolean                                                  | *none*                                       | Whether to enable hard mode |
-| strings      | [BullsAndCowsStrings](./strings.md/#BullsAndCowsStrings) | [strings.json#bullsAndCows](../strings.json) | The display strings         |
+| parameter    | type                                                     | default                                               | description                 |
+|--------------|----------------------------------------------------------|-------------------------------------------------------|-----------------------------|
+| hardmode     | boolean                                                  | *none*                                                | Whether to enable hard mode |
+| strings      | [BullsAndCowsStrings](./strings.md/#BullsAndCowsStrings) | [strings.json#bullsAndCows](../src/util/strings.json) | The display strings         |
 
 
 # DjsFinalCodeOptions
 > extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [FinalCodeOptions](#FinalCodeOptions)
 
-| parameter    | type                                               | default                                   | description         |
-|--------------|----------------------------------------------------|-------------------------------------------|---------------------|
-| strings      | [FinalCodeStrings](./strings.md/#FinalCodeStrings) | [strings.json#finalCode](../strings.json) | The display strings |
+| parameter    | type                                               | default                                            | description         |
+|--------------|----------------------------------------------------|----------------------------------------------------|---------------------|
+| strings      | [FinalCodeStrings](./strings.md/#FinalCodeStrings) | [strings.json#finalCode](../src/util/strings.json) | The display strings |
 
 
 # DjsFlipTripOptions
 > extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [FlipTripOptions](#FlipTripOptions)
 
-| parameter    | type                                             | default                                  | description         |
-|--------------|--------------------------------------------------|------------------------------------------|---------------------|
-| strings      | [FlipTripStrings](./strings.md/#FlipTripStrings) | [strings.json#flipTrip](../strings.json) | The display strings |
+| parameter    | type                                             | default                                           | description         |
+|--------------|--------------------------------------------------|---------------------------------------------------|---------------------|
+| strings      | [FlipTripStrings](./strings.md/#FlipTripStrings) | [strings.json#flipTrip](../src/util/strings.json) | The display strings |
 
 
 # DjsGomokuOptions
 > extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [GomokuOptions](#GomokuOptions)
 
-| parameter    | type                                         | default                                | description         |
-|--------------|----------------------------------------------|----------------------------------------|---------------------|
-| strings      | [GomokuStrings](./strings.md/#GomokuStrings) | [strings.json#gomoku](../strings.json) | The display strings |
+| parameter    | type                                         | default                                         | description         |
+|--------------|----------------------------------------------|-------------------------------------------------|---------------------|
+| strings      | [GomokuStrings](./strings.md/#GomokuStrings) | [strings.json#gomoku](../src/util/strings.json) | The display strings |
 
 
 # DjsLightsUpOptions
 > extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [LightsUpOptions](#LightsUpOptions)
 
-| parameter    | type                                             | default                                  | description         |
-|--------------|--------------------------------------------------|------------------------------------------|---------------------|
-| strings      | [LightsUpStrings](./strings.md/#LightsUpStrings) | [strings.json#lightsUp](../strings.json) | The display strings |
+| parameter    | type                                             | default                                           | description         |
+|--------------|--------------------------------------------------|---------------------------------------------------|---------------------|
+| strings      | [LightsUpStrings](./strings.md/#LightsUpStrings) | [strings.json#lightsUp](../src/util/strings.json) | The display strings |
 
 
 
 # DjsTicTacToeOptions
 > extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [TicTacToeOptions](#TicTacToeOptions)
 
-| parameter    | type                                               | default                                   | description         |
-|--------------|----------------------------------------------------|-------------------------------------------|---------------------|
-| strings      | [TicTacToeStrings](./strings.md/#TicTacToeStrings) | [strings.json#ticTacToe](../strings.json) | The display strings |
+| parameter    | type                                               | default                                            | description         |
+|--------------|----------------------------------------------------|----------------------------------------------------|---------------------|
+| strings      | [TicTacToeStrings](./strings.md/#TicTacToeStrings) | [strings.json#ticTacToe](../src/util/strings.json) | The display strings |
