@@ -121,7 +121,7 @@ export abstract class DjsGameWrapper {
 
   private async getInput(): Promise<ButtonInteraction | Message | null> {
     // Since awaitMessageComponent() may reject, a must-resolving Promise is needed
-    const promises: (Promise<ButtonInteraction> | Promise<Collection<string, Message>> | void)[] = [sleep(this.time, null)];
+    const promises: (Promise<ButtonInteraction | Collection<string, Message> | null> | void)[] = [sleep(this.time, null)];
 
     // button input from controller message
     promises.push(this.controllerMessage?.awaitMessageComponent({

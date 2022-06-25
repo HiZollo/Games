@@ -1,4 +1,4 @@
-This is the documentations for all basic classes.
+This is the documentation for all basic classes.
 
 
 # Table of Contents
@@ -8,6 +8,7 @@ This is the documentations for all basic classes.
 - [StatusManager](#StatusManager)
 - [GameStatusManager](#GameStatusManager)
 - [PlayerStatusManager](#PlayerStatusManager)
+- [Range](#Range)
 
 
 # Game

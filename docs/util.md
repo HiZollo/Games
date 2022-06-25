@@ -1,4 +1,4 @@
-This is the documentations for all utilities.
+This is the documentation for all utilities.
 
 
 # Table of Contents
@@ -8,13 +8,13 @@ This is the documentations for all utilities.
 # GameUtil
 ## methods
 ### `[static]` .checkStrike(board, row, col, totalStrike, directions)
-| parameter   | type                   | default                             | description                                    |
-|-------------|------------------------|-------------------------------------|------------------------------------------------|
-| board       | Array\<Array\<?*>>     | *required*                          | The board array                                |
-| row         | number                 | *required*                          | The row index                                  |
-| col         | number                 | *required*                          | The column index                               |
-| totalStrike | number                 | *required*                          | The minimum number for a symbol to make a line |
-| directions  | Array\<Array\<number>> | `[[1, 1], [1, 0], [0, 1], [-1, 1]]` | The possible directions to make a line         |
+| parameter   | type                 | default                             | description                                    |
+|-------------|----------------------|-------------------------------------|------------------------------------------------|
+| board       | (string \| null)[][] | *required*                          | The board array                                |
+| row         | number               | *required*                          | The row index                                  |
+| col         | number               | *required*                          | The column index                               |
+| totalStrike | number               | *required*                          | The minimum number for a symbol to make a line |
+| directions  | number[][]           | `[[1, 1], [1, 0], [0, 1], [-1, 1]]` | The possible directions to make a line         |
 - Checks if a specific grid in 2D Array is lined up.
 - Returns: ?* (the symbol if it is lined up, null if not)
 
@@ -27,8 +27,8 @@ This is the documentations for all utilities.
 - Returns: number
 
 ### `[static]` .shuffle(array)
-| parameter | type     | default    | description          |
-|-----------|----------|------------|----------------------|
-| array     | Array<*> | *required* | The array to shuffle |
+| parameter | type | default    | description          |
+|-----------|------|------------|----------------------|
+| array     | \*[] | *required* | The array to shuffle |
 - Shuffles an array.
 - Returns: void

@@ -1,9 +1,9 @@
-This is the documentations for other objects.
+This is the documentation for other objects.
 
 # Table of Contents
-- [BullsAndCowsGuessResult](#BullsAndCowsGuessResult)
+- [BullsAndCowsResult](#BullsAndCowsResult)
 
-# BullsAndCowsGuessResult
+# BullsAndCowsResult
 | properties | type   | description                                |
 |------------|--------|--------------------------------------------|
 | a          | number | The number of digits in the right location |

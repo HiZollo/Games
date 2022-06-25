@@ -47,9 +47,9 @@ export function overwrite<T>(obj1: T, obj2: T): T {
  * Returns a promise that takes a certain amount of time to resolve.
  * @param time in milliseconds
  * @param message the message to resolve
- * @returns a promise that always resolves
+ * @returns a promise that always resolves with `message`
  */
-export function sleep(time: number, message: any): Promise<any> {
+export function sleep<T>(time: number, message: T): Promise<T> {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(message);

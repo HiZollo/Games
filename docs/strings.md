@@ -1,30 +1,171 @@
-In this package, you can customize display strings when certain events happen, like, someone wins a game or makes a wrong guess. To be more specific, in default settings, all strings displayed on Discord are located in [strings.json](../util/strings.json), but you can overwrite them by passing corresponding objects to `gameOptions#strings`.
+This is the documentation for all display strings in games implemented with discord.js.
 
-For example, if you want to change the string that shows when someone hit the answer in *Final Code*, you can do:
-```js
-const game = new DjsFinalCode({
-  players: [
-    player1, player2, player3
-  ],
-  time: 15e3,
-  strings: { // this will overwrite the default object
-    endMessages: {
-      win: "Oh no, <player>! You hit the final code <answer>!"
-    }
-  }
-});
-```
 
-You might notice that there are substrings `<player>` and `<answer>` in it, and those are called specifiers. Usually, the specifiers represent substrings that vary from game to game, such as the player's name, scores, etc. It's ok to discard some specifiers if you prefer, which will not break the functionality.
+# Table of Contents
+- [Main Strings](#Main-Strings)
+  - [GameStrings](#GameStrings)
+  - [BullsAndCowsStrings](#BullsAndCowsStrings)
+  - [FinalCodeStrings](#FinalCodeStrings)
+  - [FlipTripStrings](#FlipTripStrings)
+  - [GomokuStrings](#GomokuStrings)
+  - [LightsUpStrings](#LightsUpStrings)
+  - [TicTacToeStrings](#TicTacToeStrings)
+- [Controller Strings](#Controller-Strings)
+  - [ControllerStrings](#ControllerStrings)
+  - [LightsUpControllerStrings](#LightsUpControllerStrings)
+- [End Message Strings](#End-Message-Strings)
+  - [EndMessageStrings](#EndMessageStrings)
+  - [FlipTripEndMessageStrings](#FlipTripEndMessageStrings)
+  - [GomokuEndMessageStrings](#GomokuEndMessageStrings)
+  - [LightsUpEndMessageStrings](#LightsUpEndMessageStrings)
+  - [TicTacToeEndMessageStrings](#TicTacToeEndMessageStrings)
+- [Previous Strings](#Previous-Strings)
+  - [FinalCodePreviousStrings](#FinalCodePreviousStrings)
+  - [GomokuPreviousStrings](#GomokuPreviousStrings)
+  - [TicTacToePreviousStrings](#TicTacToePreviousStrings)
 
-If you are planning to make a bot in languages other than English, feel free to copy the content of [strings.json](../util/strings.json), translate them into any language you want, and create your own json file, say, `mystrings.json`. Then, you can include them in your game as below:
-```js
-const mystrings = require('./your/path/to/mystrings.json');
-const game = new DjsFinalCode({
-  players: [
-    player1, player2, player3
-  ],
-  time: 15e3,
-  strings: mystrings.finalCode
-});
-```
+# Main Strings
+## GameStrings
+| parameter   | type                                    | description                                         |
+|-------------|-----------------------------------------|-----------------------------------------------------|
+| controller  | [ControllerStrings](#ControllerStrings) | The controller buttons' labels                      |
+| endMessages | [EndMessageStrings](#EndMessageStrings) | The messages that shows when `conclude()` is called |
+| name        | string                                  | The name of the game                                |
+
+## BullsAndCowsStrings
+> extends [GameStrings](#GameStrings)
+
+| parameter | type   | description                                        |
+|-----------|--------|----------------------------------------------------|
+| initial   | string | The initial message                                |
+| query     | string | The message that shows when a player makes a query |
+
+## FinalCodeStrings
+> extends [GameStrings](#GameStrings)
+
+| parameter | type                                                  | description                               |
+|-----------|-------------------------------------------------------|-------------------------------------------|
+| interval  | string                                                | The message about the current interval    |
+| nowPlayer | string                                                | The message that shows the current player |
+| previous  | [FinalCodePreviousStrings](#FinalCodePreviousStrings) | The message about the previous query      |
+
+## FlipTripStrings
+> extends [GameStrings](#GameStrings)
+
+| parameter   | type                                                    | description                                         |
+|-------------|---------------------------------------------------------|-----------------------------------------------------|
+| endMessages | [FlipTripEndMessageStrings](#FlipTripEndMessageStrings) | The messages that shows when `conclude()` is called |
+| numbers     | string[]                                                | The indicators for the index of pieces              |
+| pieces      | string[] (with length of 2)                             | The upward piece and downward piece                 |
+
+## GomokuStrings
+> extends [GameStrings](#GameStrings)
+
+| parameter   | type                                                | description                                          |
+|-------------|-----------------------------------------------------|------------------------------------------------------|
+| columns     | string[]                                            | The indicators for the row index                     |
+| corner      | string                                              | The symbol of the top left corner                    |
+| endMessages | [GomokuEndMessageStrings](#GomokuEndMessageStrings) | The messages that shows when `conclude()` is called  |
+| grids       | string                                              | The symbol of empty grids                            |
+| nowPlayer   | string                                              | The message that shows the current player and symbol |
+| rows        | string[]                                            | The indicators for the row index                     |
+| pieces      | string[] (with length of 2)                         | The upward piece and downward piece                  |
+| previous    | [GomokuPreviousStrings](#GomokuPreviousStrings)     | The message about the previous step                  |
+
+# LightsUpStrings
+> extends [GameStrings](#GameStrings)
+
+| parameter     | type                                                    | description                                          |
+|---------------|---------------------------------------------------------|------------------------------------------------------|
+| answerSymbols | string[] (with length of 2)                             | The symbol represents "to flip" or "not to flip"     |
+| controller    | [LightsUpControllerStrings](#LightsUpControllerStrings) | The controller buttons' labels                       |
+| currentAnswer | string                                                  | The symbol of the top left corner                    |
+| endMessages   | [LightsUpEndMessageStrings](#LightsUpEndMessageStrings) | The messages that shows when `conclude()` is called  |
+
+# TicTacToeStrings
+> extends [GameStrings](#GameStrings)
+
+| parameter   | type                                                      | description                                          |
+|-------------|-----------------------------------------------------------|------------------------------------------------------|
+| endMessages | [TicTacToeEndMessageStrings](#TicTacToeEndMessageStrings) | The messages that shows when `conclude()` is called  |
+| labels      | string[][]                                                | The labels of the board's buttons                    |
+| nowPlayer   | string                                                    | The message that shows the current player and symbol |
+| previous    | [TicTacToePreviousStrings](#TicTacToePreviousStrings)     | The message about the previous step                  |
+
+
+# Controller Strings
+## ControllerStrings
+| parameter | type   | description                   |
+|-----------|--------|-------------------------------|
+| stop      | string | The label on the stop buttton |
+
+## LightsUpControllerStrings
+> extends [ControllerStrings](#ControllerStrings)
+
+| parameter | type   | description                          |
+|-----------|--------|--------------------------------------|
+| answer    | string | The label on the show answer buttton |
+
+
+# End Message Strings
+## EndMessageStrings
+| parameter   | type                                | description                                                                      |
+|-------------|-------------------------------------|----------------------------------------------------------------------------------|
+| deleted     | string                              | The strings that shows when the game ends because of the main message is deleted |
+| gameStats   | { header: string, message: string } | The statistics about the game that shows in the conclusion embed                 |
+| idle        | string                              | The strings that shows when the game ends because of idleness                    |
+| playerStats | { message: string }                 | The statistics about the players that shows in the conclusion embed              |
+| stopped     | string                              | The strings that shows when the game ends because the players wants to stop it   |
+| win         | string                              | The strings that shows when a player wins                                        |
+
+## FlipTripEndMessageStrings
+> extends [EndMessageStrings](#EndMessageStrings)
+
+| parameter | type   | description                                |
+|-----------|--------|--------------------------------------------|
+| lose      | string | The strings that shows when a player loses |
+
+## GomokuEndMessageStrings
+> extends [EndMessageStrings](#EndMessageStrings)
+
+| parameter | type   | description                                           |
+|-----------|--------|-------------------------------------------------------|
+| draw      | string | The strings that shows when the game ends with a draw |
+
+## LightsUpEndMessageStrings
+> extends [EndMessageStrings](#EndMessageStrings)
+
+| parameter     | type   | description                                                                    |
+|---------------|--------|--------------------------------------------------------------------------------|
+| jackpot       | string | The strings that shows when the board are all lighted up in the first hand     |
+| unansweredWin | string | The strings that shows when a player wins the game without checking the answer |
+
+## TicTacToeEndMessageStrings
+> extends [EndMessageStrings](#EndMessageStrings)
+
+| parameter | type   | description                                           |
+|-----------|--------|-------------------------------------------------------|
+| draw      | string | The strings that shows when the game ends with a draw |
+
+
+# Previous Strings
+## FinalCodePreviousStrings
+| parameter | type   | description                                                           |
+|-----------|--------|-----------------------------------------------------------------------|
+| idle      | string | The strings that shows if the previous player runs out of their time  |
+| leaving   | string | The strings that shows if the previous player wants to leave the game |
+| tooLarge  | string | The strings that shows if the previous query is too large             |
+| tooSmall  | string | The strings that shows if the previous query is too small             |
+
+## GomokuPreviousStrings
+| parameter | type   | description                                                           |
+|-----------|--------|-----------------------------------------------------------------------|
+| idle      | string | The strings that shows if the previous player runs out of their time  |
+| leaving   | string | The strings that shows if the previous player wants to leave the game |
+| move      | string | The strings that shows if the previous successfully placed a piece    |
+
+## TicTacToePreviousStrings
+| parameter | type   | description                                                           |
+|-----------|--------|-----------------------------------------------------------------------|
+| idle      | string | The strings that shows if the previous player runs out of their time  |
+| leaving   | string | The strings that shows if the previous player wants to leave the game |

@@ -1,4 +1,4 @@
-This is the documentations for all game classes.
+This is the documentation for all game classes.
 
 
 # Table of Contents
@@ -11,7 +11,7 @@ This is the documentations for all game classes.
 
 
 # BullsAndCows
-> extends [Game](./struct.md/#Game) implements [BullsAndCowsInterface](./interfaces.md/#BullsAndCowsInterface)
+> extends [Game](./struct.md/#Game) implements [IBullsAndCows](../interfaces.md/#IBullsAndCows)
 
 The class for *Bulls and Cows*.
 
@@ -39,10 +39,6 @@ new BullsAndCows(bullsAndCowsOptions);
 ### .endTime
 - The end time of the game (in millisecond)
 - Type: number | null
-
-### .hardMode
-- Whether the game is in hard mode
-- Type: boolean
 
 ### .loser
 - The loser of the game
@@ -89,18 +85,18 @@ new BullsAndCows(bullsAndCowsOptions);
 |-----------|----------|------------|---------------------------------------|
 | query     | number[] | *required* | An array with a digit in each element |
 - Compares the query with the answer
-- Returns: [BullsAndCowsGuessResult](../others.md/#BullsAndCowsGuessResult)
+- Returns: [BullsAndCowsResult](../others.md/#BullsAndCowsResult)
 
 ### .win(result)
-| parameter | type                                                              | default    | description               |
-|-----------|-------------------------------------------------------------------|------------|---------------------------|
-| result    | [BullsAndCowsGuessResult](../results.md/#BullsAndCowsGuessResult) | *required* | The result from the guess |
+| parameter | type                                                    | default    | description               |
+|-----------|---------------------------------------------------------|------------|---------------------------|
+| result    | [BullsAndCowsResult](../results.md/#BullsAndCowsResult) | *required* | The result from the guess |
 - Checks if the result from the guess satisfies winning conditions
 - Returns: boolean
 
 
 # FinalCode
-> extends [Game](./struct.md/#Game) implements [FinalCodeInterface](./interfaces.md/#FinalCodeInterface)
+> extends [Game](./struct.md/#Game) implements [IFinalCode](../interfaces.md/#IFinalCode)
 
 The class for *Final Code*.
 
@@ -178,19 +174,23 @@ new FinalCode(finalCodeOptions);
 
 
 # FlipTrip
-> extends [Game](./struct.md/#Game) implements [FlipTripInterface](./interfaces.md/#FlipTripInterface)
+> extends [Game](./struct.md/#Game) implements [IFlipTrip](../interfaces.md/#IFlipTrip)
 
 The class for *Flip Trip*.
 
 ## constructor
 ```js
-new FinalCode(flipTripOptions);
+new FlipTrip(flipTripOptions);
 ```
 | parameter       | type                                              | default    | description          |
 |-----------------|---------------------------------------------------|------------|----------------------|
 | flipTripOptions | [FlipTripOptions](../options.md/#FlipTripOptions) | *required* | Options for the game |
 
 ## properties
+### .appearedStates
+- All appeared states
+- Type: number[]
+
 ### .boardSize
 - The number of pieces on the board
 - Type: number
@@ -210,6 +210,10 @@ new FinalCode(flipTripOptions);
 ### .ongoing
 - Whether the game is ongoing
 - Type: boolean
+
+### .permutationCount
+- The number of all permutations
+- Type: number
 
 ### .playerManager
 - The player manager for the game
@@ -256,7 +260,7 @@ new FinalCode(flipTripOptions);
 
 
 # Gomoku
-> extends [Game](./struct.md/#Game) implements [GomokuInterface](./interfaces.md/#GomokuInterface)
+> extends [Game](./struct.md/#Game) implements [IGomoku](../interfaces.md/#IGomoku)
 
 The class for *Gomoku*.
 
@@ -288,6 +292,10 @@ new Gomoku(gomokuOptions);
 ### .loser
 - The loser of the game
 - Type: [Player](./struct.md/#Player) | null
+
+### .occupiedCount
+- The number of occupied grids
+- Type: number
 
 ### .ongoing
 - Whether the game is ongoing
@@ -343,7 +351,7 @@ new Gomoku(gomokuOptions);
 
 
 # LightsUp
-> extends [Game](./struct.md/#Game) implements [LightsUpInterface](./interfaces.md/#LightsUpInterface)
+> extends [Game](./struct.md/#Game) implements [ILightsUp](../interfaces.md/#ILightsUp)
 
 The class for *Lights-up*.
 
@@ -426,7 +434,7 @@ new LightsUp(lightsUpOptions);
 
 
 # TicTacToe
-> extends [Game](./struct.md/#Game) implements [TicTacToeInterface](./interfaces.md/#TicTacToeInterface)
+> extends [Game](./struct.md/#Game) implements [ITicTacToe](../interfaces.md/#ITicTacToe)
 
 The class for *Tic-tac-toe*.
 
@@ -458,6 +466,10 @@ new TicTacToe(ticTacToeOptions);
 ### .loser
 - The loser of the game
 - Type: [Player](./struct.md/#Player) | null
+
+### .occupiedCount
+- The number of occupied grids
+- Type: number
 
 ### .ongoing
 - Whether the game is ongoing

@@ -85,7 +85,6 @@ export interface DjsGomokuOptions extends DjsGameWrapperOptions, GomokuOptions {
 }
 
 export interface DjsLightsUpOptions extends DjsGameWrapperOptions, LightsUpOptions {
-  answered: boolean, 
   strings: LightsUpStrings
 }
 
@@ -168,9 +167,56 @@ export interface GameStrings {
   endMessages: EndMessageStrings
 }
 
+export interface BullsAndCowsStrings extends GameStrings {
+  initial: string, 
+  query: string
+}
+
+export interface FinalCodeStrings extends GameStrings {
+  previous: FinalCodePreviousStrings, 
+  interval: string, 
+  nowPlayer: string
+}
+
+export interface FlipTripStrings extends GameStrings {
+  numbers: string[], 
+  pieces: string[], 
+  endMessages: FlipTripEndMessageStrings
+}
+
+export interface GomokuStrings extends GameStrings {
+  rows: string[], 
+  columns: string[], 
+  grid: string, 
+  corner: string, 
+  previous: GomokuPreviousStrings, 
+  nowPlayer: string, 
+  endMessages: GomokuEndMessageStrings
+}
+
+export interface LightsUpStrings extends GameStrings {
+  answerSymbols: string[], 
+  currentAnswer: string, 
+  controller: LightsUpControllerStrings
+  endMessages: LightsUpEndMessageStrings
+}
+
+export interface TicTacToeStrings extends GameStrings {
+  labels: string[][], 
+  previous: TicTacToePreviousStrings, 
+  nowPlayer: string, 
+  endMessages: TicTacToeEndMessageStrings
+}
+
+
 export interface ControllerStrings {
   stop: string
 }
+
+export interface LightsUpControllerStrings extends ControllerStrings {
+  answer: string
+}
+
 
 export interface EndMessageStrings {
   win: string,
@@ -186,16 +232,23 @@ export interface EndMessageStrings {
   }
 }
 
-export interface BullsAndCowsStrings extends GameStrings {
-  initial: string, 
-  query: string
+export interface FlipTripEndMessageStrings extends EndMessageStrings {
+  lose: string
 }
 
-export interface FinalCodeStrings extends GameStrings {
-  previous: FinalCodePreviousStrings, 
-  interval: string, 
-  nowPlayer: string
+export interface GomokuEndMessageStrings extends EndMessageStrings {
+  draw: string
 }
+
+export interface LightsUpEndMessageStrings extends EndMessageStrings {
+  jackpot: string, 
+  unansweredWin: string
+}
+
+export interface TicTacToeEndMessageStrings extends EndMessageStrings {
+  draw: string
+}
+
 
 export interface FinalCodePreviousStrings {
   tooSmall: string, 
@@ -204,64 +257,13 @@ export interface FinalCodePreviousStrings {
   leaving: string
 }
 
-export interface FlipTripStrings extends GameStrings {
-  numbers: string[], 
-  pieces: string[], 
-  endMessages: FlipTripEndMessageStrings
-}
-
-export interface FlipTripEndMessageStrings extends EndMessageStrings {
-  lose: string
-}
-
-export interface GomokuStrings extends GameStrings {
-  rows: string[], 
-  columns: string[], 
-  grid: string, 
-  corner: string, 
-  previous: GomokuPreviousStrings, 
-  nowPlayer: string, 
-  endMessages: GomokuSEndMessageStrings
-}
-
 export interface GomokuPreviousStrings {
   move: string, 
   idle: string, 
   leaving: string
 }
 
-export interface GomokuSEndMessageStrings extends EndMessageStrings {
-  draw: string
-}
-
-export interface LightsUpStrings extends GameStrings {
-  answerSymbols: string[], 
-  currentAnswer: string, 
-  controller: LightsUpConstollerStrings
-  endMessages: LightsUpEndMessageStrings
-}
-
-export interface LightsUpConstollerStrings extends ControllerStrings {
-  answer: string
-}
-
-export interface LightsUpEndMessageStrings extends EndMessageStrings {
-  jackpot: string, 
-  unansweredWin: string
-}
-
-export interface TicTacToeStrings extends GameStrings {
-  labels: string[][], 
-  previous: TicTacToePreviousStrings, 
-  nowPlayer: string, 
-  endMessages: TicTacToeEndMessageStrings
-}
-
 export interface TicTacToePreviousStrings {
   idle: string, 
   leaving: string
-}
-
-export interface TicTacToeEndMessageStrings extends EndMessageStrings {
-  draw: string
 }
