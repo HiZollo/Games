@@ -6,94 +6,30 @@
 ![License](https://img.shields.io/github/license/HiZollo/Games)
 
 # Introduction
-`HiZollo/Games` is a package that provides various games for [discord.js](https://www.npmjs.com/package/discord.js). With simple settings, your app can host games easily by importing our modules.
+`HiZollo/Games` is a package that provides various games for [discord.js](https://www.npmjs.com/package/discord.js) bots. With simple settings, your app can host games at ease.
 
-# Usage
-```js
-const { DjsGameName } = require('@hizollo/games'); // There isn't a game called DjsGameName in this package. It is just for demonstration.
+# Requirements
+- discord.js version >= `^13.3.1`
+- node.js version >= `16.6`
 
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isCommand()) return;
-
-  if (interaction.commandname === 'game') {
-    const game = new DjsGameName({
-      /* Options */
-    });
-
-    await game.initialize(interaction);
-    await game.start();
-    await game.conclude();
-  }
-});
-
-client.on('messageCreate', async message => {
-  if (!message.content.startsWith('your-prefix')) return;
-
-  const args = message.content.slice('your-prefix'.length).trim().split(/ +/);
-  if (args[0] === 'game') {
-    const game = new DjsGameName({
-      /* Options */
-    });
-
-    await game.initialize(message);
-    await game.start();
-    await game.conclude();
-  }
-});
+# Installation
 ```
-- To host a game, you need to create an instance of the class first. Then sequentially call `initialize()`, `start()` and `conclude()`, and await them.
-- Passing either a [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) instance or a [Message](https://discord.js.org/#/docs/main/stable/class/Message) instance to `initialize()` works.
-- For different games, you should pass corresponding options to the constructor. Those information are detailed in [this section](#Options).
-- You can, but are not recommended to, let bots join the game, since the bot will not and cannot play the game for themselves.
-- **Player who joins multiple games in the same channel may cause problems, so it's recommended to block them off if they are trying to do so**.
+npm install @hizollo/games
+```
 
 # Documentations
-- [Basic Structures](./docs/classes/struct.md)
-- [Games](./docs/classes/games.md)
-- [Discord.js Games](./docs/classes/djsgames.md)
-- [Options](./docs/options.md)
-- [Utilities](./docs/util.md)
-- [Game Rules](./docs/rules.md)
+- Classes
+  - [Basic Structures](./docs/classes/struct.md)
+  - [Games](./docs/classes/games.md)
+  - [Discord.js Games](./docs/classes/djsgames.md)
 - [Customize Strings](./docs/strings.md)
+- [Interfaces](./docs/interfaces.md) (for Typescript users)
+- [Options](./docs/options.md)
+- [Strings](./docs/strings.md)
+- [Utilities](./docs/util.md)
 - [Misc.](./docs/others.md)
 
-# Quick Examples
-Games that do not require symbols. You can directly pass a discord.js [User](https://discord.js.org/#/docs/main/stable/class/User) object to `player` parameter.
-```js
-const mystrings = require('./your/path/to/mystrings.json');
-
-const game = new DjsBullsAndCows({
-  players: [interaction.user],
-  time: 60e3,
-  strings: mystrings.bullsAndCows,   
-  hardmode: true
-});
-
-await game.initialize(interaction);
-await game.start();
-await game.conclude();
-```
-
-Games that require symbols. It's recommended to pass a new object to `players` parameter.
-```js
-const mystrings = require('./your/path/to/mystrings.json');
-
-const game = new DjsGomoku({
-  players: [{
-    username: interaction.user.username,
-    id: interaction.user.id,
-    symbol: '⚫'
-  }, {
-    username: opponent.username,
-    id: opponent.id,
-    symbol: '⚪'
-  }],
-  time: 60e3,
-  strings: mystrings.ticTacToe,   
-  hardmode: true
-});
-
-await game.initialize(interaction);
-await game.start();
-await game.conclude();
-```
+# Guide
+- [Main Guide](./guide/guide.md)
+- [Game Rules](./guide/gamerules.md)
+- [String Customization](./guide/strings.md)

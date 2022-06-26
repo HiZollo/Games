@@ -7,7 +7,7 @@ This is the documentation for all utilities.
 
 # GameUtil
 ## methods
-### `[static]` .checkStrike(board, row, col, totalStrike, directions)
+### `static` .checkStrike(board, row, col, totalStrike, directions)
 | parameter   | type                 | default                             | description                                    |
 |-------------|----------------------|-------------------------------------|------------------------------------------------|
 | board       | (string \| null)[][] | *required*                          | The board array                                |
@@ -18,7 +18,7 @@ This is the documentation for all utilities.
 - Checks if a specific grid in 2D Array is lined up.
 - Returns: ?* (the symbol if it is lined up, null if not)
 
-### `[static]` .randomInt(min, max)
+### `static` .randomInt(min, max)
 | parameter | type   | default    | description        |
 |-----------|--------|------------|--------------------|
 | min       | number | *required* | The minimum number |
@@ -26,7 +26,7 @@ This is the documentation for all utilities.
 - Returns a random integer in [min, max].
 - Returns: number
 
-### `[static]` .shuffle(array)
+### `static` .shuffle(array)
 | parameter | type | default    | description          |
 |-----------|------|------------|----------------------|
 | array     | \*[] | *required* | The array to shuffle |
