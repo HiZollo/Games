@@ -21,21 +21,21 @@ This is the documentation for all options.
 
 
 # PlayerOptions
-| parameter | type            | default    | description                 |
-|-----------|-----------------|------------|-----------------------------|
-| bot       | boolean         | `false`    | Whether the player is a bot |
-| id        | \*              | *required* | The id of the player        |
-| symbol    | string \| null  | `null`     | The symbol of the player    |
-| username  | string          | `"Player"` | The username of the player  |
+| parameter | type             | default    | description                 |
+|-----------|------------------|------------|-----------------------------|
+| bot       | boolean          | `false`    | Whether the player is a bot |
+| id        | number \| string | *required* | The id of the player        |
+| symbol    | string \| null   | `null`     | The symbol of the player    |
+| username  | string           | `"Player"` | The username of the player  |
 
 
 # PlayerManagerOptions
-| parameter        | type                              | default         | description                                |
-|------------------|-----------------------------------|-----------------|--------------------------------------------|
-| firstPlayerIndex | number                            | `1`             | The index of the first player              |
-| players          | [PlayerOptions](#PlayerOptions)[] | *required*      | All players' data                          |
-| playerCountRange | number[]                          | `[1, Infinity]` | The range that the player count can be in  |
-| requireSymbol    | boolean                           | `false`         | Whether all players need their own symbols |
+| parameter        | type                                | default                  | description                                |
+|------------------|-------------------------------------|--------------------------|--------------------------------------------|
+| firstPlayerIndex | number                              | `1`                      | The index of the first player              |
+| players          | [PlayerOptions](#PlayerOptions)[]   | *required*               | All players' data                          |
+| playerCountRange | [Range](./classes/struct.md/#Range) | `new Range(1, Infinity)` | To restrict the number of players          |
+| requireSymbol    | boolean                             | `false`                  | Whether all players need their own symbols |
 
 
 # GameOptions
@@ -53,10 +53,10 @@ This is the documentation for all options.
 
 
 # FinalCodeOptions
-| parameter | type                              | default              | description             |
-|-----------|-----------------------------------|----------------------|-------------------------|
-| players   | [PlayerOptions](#PlayerOptions)[] | *required*           | All players' data       |
-| range     | number                            | `new Range(1, 1000)` | The range of the answer |
+| parameter | type                                | default              | description             |
+|-----------|-------------------------------------|----------------------|-------------------------|
+| players   | [PlayerOptions](#PlayerOptions)[]   | *required*           | All players' data       |
+| range     | [Range](./classes/struct.md/#Range) | `new Range(1, 1000)` | The range of the answer |
 
 
 # FlipTripOptions
