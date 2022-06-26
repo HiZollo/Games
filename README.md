@@ -17,6 +17,11 @@
 npm install @hizollo/games
 ```
 
+# Guide
+- [Main Guide](./guide/guide.md)
+- [Game Rules](./guide/gamerules.md)
+- [String Customization](./guide/strings.md)
+
 # Documentations
 - Classes
   - [Basic Structures](./docs/classes/struct.md)
@@ -27,8 +32,3 @@ npm install @hizollo/games
 - [Strings](./docs/strings.md)
 - [Utilities](./docs/util.md)
 - [Misc.](./docs/others.md)
-
-# Guide
-- [Main Guide](./guide/guide.md)
-- [Game Rules](./guide/gamerules.md)
-- [String Customization](./guide/strings.md)
