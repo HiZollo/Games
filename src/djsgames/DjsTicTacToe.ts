@@ -36,6 +36,9 @@ export class DjsTicTacToe extends DjsGameWrapper {
     this.controllerMessage = undefined;
 
     this.inputMode = 0b01;
+    this.buttonFilter = this.buttonFilter.bind(this);
+    this.messageFilter = this.messageFilter.bind(this);
+
     this.boardButtons = [];
   }
 
@@ -97,11 +100,11 @@ export class DjsTicTacToe extends DjsGameWrapper {
   }
 
 
-  protected buttonFilter = (i: ButtonInteraction): boolean => {
+  protected buttonFilter(i: ButtonInteraction): boolean {
     return i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
-  protected messageFilter = (): boolean => {
+  protected messageFilter(): boolean {
     return false;
   }
 

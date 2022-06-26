@@ -42,6 +42,9 @@ export class DjsLightsUp extends DjsGameWrapper {
     this.controllerMessage = undefined;
 
     this.inputMode = 0b10;
+    this.buttonFilter = this.buttonFilter.bind(this);
+    this.messageFilter = this.messageFilter.bind(this);
+
     this.answered = false;
     this.boardButtons = [];
   }
@@ -106,11 +109,11 @@ export class DjsLightsUp extends DjsGameWrapper {
   }
 
 
-  protected buttonFilter = (i: ButtonInteraction): boolean => {
+  protected buttonFilter(i: ButtonInteraction): boolean {
     return i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
-  protected messageFilter = (): boolean => {
+  protected messageFilter(): boolean {
     return false;
   }
 

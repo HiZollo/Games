@@ -32,6 +32,8 @@ export class DjsFinalCode extends DjsGameWrapper {
     this.controllerMessage = undefined;
 
     this.inputMode = 0b01;
+    this.buttonFilter = this.buttonFilter.bind(this);
+    this.messageFilter = this.messageFilter.bind(this);
   }
 
   async initialize(): Promise<void> {
@@ -73,11 +75,11 @@ export class DjsFinalCode extends DjsGameWrapper {
   }
 
 
-  protected buttonFilter = (i: ButtonInteraction): boolean => {
+  protected buttonFilter(i: ButtonInteraction): boolean {
     return i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
-  protected messageFilter = (m: Message): boolean => {
+  protected messageFilter(m: Message): boolean {
     if (m.author.id !== this.game.playerManager.nowPlayer.id) return false;
 
     const query = +m.content;

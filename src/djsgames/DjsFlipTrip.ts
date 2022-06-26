@@ -35,6 +35,9 @@ export class DjsFlipTrip extends DjsGameWrapper {
     this.controllerMessage = undefined;
 
     this.inputMode = 0b10;
+    this.buttonFilter = this.buttonFilter.bind(this);
+    this.messageFilter = this.messageFilter.bind(this);
+
     this.boardButtons = [];
   }
 
@@ -88,11 +91,11 @@ export class DjsFlipTrip extends DjsGameWrapper {
   }
 
 
-  protected buttonFilter = (i: ButtonInteraction): boolean => {
+  protected buttonFilter(i: ButtonInteraction): boolean {
     return i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
-  protected messageFilter = (): boolean => {
+  protected messageFilter(): boolean {
     return false;
   }
 
