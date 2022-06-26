@@ -22,7 +22,6 @@ npm install @hizollo/games
   - [Basic Structures](./docs/classes/struct.md)
   - [Games](./docs/classes/games.md)
   - [Discord.js Games](./docs/classes/djsgames.md)
-- [Customize Strings](./docs/strings.md)
 - [Interfaces](./docs/interfaces.md) (for Typescript users)
 - [Options](./docs/options.md)
 - [Strings](./docs/strings.md)
