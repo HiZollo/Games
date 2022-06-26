@@ -56,7 +56,7 @@ new DjsGameWrapper(djsGameWrapperOptions);
 - Sends a conclusion message of the game
 - Returns: Promise\<void>
 
-### .initialize()
+### `abstract` .initialize()
 - Initializes the game
 - Returns: Promise\<void>
 

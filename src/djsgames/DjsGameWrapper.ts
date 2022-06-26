@@ -14,6 +14,7 @@ export abstract class DjsGameWrapper {
   public abstract mainMessage: Message | void;
   public abstract controller: MessageActionRow;
   public abstract controllerMessage: Message | void;
+  public abstract initialize(): Promise<void>;
   public abstract getEndContent(): string;
   
   // logic implementation
