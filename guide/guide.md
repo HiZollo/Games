@@ -58,7 +58,7 @@ await game.conclude();
 
 ## Final Code
 ```js
-const game = new Djs({
+const game = new DjsFinalCode({
   source: interaction ?? message, 
   players: [user] // one or more players
 });
@@ -117,7 +117,7 @@ await game.conclude();
 
 ## Tic-tac-toe
 ```js
-const game = new Djs({
+const game = new DjsTicTacToe({
   source: interaction ?? message, 
   players: [{
     username: user.username, 
