@@ -24,6 +24,10 @@ export interface GameOptions {
   gameStatus?: string[]
 }
 
+export interface StatusManagerOptions {
+  initial?: string, 
+  status: string[]
+}
 
 
 // implemented game options

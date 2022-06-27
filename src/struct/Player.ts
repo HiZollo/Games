@@ -17,7 +17,7 @@ export class Player {
     this.symbol = symbol;
     this.username = username;
 
-    this.status = new PlayerStatusManager();
+    this.status = new PlayerStatusManager({ initial: this.bot ? "BOT" : "PLAYING", status: [] });
     this.steps = 0;
     this.time = 0;
   }

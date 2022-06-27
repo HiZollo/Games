@@ -18,7 +18,7 @@ export abstract class Game {
   
   constructor({ playerManagerOptions, gameStatus = [] }: GameOptions) {
     this.playerManager = new PlayerManager(playerManagerOptions);
-    this.status = new GameStatusManager(...gameStatus);
+    this.status = new GameStatusManager({ status: gameStatus });
 
     this.startTime = null;
     this.endTime = null;
