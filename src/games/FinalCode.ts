@@ -1,3 +1,4 @@
+import { HZGError, HZGTypeError, ErrorCodes } from '../errors';
 import { IFinalCode, FinalCodeOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
@@ -10,7 +11,7 @@ export class FinalCode extends Game implements IFinalCode {
   
   constructor({ players, range = new Range(1, 1000) }: FinalCodeOptions) {
     if (range.interval <= 2) {
-      throw new Error('The length of the interval should be larger than 2.');
+      throw new HZGError(ErrorCodes.InvalidRangeLength);
     }
 
     super({ playerManagerOptions: { players } });
@@ -27,7 +28,7 @@ export class FinalCode extends Game implements IFinalCode {
 
   guess(query: number): 1 | 0 | -1 {
     if (query !== ~~query) {
-      throw new Error(`The query should be an integer.`);
+      throw new HZGTypeError(ErrorCodes.FinalCodeQueryType);
     }
 
     if (this.range.inOpenRange(query)) {

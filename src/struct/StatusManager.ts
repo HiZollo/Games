@@ -1,3 +1,4 @@
+import { HZGError, ErrorCodes } from '../errors';
 import { StatusManagerOptions } from "../types/interfaces";
 
 export class StatusManager {
@@ -27,7 +28,7 @@ export class StatusManager {
 
   set(status: string): void {
     if (!this.has(status)) {
-      throw new Error(`Status ${status} does not exist.`);
+      throw new HZGError(ErrorCodes.StatusNotFound, status);
     }
 
     this.now = status;

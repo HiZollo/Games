@@ -1,3 +1,4 @@
+import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { ITicTacToe, TicTacToeOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
@@ -9,8 +10,8 @@ export class TicTacToe extends Game implements ITicTacToe {
   public occupiedCount: number;
 
   constructor({ players, boardSize = 3 }: TicTacToeOptions ) {
-    if (boardSize > 5) {
-      throw new Error('The size of the board should be at most 5.');
+    if (!(1 <= boardSize && boardSize <= 5)) {
+      throw new HZGRangeError(ErrorCodes.OutOfRange, "Parameter boardSize", 1, 5);
     }
 
     super({ playerManagerOptions: { players, playerCountRange: new Range(2, Infinity), requireSymbol: true } });
@@ -32,8 +33,9 @@ export class TicTacToe extends Game implements ITicTacToe {
   }
 
   fill(row: number, col: number): void {
-    if (this.board[row][col] !== null)
-      throw new Error(`Trying to fill board[${row}][${col}] that has already been filled.`);
+    if (this.board[row][col] !== null) {
+      throw new HZGError(ErrorCodes.GridFilled, row, col);
+    }
 
     this.board[row][col] = this.playerManager.nowPlayer.symbol;
     this.occupiedCount++;

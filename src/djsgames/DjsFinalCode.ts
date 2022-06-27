@@ -1,5 +1,6 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
+import { HZGError, ErrorCodes } from '../errors';
 import { FinalCode } from '../games/FinalCode';
 import { Player } from '../struct/Player';
 import { DjsFinalCodeOptions, FinalCodeStrings, DjsInputResult } from '../types/interfaces';
@@ -45,7 +46,7 @@ export class DjsFinalCode extends DjsGameWrapper {
 
     if ('editReply' in this.source) {
       if (!this.source.inCachedGuild()) { // type guard
-        throw new Error('The guild is not cached.');
+        throw new HZGError(ErrorCodes.GuildNotCached);
       }
       if (!this.source.deferred) {
         await this.source.deferReply();
@@ -90,7 +91,7 @@ export class DjsFinalCode extends DjsGameWrapper {
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
     if (!this.mainMessage) {
-      throw new Error('Something went wrong when sending reply.');
+      throw new HZGError(ErrorCodes.InvalidMainMessage);
     }
 
     nowPlayer.status.set("IDLE");
@@ -101,12 +102,12 @@ export class DjsFinalCode extends DjsGameWrapper {
 
   protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
     if (!this.mainMessage) {
-      throw new Error('Something went wrong when sending reply.');
+      throw new HZGError(ErrorCodes.InvalidMainMessage);
     }
     const args = input.split('_');
 
     if (args[0] !== "HZG") {
-      throw new Error('Invalid button received.');
+      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
 
     nowPlayer.status.set("LEAVING");
@@ -166,7 +167,7 @@ export class DjsFinalCode extends DjsGameWrapper {
 
   protected async update(result: DjsInputResult): Promise<DjsInputResult> {
     if (!this.mainMessage) {
-      throw new Error('Something went wrong when sending reply.');
+      throw new HZGError(ErrorCodes.InvalidMainMessage);
     }
 
     this.game.playerManager.next();

@@ -1,3 +1,4 @@
+import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { IGomoku, GomokuOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
@@ -9,8 +10,8 @@ export class Gomoku extends Game implements IGomoku {
   public occupiedCount: number;
 
   constructor({ players, boardSize = 19 }: GomokuOptions ) {
-    if (boardSize > 19) {
-      throw new Error('The size of the board should be at most 19.');
+    if (!(1 <= boardSize && boardSize <= 19)) {
+      throw new HZGRangeError(ErrorCodes.OutOfRange, "Parameter boardSize", 1, 19);
     }
 
     super({ playerManagerOptions: { players, playerCountRange: new Range(2, Infinity), requireSymbol: true } });
@@ -32,8 +33,9 @@ export class Gomoku extends Game implements IGomoku {
   }
 
   fill(row: number, col: number): void {
-    if (this.board[row][col] !== null)
-      throw new Error(`Trying to fill board[${row}][${col}] that has already been filled.`);
+    if (this.board[row][col] !== null) {
+      throw new HZGError(ErrorCodes.GridFilled, row, col);
+    }
 
     this.board[row][col] = this.playerManager.nowPlayer.symbol;
     this.occupiedCount++;

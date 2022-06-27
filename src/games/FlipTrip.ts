@@ -1,3 +1,4 @@
+import { HZGRangeError, ErrorCodes } from '../errors';
 import { IFlipTrip, FlipTripOptions } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
@@ -10,8 +11,8 @@ export class FlipTrip extends Game implements IFlipTrip {
 
 
   constructor({ players, boardSize = 3 }: FlipTripOptions ) {
-    if (boardSize > 10) {
-      throw new Error('The size of the board should be at most 10.');
+    if (!(1 <= boardSize && boardSize <= 10)) {
+      throw new HZGRangeError(ErrorCodes.OutOfRange, "Parameter boardSize", 1, 10);
     }
 
     super({ playerManagerOptions: { players, playerCountRange: new Range(1, 1) } });

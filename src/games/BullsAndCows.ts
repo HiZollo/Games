@@ -1,3 +1,4 @@
+import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { IBullsAndCows, BullsAndCowsOptions, BullsAndCowsResult } from '../types/interfaces'
 import { Game } from '../struct/Game';
 import { Range } from '../struct/Range';
@@ -10,8 +11,8 @@ export class BullsAndCows extends Game implements IBullsAndCows {
 
   
   constructor({ players, answerLength = 4 }: BullsAndCowsOptions) {
-    if (answerLength > 10) {
-      throw new Error('Parameter answerLength should be less than or equal to 10');
+    if (!(1 <= answerLength && answerLength <= 10)) {
+      throw new HZGRangeError(ErrorCodes.OutOfRange, "Parameter answerLength", 1, 10);
     }
 
     super({ playerManagerOptions: { players, playerCountRange: new Range(1, 1) } });
@@ -38,10 +39,10 @@ export class BullsAndCows extends Game implements IBullsAndCows {
 
   guess(query: number[]): BullsAndCowsResult {
     if (query.length !== this.answerLength) {
-      throw new Error(`The number count in query ${query} is different with the answer's length (${this.answerLength}).`);
+      throw new HZGError(ErrorCodes.BullsAndCowsQueryLength, query, this.answerLength);
     }
     if ((new Set(query)).size !== query.length) {
-      throw new Error(`There are duplicated numbers in query ${query}.`);
+      throw new HZGError(ErrorCodes.BullsAndCowsDuplicatedNumbers, query);
     }
 
     let result = { a: 0, b: 0 };

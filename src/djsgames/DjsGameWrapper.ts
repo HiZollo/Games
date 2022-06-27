@@ -1,4 +1,5 @@
 import { ButtonInteraction, Client, Collection, CommandInteraction, Message, MessageActionRow, MessageEmbed } from 'discord.js';
+import { HZGError, ErrorCodes } from '../errors';
 import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types/interfaces';
 import { Game } from '../struct/Game';
 import { Player } from '../struct/Player';
@@ -32,7 +33,7 @@ export abstract class DjsGameWrapper {
 
   constructor({ source, time = 60e3 }: DjsGameWrapperOptions) {
     if (!source.channel) {
-      throw new Error('This channel is invalid.');
+      throw new HZGError(ErrorCodes.InvalidChannel);
     }
 
     this.time = time;
@@ -90,7 +91,7 @@ export abstract class DjsGameWrapper {
 
   async conclude(): Promise<void> {
     if (this.game.ongoing) {
-      throw new Error('The game has not ended.');
+      throw new HZGError(ErrorCodes.GameNotEnded);
     }
 
     const content = this.getEndContent();
@@ -103,7 +104,7 @@ export abstract class DjsGameWrapper {
 
   private getEndEmbed(): MessageEmbed {
     if (this.game.duration == null) {
-      throw new Error('The game has neither initiallized nor ended yet.')
+      throw new HZGError(ErrorCodes.GameNotEnded);
     }
   
     const message = this.strings.endMessages;

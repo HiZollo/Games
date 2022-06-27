@@ -1,3 +1,4 @@
+import { HZGError, ErrorCodes } from '../../errors';
 import { getTicTacToeMove } from './getTicTacToeMove';
 import { sleep } from '../Functions';
 import { Range } from '../../struct/Range';
@@ -16,7 +17,7 @@ export class AI extends null {
 
   static async TicTacToe(board: (string | null)[][], symbol: string | null): Promise<number[]> {
     if (symbol === null) {
-      throw new Error('Symbol needed.');
+      throw new HZGError(ErrorCodes.SymbolRequired);
     }
 
     // await sleep(3e3, null);

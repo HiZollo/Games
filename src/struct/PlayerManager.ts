@@ -1,3 +1,4 @@
+import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { PlayerManagerOptions } from '../types/interfaces';
 import { Player } from './Player';
 import { Range } from './Range';
@@ -11,20 +12,20 @@ export class PlayerManager {
 
   constructor({ players, playerCountRange = new Range(1, Infinity), requireSymbol = false, firstPlayerIndex = 0 }: PlayerManagerOptions) {
     if (!playerCountRange.inClosedRange(players.length)) {
-      throw new Error(`The player count should be in interval [${playerCountRange.min}, ${playerCountRange.max}]`);
+      throw new HZGRangeError(ErrorCodes.OutOfRange, "The number of the players", playerCountRange.min, playerCountRange.max);
     }
 
     this.players = players.map(p => new Player(p));
     if (!this.players.find(p => !p.bot)) {
-      throw new Error('There should be at least one human player.');
+      throw new HZGError(ErrorCodes.HumanRequired);
     }
     if (requireSymbol) {
       if (this.players.find(p => p.symbol === null)) {
-        throw new Error('You should provide symbols for all players');
+        throw new HZGError(ErrorCodes.SymbolRequired);
       }
       const symbols = this.symbols;
       if (symbols.length !== (new Set(symbols)).size) {
-        throw new Error('No duplicated symbols are allowed.');
+        throw new HZGError(ErrorCodes.DuplicatedSymbols);
       }
     }
 

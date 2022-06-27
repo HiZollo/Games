@@ -1,5 +1,6 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
+import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { TicTacToe } from '../games/TicTacToe';
 import { Player } from '../struct/Player';
 import { DjsTicTacToeOptions, TicTacToeStrings, DjsInputResult } from '../types/interfaces';
@@ -20,8 +21,8 @@ export class DjsTicTacToe extends DjsGameWrapper {
   
   constructor({ players, boardSize = 3, source, strings, time }: DjsTicTacToeOptions) {
     super({ source, time });
-    if (boardSize > 4) {
-      throw new Error('The size of the board should be at most 4.');
+    if (!(1 <= boardSize && boardSize <= 4)) {
+      throw new HZGRangeError(ErrorCodes.OutOfRange, "Parameter boardSize", 1, 4);
     }
     this.game = new TicTacToe({ players, boardSize });
 
@@ -60,7 +61,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
     const content = format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>`, symbol: this.game.playerManager.nowPlayer.symbol });
     if ('editReply' in this.source) {
       if (!this.source.inCachedGuild()) { // type guard
-        throw new Error('The guild is not cached.');
+        throw new HZGError(ErrorCodes.GuildNotCached);
       }
       if (!this.source.deferred) {
         await this.source.deferReply();
@@ -111,7 +112,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
     if (!this.mainMessage) {
-      throw new Error('Something went wrong when sending reply.');
+      throw new HZGError(ErrorCodes.InvalidMainMessage);
     }
 
     nowPlayer.status.set("IDLE");
@@ -122,14 +123,14 @@ export class DjsTicTacToe extends DjsGameWrapper {
 
   protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
     if (!this.mainMessage) {
-      throw new Error('Something went wrong when sending reply.');
+      throw new HZGError(ErrorCodes.InvalidMainMessage);
     }
     const args = input.split('_');
 
     let content = '';
     let endStatus = "";
     if (args[0] !== "HZG") {
-      throw new Error('Invalid button received.');
+      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
     if (args[1] === "CTRL") {
       nowPlayer.status.set("LEAVING");
@@ -164,7 +165,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
 
   protected async botMove(bot: Player): Promise<DjsInputResult> {
     if (this.game.playerManager.playerCount !== 2) {
-      throw new Error('There should be only one human in the game.');
+      throw new HZGError(ErrorCodes.OneHumanOnly);
     }
 
     bot.addStep();
@@ -190,7 +191,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
 
   protected async update(result: DjsInputResult): Promise<DjsInputResult> {
     if (!this.mainMessage) {
-      throw new Error('Something went wrong when sending reply.');
+      throw new HZGError(ErrorCodes.InvalidMainMessage);
     }
 
     this.game.playerManager.next();

@@ -1,7 +1,6 @@
+import { GameStatusManager, Player, PlayerManager } from './';
+import { HZGError, ErrorCodes } from '../errors';
 import { GameOptions } from '../types/interfaces';
-import { GameStatusManager } from './GameStatusManager';
-import { Player } from './Player';
-import { PlayerManager } from './PlayerManager';
 
 export abstract class Game {
   public playerManager: PlayerManager;
@@ -32,7 +31,7 @@ export abstract class Game {
 
   initialize(): void {
     if (this.initialized) {
-      throw new Error('The game has already been initialized.');
+      throw new HZGError(ErrorCodes.GameAlreadyInitialized);
     }
 
     this.initialized = true;
@@ -41,7 +40,7 @@ export abstract class Game {
 
   end(status: string): void {
     if (this.ended) {
-      throw new Error("This game has already ended.");
+      throw new HZGError(ErrorCodes.GameAlreadyEnded);
     }
 
     this.ended = true;

@@ -1,5 +1,6 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
+import { HZGError, ErrorCodes } from '../errors';
 import { FlipTrip } from '../games/FlipTrip';
 import { Player } from '../struct/Player';
 import { DjsFlipTripOptions, FlipTripStrings, DjsInputResult } from '../types/interfaces';
@@ -58,7 +59,7 @@ export class DjsFlipTrip extends DjsGameWrapper {
 
     if ('editReply' in this.source) {
       if (!this.source.inCachedGuild()) { // type guard
-        throw new Error('The guild is not cached.');
+        throw new HZGError(ErrorCodes.GuildNotCached);
       }
       if (!this.source.deferred) {
         await this.source.deferReply();
@@ -101,7 +102,7 @@ export class DjsFlipTrip extends DjsGameWrapper {
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
     if (!this.mainMessage) {
-      throw new Error('Something went wrong when sending reply.');
+      throw new HZGError(ErrorCodes.InvalidMainMessage);
     }
 
     nowPlayer.status.set("IDLE");
@@ -112,12 +113,12 @@ export class DjsFlipTrip extends DjsGameWrapper {
 
   protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
     if (!this.mainMessage) {
-      throw new Error('Something went wrong when sending reply.');
+      throw new HZGError(ErrorCodes.InvalidMainMessage);
     }
     const args = input.split('_');
 
     if (args[0] !== "HZG") {
-      throw new Error('Invalid button received.');
+      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
 
     let endStatus = "";
@@ -151,12 +152,12 @@ export class DjsFlipTrip extends DjsGameWrapper {
   }
 
   protected async botMove(): Promise<DjsInputResult> {
-    throw new Error("Bots are not allowed in this game.");
+    throw new HZGError(ErrorCodes.BotsNotAllowed);
   }
 
   protected async update(result: DjsInputResult): Promise<DjsInputResult> {
     if (!this.mainMessage) {
-      throw new Error('Something went wrong when sending reply.');
+      throw new HZGError(ErrorCodes.InvalidMainMessage);
     }
 
     this.game.playerManager.next();
