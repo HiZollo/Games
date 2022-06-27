@@ -1,14 +1,14 @@
 export class GameUtil extends null {
   /**
    * Checks if a specific grid in 2D Array is lined up.
-   * @param {Array<Array<string | null>>} board
+   * @param {Array<Array<T | null>>} board
    * @param {number} row the row index
    * @param {number} col the column index
    * @param {number} amount the minimum number for a symbol to make a line
    * @param {Array<Array<number>>} directions the possible directions to make a line
-   * @returns {string | null} the symbol if it is lined up, null if not
+   * @returns {T | null} the symbol if it is lined up, null if not
    */
-  static checkStrike(board: (string | null)[][], row: number, col: number, amount: number, directions = [[1, 1], [1, 0], [0, 1], [-1, 1]]): string | null {
+  static checkStrike<T>(board: (T | null)[][], row: number, col: number, amount: number, directions = [[1, 1], [1, 0], [0, 1], [-1, 1]]): (T | null) {
     const symbol = board[row][col];
     const rowCount = board.length;
     const colCount = board[row].length;

@@ -3,6 +3,7 @@ import { DjsGameWrapper } from './DjsGameWrapper';
 import { TicTacToe } from '../games/TicTacToe';
 import { Player } from '../struct/Player';
 import { DjsTicTacToeOptions, TicTacToeStrings, DjsInputResult } from '../types/interfaces';
+import { AI } from '../util/AI/AI';
 import { format, overwrite } from '../util/Functions';
 import { ticTacToe } from '../util/strings.json';
 
@@ -161,8 +162,30 @@ export class DjsTicTacToe extends DjsGameWrapper {
     return {};
   }
 
-  protected async botMove(): Promise<DjsInputResult> {
-    throw new Error("Bots are not allowed in this game.");
+  protected async botMove(bot: Player): Promise<DjsInputResult> {
+    if (this.game.playerManager.playerCount !== 2) {
+      throw new Error('There should be only one human in the game.');
+    }
+
+    bot.addStep();
+
+    let endStatus = "";
+    const [row, col] = await AI.TicTacToe(this.game.board, bot.symbol);
+    this.fill(row, col);
+
+    if (this.game.win(row, col)) {
+      this.game.winner = bot;
+      endStatus = "WIN";
+    }
+    else if (this.game.draw()) {
+      endStatus = "DRAW";
+    }
+
+    return {
+      components: [...this.displayBoard, this.controller], 
+      content: '', 
+      endStatus: endStatus
+    };
   }
 
   protected async update(result: DjsInputResult): Promise<DjsInputResult> {

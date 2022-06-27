@@ -13,7 +13,7 @@ export class TicTacToe extends Game implements ITicTacToe {
       throw new Error('The size of the board should be at most 5.');
     }
 
-    super({ playerManagerOptions: { players, playerCountRange: new Range(2, 2), requireSymbol: true } });
+    super({ playerManagerOptions: { players, playerCountRange: new Range(2, Infinity), requireSymbol: true } });
 
     this.boardSize = boardSize;
     this.board = [];

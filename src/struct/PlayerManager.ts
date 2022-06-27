@@ -18,8 +18,14 @@ export class PlayerManager {
     if (!this.players.find(p => !p.bot)) {
       throw new Error('There should be at least one human player.');
     }
-    if (requireSymbol && this.players.find(p => p.symbol === null)) {
-      throw new Error('You should provide symbols for all players');
+    if (requireSymbol) {
+      if (this.players.find(p => p.symbol === null)) {
+        throw new Error('You should provide symbols for all players');
+      }
+      const symbols = this.symbols;
+      if (symbols.length !== (new Set(symbols)).size) {
+        throw new Error('No duplicated symbols are allowed.');
+      }
     }
 
     this.playerCount = players.length;
@@ -41,6 +47,10 @@ export class PlayerManager {
 
   get ids(): (number | string)[] {
     return this.players.map(p => p.id);
+  }
+
+  get symbols(): (string | null)[] {
+    return this.players.map(p => p.symbol);
   }
 
   get alive(): boolean {

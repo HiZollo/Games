@@ -3,7 +3,7 @@ import { DjsGameWrapper } from './DjsGameWrapper';
 import { FinalCode } from '../games/FinalCode';
 import { Player } from '../struct/Player';
 import { DjsFinalCodeOptions, FinalCodeStrings, DjsInputResult } from '../types/interfaces';
-import { AI } from '../util/AI';
+import { AI } from '../util/AI/AI';
 import { format, overwrite } from '../util/Functions';
 import { finalCode } from '../util/strings.json';
 
