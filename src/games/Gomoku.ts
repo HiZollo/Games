@@ -13,7 +13,7 @@ export class Gomoku extends Game implements IGomoku {
       throw new Error('The size of the board should be at most 19.');
     }
 
-    super({ playerManagerOptions: { players, playerCountRange: new Range(2, Infinity), requireSymbol: true } });
+    super({ playerManagerOptions: { players, playerCountRange: new Range(2, 2), requireSymbol: true } });
 
     this.boardSize = boardSize;
     this.board = [];
