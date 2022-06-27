@@ -3,6 +3,7 @@ import { DjsGameWrapper } from './DjsGameWrapper';
 import { FinalCode } from '../games/FinalCode';
 import { Player } from '../struct/Player';
 import { DjsFinalCodeOptions, FinalCodeStrings, DjsInputResult } from '../types/interfaces';
+import { AI } from '../util/AI';
 import { format, overwrite } from '../util/Functions';
 import { finalCode } from '../util/strings.json';
 
@@ -39,7 +40,7 @@ export class DjsFinalCode extends DjsGameWrapper {
   async initialize(): Promise<void> {
     this.game.initialize();
 
-    const content = format(this.strings.interval, { min: this.game.range.min, max: this.game.range.max }) + '\n';
+    const content = format(this.strings.interval, { min: this.game.range.min, max: this.game.range.max }) + '\n'
                   + format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` });
 
     if ('editReply' in this.source) {
@@ -120,7 +121,7 @@ export class DjsFinalCode extends DjsGameWrapper {
 
     const query = +input;
     const result = this.game.guess(query);
-    let content = '';
+    let content = '\u200b';
     let endStatus = "";
 
     if (result === 0) {
@@ -134,7 +135,31 @@ export class DjsFinalCode extends DjsGameWrapper {
     }
 
     return {
-      content: content ? content : '\u200b', 
+      content: content, 
+      endStatus: endStatus
+    };
+  }
+
+  protected async botMove(bot: Player): Promise<DjsInputResult> {
+    bot.addStep();
+
+    const query = await AI.FinalCode(this.game.range);
+    const result = this.game.guess(query);
+    let content = '\u200b';
+    let endStatus = "";
+
+    if (result === 0) {
+      this.game.winner = bot;
+      endStatus = "WIN";
+    }
+    else {
+      content = result > 0 ?
+        format(this.strings.previous.tooLarge, { query }) + '\n' :
+        format(this.strings.previous.tooSmall, { query }) + '\n';
+    }
+
+    return {
+      content: content, 
       endStatus: endStatus
     };
   }

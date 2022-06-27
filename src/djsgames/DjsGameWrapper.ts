@@ -25,6 +25,7 @@ export abstract class DjsGameWrapper {
   protected abstract idleToDo(nowPlayer: Player): DjsInputResult;
   protected abstract buttonToDo(nowPlayer: Player, input: string, interaction?: ButtonInteraction): DjsInputResult;
   protected abstract messageToDo(nowPlayer: Player, input: string, message?: Message): DjsInputResult;
+  protected abstract botMove(bot: Player): Promise<DjsInputResult>;
   protected abstract update(result: DjsInputResult): Promise<DjsInputResult>;
   protected abstract end(status: string): Promise<void>;
 
@@ -42,22 +43,27 @@ export abstract class DjsGameWrapper {
 
   // main logic
   private async run(nowPlayer: Player): Promise<void> {
-    const input = await this.getInput();
-    const parsedInput = this.parseInput(input);
     let result: DjsInputResult;
 
-    if (input === null || parsedInput === null) {
-      result = this.idleToDo(nowPlayer);
-    }
-    else if ('customId' in input) {
-      result = this.buttonToDo(nowPlayer, parsedInput, input);
+    if (nowPlayer.bot) {
+      result = await this.botMove(nowPlayer);
     }
     else {
-      result = this.messageToDo(nowPlayer, parsedInput, input);
+      const input = await this.getInput();
+      const parsedInput = this.parseInput(input);
+  
+      if (input === null || parsedInput === null) {
+        result = this.idleToDo(nowPlayer);
+      }
+      else if ('customId' in input) {
+        result = this.buttonToDo(nowPlayer, parsedInput, input);
+      }
+      else {
+        result = this.messageToDo(nowPlayer, parsedInput, input);
+      }
     }
 
     result = await this.update(result);
-
     if (result.endStatus) {
       await this.end(result.endStatus);
     }

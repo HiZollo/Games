@@ -150,6 +150,10 @@ export class DjsFlipTrip extends DjsGameWrapper {
     return {};
   }
 
+  protected async botMove(): Promise<DjsInputResult> {
+    throw new Error("Bots are not allowed in this game.");
+  }
+
   protected async update(result: DjsInputResult): Promise<DjsInputResult> {
     if (!this.mainMessage) {
       throw new Error('Something went wrong when sending reply.');
