@@ -9,15 +9,16 @@ export class PlayerManager {
   private lastMoveTime: number;
 
 
-  constructor({ players, playerCountRange, requireSymbol = false, firstPlayerIndex = 0 }: PlayerManagerOptions) {
-    if (!playerCountRange) {
-      playerCountRange = new Range(1, Infinity);
-    }
+  constructor({ players, playerCountRange = new Range(1, Infinity), requireSymbol = false, firstPlayerIndex = 0 }: PlayerManagerOptions) {
     if (!playerCountRange.inClosedRange(players.length)) {
       throw new Error(`The player count should be in interval [${playerCountRange.min}, ${playerCountRange.max}]`);
     }
+
     this.players = players.map(p => new Player(p));
-    if (requireSymbol && this.players.find(p => p.symbol == null)) {
+    if (!this.players.find(p => !p.bot)) {
+      throw new Error('There should be at least one human player.');
+    }
+    if (requireSymbol && this.players.find(p => p.symbol === null)) {
       throw new Error('You should provide symbols for all players');
     }
 
