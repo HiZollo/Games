@@ -1,11 +1,11 @@
-import { HZGError, ErrorCodes } from '../../errors';
 import { getTicTacToeMove } from './getTicTacToeMove';
-import { sleep } from '../Functions';
-import { Range } from '../../struct/Range';
+import { HZGError, ErrorCodes } from '../errors';
+import { Range } from '../struct';
+import { sleep } from '../util/Functions';
 
 export class AI extends null {
   static async FinalCode(range: Range): Promise<number> {
-    await sleep(3e3, null);
+    await sleep(2e3, null);
     let query: number;
     do {
       const rand = Math.random();
@@ -20,7 +20,7 @@ export class AI extends null {
       throw new HZGError(ErrorCodes.SymbolRequired);
     }
 
-    // await sleep(3e3, null);
+    await sleep(2e3, null);
     const transformedBoard: (1 | 0 | -1)[][] = [];
     for (let i = 0; i < board.length; i++) {
       transformedBoard.push([]);

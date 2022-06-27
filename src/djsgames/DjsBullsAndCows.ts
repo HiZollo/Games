@@ -1,8 +1,8 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
-import { BullsAndCows } from '../games/BullsAndCows';
-import { Player } from '../struct/Player';
+import { BullsAndCows } from '../games';
+import { Player } from '../struct';
 import { DjsBullsAndCowsOptions, BullsAndCowsStrings, DjsInputResult } from '../types/interfaces';
 import { format, overwrite } from '../util/Functions';
 import { bullsAndCows } from '../util/strings.json';

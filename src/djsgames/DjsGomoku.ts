@@ -1,8 +1,8 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
-import { Gomoku } from '../games/Gomoku';
-import { Player } from '../struct/Player';
+import { Gomoku } from '../games';
+import { Player } from '../struct';
 import { DjsGomokuOptions, GomokuStrings, DjsInputResult } from '../types/interfaces';
 import { format, overwrite } from '../util/Functions';
 import { gomoku } from '../util/strings.json';

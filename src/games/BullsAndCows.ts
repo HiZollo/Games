@@ -1,7 +1,6 @@
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
+import { Game, Range } from '../struct';
 import { IBullsAndCows, BullsAndCowsOptions, BullsAndCowsResult } from '../types/interfaces'
-import { Game } from '../struct/Game';
-import { Range } from '../struct/Range';
 import { GameUtil } from '../util/GameUtil';
 
 export class BullsAndCows extends Game implements IBullsAndCows {

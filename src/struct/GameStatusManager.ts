@@ -1,4 +1,4 @@
-import { StatusManager } from './StatusManager';
+import { StatusManager } from './';
 import { StatusManagerOptions } from '../types/interfaces';
 
 export class GameStatusManager extends StatusManager {

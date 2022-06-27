@@ -1,10 +1,10 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
+import { AI } from '../AI/AI';
 import { HZGError, ErrorCodes } from '../errors';
 import { FinalCode } from '../games/FinalCode';
-import { Player } from '../struct/Player';
+import { Player } from '../struct';
 import { DjsFinalCodeOptions, FinalCodeStrings, DjsInputResult } from '../types/interfaces';
-import { AI } from '../util/AI/AI';
 import { format, overwrite } from '../util/Functions';
 import { finalCode } from '../util/strings.json';
 

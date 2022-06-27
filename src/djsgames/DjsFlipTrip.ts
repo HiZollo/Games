@@ -1,8 +1,8 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
-import { FlipTrip } from '../games/FlipTrip';
-import { Player } from '../struct/Player';
+import { FlipTrip } from '../games';
+import { Player } from '../struct';
 import { DjsFlipTripOptions, FlipTripStrings, DjsInputResult } from '../types/interfaces';
 import { format, overwrite } from '../util/Functions';
 import { flipTrip } from '../util/strings.json';

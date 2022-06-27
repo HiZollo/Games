@@ -1,8 +1,8 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
-import { LightsUp } from '../games/LightsUp';
-import { Player } from '../struct/Player';
+import { LightsUp } from '../games';
+import { Player } from '../struct';
 import { DjsLightsUpOptions, LightsUpStrings, DjsInputResult } from '../types/interfaces';
 import { format, overwrite } from '../util/Functions';
 import { lightsUp } from '../util/strings.json';

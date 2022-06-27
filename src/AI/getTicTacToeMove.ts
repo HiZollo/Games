@@ -1,4 +1,4 @@
-import { GameUtil } from "../GameUtil"; 
+import { GameUtil } from "../util/GameUtil"; 
 
 export async function getTicTacToeMove(board: (1 | 0 | -1)[][]): Promise<number[]> {
   const size = board.length;

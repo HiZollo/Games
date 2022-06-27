@@ -1,10 +1,10 @@
 import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
+import { AI } from '../AI/AI';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
-import { TicTacToe } from '../games/TicTacToe';
-import { Player } from '../struct/Player';
+import { TicTacToe } from '../games';
+import { Player } from '../struct';
 import { DjsTicTacToeOptions, TicTacToeStrings, DjsInputResult } from '../types/interfaces';
-import { AI } from '../util/AI/AI';
 import { format, overwrite } from '../util/Functions';
 import { ticTacToe } from '../util/strings.json';
 

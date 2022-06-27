@@ -1,5 +1,5 @@
+import { PlayerStatusManager } from './';
 import { PlayerOptions } from '../types/interfaces';
-import { PlayerStatusManager } from './PlayerStatusManager';
 
 export class Player {
   public bot: boolean;

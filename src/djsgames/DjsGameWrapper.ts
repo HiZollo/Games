@@ -1,8 +1,7 @@
 import { ButtonInteraction, Client, Collection, CommandInteraction, Message, MessageActionRow, MessageEmbed } from 'discord.js';
 import { HZGError, ErrorCodes } from '../errors';
+import { Game, Player } from '../struct';
 import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types/interfaces';
-import { Game } from '../struct/Game';
-import { Player } from '../struct/Player';
 import { fixedDigits, format, sleep } from '../util/Functions';
 
 export abstract class DjsGameWrapper {

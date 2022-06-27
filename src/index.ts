@@ -1,27 +1,7 @@
-export { Game } from './struct/Game';
-export { Range } from './struct/Range';
-export { Player } from './struct/Player';
-export { PlayerManager } from './struct/PlayerManager';
-export { StatusManager } from './struct/StatusManager';
-export { GameStatusManager } from './struct/GameStatusManager';
-export { PlayerStatusManager } from './struct/PlayerStatusManager';
-
-export { BullsAndCows } from './games/BullsAndCows';
-export { FinalCode } from './games/FinalCode';
-export { FlipTrip } from './games/FlipTrip';
-export { Gomoku } from './games/Gomoku';
-export { LightsUp } from './games/LightsUp';
-export { TicTacToe } from './games/TicTacToe';
-
-export { DjsGameWrapper } from './djsgames/DjsGameWrapper';
-export { DjsBullsAndCows } from './djsgames/DjsBullsAndCows';
-export { DjsFinalCode } from './djsgames/DjsFinalCode';
-export { DjsFlipTrip } from './djsgames/DjsFlipTrip';
-export { DjsGomoku } from './djsgames/DjsGomoku';
-export { DjsLightsUp } from './djsgames/DjsLightsUp';
-export { DjsTicTacToe } from './djsgames/DjsTicTacToe';
-
-export { GameUtil } from './util/GameUtil';
+export * from './struct';
+export * from './games';
+export * from './djsgames';
+export * from './util/GameUtil';
 
 export { 
   PlayerOptions, 
@@ -72,4 +52,4 @@ export {
   FinalCodePreviousStrings, 
   GomokuPreviousStrings, 
   TicTacToePreviousStrings
-} from './types/interfaces'
+} from './types/interfaces';

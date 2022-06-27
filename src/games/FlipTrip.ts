@@ -1,7 +1,6 @@
 import { HZGRangeError, ErrorCodes } from '../errors';
+import { Game, Range } from '../struct';
 import { IFlipTrip, FlipTripOptions } from '../types/interfaces'
-import { Game } from '../struct/Game';
-import { Range } from '../struct/Range';
 
 export class FlipTrip extends Game implements IFlipTrip {
   public boardSize: number;
