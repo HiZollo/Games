@@ -9,8 +9,8 @@ export class FinalCode extends Game implements IFinalCode {
 
   
   constructor({ players, range = new Range(1, 1000) }: FinalCodeOptions) {
-    if (range.interval <= 2) {
-      throw new HZGError(ErrorCodes.InvalidRangeLength);
+    if (isNaN(range.interval) || range.interval <= 2 || range.interval === Infinity) {
+      throw new HZGError(ErrorCodes.InvalidRangeLength, range.min, range.max);
     }
 
     super({ playerManagerOptions: { players } });
