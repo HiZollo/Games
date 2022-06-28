@@ -6,7 +6,12 @@
 ![License](https://img.shields.io/github/license/HiZollo/Games)
 
 # Introduction
-`HiZollo/Games` is a package that provides various games for [discord.js](https://www.npmjs.com/package/discord.js) bots. With simple settings, your app can host games at ease.
+`HiZollo/Games` is a package that provides various games for [discord.js](https://www.npmjs.com/package/discord.js) bots. 
+
+# Features
+- **Easy to set up** - only requires a few lines of code to host a game.
+- **Type autocomplete** - this package contains built-in type declarations.
+- **Single player mode** - built-in AI algorithms come to the rescue when there's no one to play with in 3 a.m.
 
 # Requirements
 - discord.js version >= `^13.3.1`

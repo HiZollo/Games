@@ -196,11 +196,11 @@ The base class for all status manager.
 
 ## constructor
 ```js
-new StatusManager(...status);
+new StatusManager(statusManagerOptions);
 ```
-| parameter | type     | default | description      |
-|-----------|----------|---------|------------------|
-| status    | string[] | `[]`    | Initial statuses |
+| parameter            | type                                                        | default | description                 |
+|----------------------|-------------------------------------------------------------|---------|-----------------------------|
+| statusManagerOptions | [StatusManagerOptions](../options.md/#StatusManagerOptions) | `[]`    | the options for the manager |
 
 ## properties
 ### .now
@@ -245,11 +245,11 @@ The status manager for games, with a status pool initialized with `"ONGOING"`, `
 
 ## constructor
 ```js
-new GameStatusManager(...status);
+new GameStatusManager(statusManagerOptions);
 ```
-| parameter | type     | default | description      |
-|-----------|----------|---------|------------------|
-| status    | string[] | `[]`    | Initial statuses |
+| parameter            | type                                                        | default | description                 |
+|----------------------|-------------------------------------------------------------|---------|-----------------------------|
+| statusManagerOptions | [StatusManagerOptions](../options.md/#StatusManagerOptions) | `[]`    | the options for the manager |
 
 ## properties
 ### .now
@@ -294,11 +294,11 @@ The status manager for players, with a status pool initialized with `"PLAYING"`,
 
 ## constructor
 ```js
-new GameStatusManager(...status);
+new PlayerStatusManager(statusManagerOptions);
 ```
-| parameter | type     | default | description      |
-|-----------|----------|---------|------------------|
-| status    | string[] | `[]`    | Initial statuses |
+| parameter            | type                                                        | default | description                 |
+|----------------------|-------------------------------------------------------------|---------|-----------------------------|
+| statusManagerOptions | [StatusManagerOptions](../options.md/#StatusManagerOptions) | `[]`    | the options for the manager |
 
 ## properties
 ### .now

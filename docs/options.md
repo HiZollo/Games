@@ -44,6 +44,12 @@ This is the documentation for all options.
 | gameStatus           | string[]                                      | `[]`       | The possible game statuses         |
 | playerManagerOptions | [PlayerManagerOptions](#PlayerManagerOptions) | *required* | The options for the player manager |
 
+# StatusManagerOptions
+| parameter | type     | default     | description                |
+|-----------|----------|-------------|----------------------------|
+| initial   | string   | `status[0]` | The initial status         |
+| status    | string[] | `[]`        | The possible game statuses |
+
 
 # BullsAndCowsOptions
 | parameter    | type                              | default    | description              |

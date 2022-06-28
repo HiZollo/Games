@@ -69,7 +69,7 @@ This is the documentation for all display strings in games implemented with disc
 | grids       | string                                              | The symbol of empty grids                            |
 | nowPlayer   | string                                              | The message that shows the current player and symbol |
 | rows        | string[]                                            | The indicators for the row index                     |
-| pieces      | string[] (with length of 2)                         | The upward piece and downward piece                  |
+| pieces      | string[] (with length of 2)                         | The upward side and downward side                    |
 | previous    | [GomokuPreviousStrings](#GomokuPreviousStrings)     | The message about the previous step                  |
 
 # LightsUpStrings
@@ -77,7 +77,7 @@ This is the documentation for all display strings in games implemented with disc
 
 | parameter     | type                                                    | description                                          |
 |---------------|---------------------------------------------------------|------------------------------------------------------|
-| answerSymbols | string[] (with length of 2)                             | The symbol represents "to flip" or "not to flip"     |
+| answerSymbols | string[] (with length of 2)                             | The symbol represents "not to flip" or "to flip"     |
 | controller    | [LightsUpControllerStrings](#LightsUpControllerStrings) | The controller buttons' labels                       |
 | currentAnswer | string                                                  | The symbol of the top left corner                    |
 | endMessages   | [LightsUpEndMessageStrings](#LightsUpEndMessageStrings) | The messages that shows when `conclude()` is called  |

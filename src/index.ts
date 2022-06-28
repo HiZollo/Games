@@ -7,6 +7,7 @@ export {
   PlayerOptions, 
   PlayerManagerOptions, 
   GameOptions, 
+  StatusManagerOptions, 
 
   BullsAndCowsOptions, 
   FinalCodeOptions, 
