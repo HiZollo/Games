@@ -34,8 +34,8 @@ export class DjsLightsUp extends DjsGameWrapper {
         .setLabel(this.strings.controller.answer)
         .setStyle("SUCCESS"), 
       new MessageButton()
-        .setCustomId('HZG_CTRL_stop')
-        .setLabel(this.strings.controller.stop)
+        .setCustomId('HZG_CTRL_leave')
+        .setLabel(this.strings.controller.leave)
         .setStyle("DANGER")
     );
 
@@ -141,8 +141,8 @@ export class DjsLightsUp extends DjsGameWrapper {
     
     let endStatus = "";
     if (args[1] === "CTRL") {
-      if (args[2] === 'stop') {
-        nowPlayer.status.set("LEAVING");
+      if (args[2] === 'leave') {
+        this.game.playerManager.kick(nowPlayer.id);
       }
       if (args[2] === 'answer') {
         nowPlayer.status.set("PLAYING");

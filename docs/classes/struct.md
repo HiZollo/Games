@@ -290,7 +290,7 @@ new GameStatusManager(statusManagerOptions);
 # PlayerStatusManager
 > extends [StatusManager](#StatusManager)
 
-The status manager for players, with a status pool initialized with `"PLAYING"`, `"BOT"`, `"IDLE"`, `"LEAVING"` by default.
+The status manager for players, with a status pool initialized with `"PLAYING"`, `"BOT"`, `"IDLE"`, `"LEFT"`, by default.
 
 ## constructor
 ```js

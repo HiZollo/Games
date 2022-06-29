@@ -28,7 +28,7 @@ export class DjsFlipTrip extends DjsGameWrapper {
     this.controller = new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('HZG_CTRL_stop')
-        .setLabel(this.strings.controller.stop)
+        .setLabel(this.strings.controller.leave)
         .setStyle("DANGER")
     );
 
@@ -123,7 +123,7 @@ export class DjsFlipTrip extends DjsGameWrapper {
 
     let endStatus = "";
     if (args[1] === "CTRL") {
-      nowPlayer.status.set("LEAVING");
+      this.game.playerManager.kick(nowPlayer.id);
     }
     else if (args[1] === "PLAY") {
       nowPlayer.status.set("PLAYING");

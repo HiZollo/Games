@@ -80,10 +80,10 @@ export abstract class DjsGameWrapper {
       switch (nowPlayer.status.now) {
         case "IDLE":
           return this.end("IDLE");
-        case "LEAVING":
-          return this.end("STOPPED");
         case "DELETED":
           return this.end("DELETED");
+        default:
+          return this.end("STOPPED");
       }
     }
   }

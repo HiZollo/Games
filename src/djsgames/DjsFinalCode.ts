@@ -25,8 +25,8 @@ export class DjsFinalCode extends DjsGameWrapper {
     this.strings = overwrite(JSON.parse(JSON.stringify(finalCode)), strings);
     this.controller = new MessageActionRow().addComponents(
       new MessageButton()
-        .setCustomId('HZG_CTRL_stop')
-        .setLabel(this.strings.controller.stop)
+        .setCustomId('HZG_CTRL_leave')
+        .setLabel(this.strings.controller.leave)
         .setStyle("DANGER")
     );
 
@@ -110,9 +110,9 @@ export class DjsFinalCode extends DjsGameWrapper {
       throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
 
-    nowPlayer.status.set("LEAVING");
+    this.game.playerManager.kick(nowPlayer.id);
     return {
-      content: format(this.strings.previous.leaving, { player: nowPlayer.username }) + '\n', 
+      content: format(this.strings.previous.left, { player: nowPlayer.username }) + '\n', 
     };
   }
 

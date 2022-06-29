@@ -153,7 +153,7 @@ This is the documentation for all display strings in games implemented with disc
 | parameter | type   | description                                                           |
 |-----------|--------|-----------------------------------------------------------------------|
 | idle      | string | The strings that shows if the previous player runs out of their time  |
-| leaving   | string | The strings that shows if the previous player wants to leave the game |
+| left      | string | The strings that shows if the previous player has left the game       |
 | tooLarge  | string | The strings that shows if the previous query is too large             |
 | tooSmall  | string | The strings that shows if the previous query is too small             |
 
@@ -161,11 +161,11 @@ This is the documentation for all display strings in games implemented with disc
 | parameter | type   | description                                                           |
 |-----------|--------|-----------------------------------------------------------------------|
 | idle      | string | The strings that shows if the previous player runs out of their time  |
-| leaving   | string | The strings that shows if the previous player wants to leave the game |
+| left      | string | The strings that shows if the previous player has left the game       |
 | move      | string | The strings that shows if the previous successfully placed a piece    |
 
 ## TicTacToePreviousStrings
 | parameter | type   | description                                                           |
 |-----------|--------|-----------------------------------------------------------------------|
 | idle      | string | The strings that shows if the previous player runs out of their time  |
-| leaving   | string | The strings that shows if the previous player wants to leave the game |
+| left      | string | The strings that shows if the previous player has left the game       |

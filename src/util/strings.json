@@ -4,7 +4,7 @@
     "initial": "<player>, please guess a number.",
     "query": "You get `<a>A<b>B` from `<query>`.",
     "controller": {
-      "stop": "Stop"
+      "leave": "Leave"
     },
     "endMessages": {
       "win": "<player>, you've got the answer `<answer>`!",
@@ -26,12 +26,12 @@
       "tooSmall": "<query> is too small!",
       "tooLarge": "<query> is too large!", 
       "idle": "<player> lost their turn.",
-      "leaving": "<player> wanted to end the game now."
+      "left": "<player> has left the game."
     },
     "interval": "The answer lies between <min> and <max> now.",
     "nowPlayer": "It is <player>'s turn.",
     "controller": {
-      "stop": "Stop"
+      "leave": "Leave"
     },
     "endMessages": {
       "win": "<player>, you hit the final code <answer>!",
@@ -52,7 +52,7 @@
     "numbers": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"],
     "pieces": ["⚪", "⚫"],
     "controller": {
-      "stop": "Stop"
+      "leave": "Leave"
     },
     "endMessages": {
       "win": "<player>, you make a full trip with <size> piece(s)!",
@@ -78,11 +78,11 @@
     "previous": {
       "move": "Last move is placed at `<col><row>` by <player>.",
       "idle": "<player> lost their turn.",
-      "leaving": "<player> wanted to end the game now."
+      "left": "<player> has left the game."
     },
     "nowPlayer": "It is <player>'s turn (<symbol>).",
     "controller": {
-      "stop": "Stop"
+      "leave": "Leave"
     },
     "endMessages": {
       "win": "Congrats, <player>! You won this gomoku!",
@@ -105,7 +105,7 @@
     "currentAnswer": "The answer to the board is: \n<answer>",
     "controller": {
       "answer": "Answer",
-      "stop": "Stop"
+      "leave": "Leave"
     },
     "endMessages": {
       "jackpot": "JACKPOT! All bulbs are lighted up in the first place!",
@@ -133,11 +133,11 @@
     ],
     "previous": {
       "idle": "<player> lost their turn.",
-      "leaving": "<player> wanted to end the game now."
+      "left": "<player> has left the game."
     },
     "nowPlayer": "It is <player>'s turn (<symbol>).",
     "controller": {
-      "stop": "Stop"
+      "leave": "Leave"
     },
     "endMessages": {
       "win": "Congrats, <player>! You won this tic-tac-toe!",

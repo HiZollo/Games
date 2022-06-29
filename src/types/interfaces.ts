@@ -214,7 +214,7 @@ export interface TicTacToeStrings extends GameStrings {
 
 
 export interface ControllerStrings {
-  stop: string
+  leave: string
 }
 
 export interface LightsUpControllerStrings extends ControllerStrings {
@@ -258,16 +258,16 @@ export interface FinalCodePreviousStrings {
   tooSmall: string, 
   tooLarge: string, 
   idle: string, 
-  leaving: string
+  left: string
 }
 
 export interface GomokuPreviousStrings {
   move: string, 
   idle: string, 
-  leaving: string
+  left: string
 }
 
 export interface TicTacToePreviousStrings {
   idle: string, 
-  leaving: string
+  left: string
 }

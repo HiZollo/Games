@@ -58,19 +58,47 @@ export class PlayerManager {
   }
 
   assign(nextIndex: number): void {
-    const time = Date.now();
-    this.nowPlayer.addTime(time - this.lastMoveTime);
-    this.lastMoveTime = time;
-
-    const index = nextIndex % this.playerCount;
+    this.conclude(this.nowPlayer);
+    if (!this.alive) return;
+    
+    let index = nextIndex % this.playerCount;
     this.index = index < 0 ? index + this.playerCount : index;
+    if (this.nowPlayer.status.now === "LEFT") {
+      this.next();
+    }
   }
 
   next(n = 1): void {
-    this.assign(this.index + n)
+    this.conclude(this.nowPlayer);
+    if (!this.alive) return;
+    
+    this.index = (this.index + n) % this.playerCount;
+    while (this.nowPlayer.status.now === "LEFT") {
+      this.index = this.index + 1 === this.playerCount ? 0 : this.index + 1;
+    }
   }
 
   prev(n = 1): void {
-    this.assign(this.index - n)
+    this.conclude(this.nowPlayer);
+    if (!this.alive) return;
+    
+    this.index = (this.index - n) % this.playerCount;
+    this.index = this.index < 0 ? this.index + this.playerCount : this.index;
+    while (this.nowPlayer.status.now === "LEFT") {
+      this.index = this.index === 0 ? this.playerCount - 1 : this.index - 1;
+    }
+  }
+
+  kick(id: number | string): void {
+    const index = this.players.findIndex(p => p.id === id);
+    if (index === -1) return;
+    this.players[index].status.set("LEFT");
+    this.conclude(this.players[index]);
+  }
+
+  private conclude(player: Player): void {
+    const time = Date.now();
+    player.addTime(time - this.lastMoveTime);
+    this.lastMoveTime = time;
   }
 }

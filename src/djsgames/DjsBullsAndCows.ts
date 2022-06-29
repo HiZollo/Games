@@ -31,8 +31,8 @@ export class DjsBullsAndCows extends DjsGameWrapper {
     this.gameHeader = this.content;
     this.controller = new MessageActionRow().addComponents(
       new MessageButton()
-        .setCustomId('HZG_CTRL_stop')
-        .setLabel(this.strings.controller.stop)
+        .setCustomId('HZG_CTRL_leave')
+        .setLabel(this.strings.controller.leave)
         .setStyle("DANGER")
     );
     this.mainMessage = undefined;
@@ -114,7 +114,7 @@ export class DjsBullsAndCows extends DjsGameWrapper {
       throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
 
-    nowPlayer.status.set("LEAVING");
+    this.game.playerManager.kick(nowPlayer.id);
     return {
       content: this.hardMode ? this.gameHeader : this.content, 
     };

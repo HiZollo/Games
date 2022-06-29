@@ -4,7 +4,7 @@ import { StatusManagerOptions } from '../types/interfaces';
 
 export class PlayerStatusManager extends StatusManager {
   constructor({ initial, status }: StatusManagerOptions) {
-    super({ initial, status: ["PLAYING", "BOT", "IDLE", "LEAVING", ...status] });
+    super({ initial, status: ["PLAYING", "BOT", "IDLE", "LEFT", ...status] });
   }
 
   set(status: string): void {
