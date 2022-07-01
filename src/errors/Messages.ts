@@ -16,7 +16,7 @@ export const Messages = {
 
   [ErrorCodes.GridFilled]: (...args: any[]) => `Trying to fill location (${args[0]}, ${args[1]}) which is already filled in.`, 
   [ErrorCodes.InvalidRangeLength]: (...args: any[]) => `Interval (${args[0]}, ${args[1]}) is invalid.`, 
-  [ErrorCodes.OutOfRange]: (...args: any[]) => `${args[0]} must be${args[1] === args[2] ? ` ${args[1]}` : `${typeof args[1] === 'number' && args[1] !== -Infinity ? ` less than or equal to ${args[1]}` : ``}${typeof args[1] === 'number' && typeof args[2] === 'number' && args[1] !== -Infinity && args[2] !== Infinity ? ` and` : ``}${typeof args[2] === 'number' && args[2] !== Infinity ? ` greater than or equal to ${args[2]}` : ``}`}.`, 
+  [ErrorCodes.OutOfRange]: (...args: any[]) => `${args[0]} must be${args[1] === args[2] ? ` ${args[1]}` : `${typeof args[1] === 'number' && args[1] !== -Infinity ? ` greater than or equal to ${args[1]}` : ``}${typeof args[1] === 'number' && typeof args[2] === 'number' && args[1] !== -Infinity && args[2] !== Infinity ? ` and` : ``}${typeof args[2] === 'number' && args[2] !== Infinity ? ` less than or equal to ${args[2]}` : ``}`}.`, 
 
   [ErrorCodes.BullsAndCowsQueryLength]: (...args: any[]) => `The number count in query ${args[0]} is different from the answer's length (${args[1]}).`, 
   [ErrorCodes.BullsAndCowsDuplicatedNumbers]: (...args: any[]) => `There are duplicated numbers in query ${args[0]}.`, 
