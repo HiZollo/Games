@@ -5,6 +5,7 @@ export const Messages = {
   [ErrorCodes.GameAlreadyEnded]: `The game has already been ended.`, 
   [ErrorCodes.GameNotEnded]: `The game has not ended yet.`, 
 
+  [ErrorCodes.DuplicatedIds]: `Duplicated ids are not allowed.`, 
   [ErrorCodes.DuplicatedSymbols]: `Duplicated symbols are not allowed.`, 
   [ErrorCodes.HumanRequired]: `At least one human is required in this game.`, 
   [ErrorCodes.SymbolRequired]: `Each player must have a symbol.`, 

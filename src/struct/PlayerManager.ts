@@ -15,8 +15,13 @@ export class PlayerManager {
     }
 
     this.players = players.map(p => new Player(p));
-    if (!this.players.find(p => !p.bot)) {
+    
+    if (this.players.every(p => p.bot)) {
       throw new HZGError(ErrorCodes.HumanRequired);
+    }
+    const ids = this.ids;
+    if (ids.length !== (new Set(ids)).size) {
+      throw new HZGError(ErrorCodes.DuplicatedIds);
     }
     if (requireSymbol) {
       if (this.players.find(p => p.symbol === null)) {

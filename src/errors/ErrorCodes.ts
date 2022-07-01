@@ -3,6 +3,7 @@ export enum ErrorCodes {
   GameAlreadyEnded, 
   GameNotEnded, 
 
+  DuplicatedIds, 
   DuplicatedSymbols, 
   HumanRequired, 
   SymbolRequired, 
