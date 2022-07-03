@@ -156,6 +156,12 @@ export class DjsBullsAndCows extends DjsGameWrapper {
     }
 
     this.game.playerManager.next();
+    while (result.content && result.content.length > 2000) {
+      const matches = result.content.match(/([\s\S]*?)\n([\s\S]*?)\n([\s\S]*)/);
+      if (matches) {
+        result.content = matches[1] + '\n' + matches[3];
+      }
+    }
     await this.mainMessage.edit(result).catch(() => {
       result.endStatus = "DELETED";
     });
