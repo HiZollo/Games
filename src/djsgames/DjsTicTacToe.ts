@@ -103,7 +103,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
 
 
   protected buttonFilter(i: ButtonInteraction): boolean {
-    return i.user.id === this.game.playerManager.nowPlayer.id;
+    return i.customId.startsWith("HZG") && i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter(): boolean {
@@ -111,10 +111,6 @@ export class DjsTicTacToe extends DjsGameWrapper {
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
-
     nowPlayer.status.set("IDLE");
     return {
       content: format(this.strings.previous.idle, { player: nowPlayer.username }) + '\n', 
@@ -122,17 +118,10 @@ export class DjsTicTacToe extends DjsGameWrapper {
   }
 
   protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
     const args = input.split('_');
-
     let content = '';
     let endStatus = "";
-    if (args[0] !== "HZG") {
-      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
-    }
-    if (args[1] === "CTRL") {
+    if (args[1] === "CTRL" && args[2] === 'leave') {
       this.game.playerManager.kick(nowPlayer.id);
       content = format(this.strings.previous.left, { player: nowPlayer.username }) + '\n';
     }
@@ -150,6 +139,9 @@ export class DjsTicTacToe extends DjsGameWrapper {
       else if (this.game.draw()) {
         endStatus = "DRAW";
       }
+    }
+    else {
+      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
 
     return {

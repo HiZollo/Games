@@ -111,7 +111,7 @@ export class DjsLightsUp extends DjsGameWrapper {
 
 
   protected buttonFilter(i: ButtonInteraction): boolean {
-    return i.user.id === this.game.playerManager.nowPlayer.id;
+    return i.customId.startsWith("HZG") && i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter(): boolean {
@@ -119,10 +119,6 @@ export class DjsLightsUp extends DjsGameWrapper {
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
-
     nowPlayer.status.set("IDLE");
     return {
       components: this.displayBoard, 
@@ -130,23 +126,18 @@ export class DjsLightsUp extends DjsGameWrapper {
   }
 
   protected buttonToDo(nowPlayer: Player, input: string, interaction: ButtonInteraction): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
     const args = input.split('_');
-
-    if (args[0] !== "HZG") {
-      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
-    }
-    
     let endStatus = "";
     if (args[1] === "CTRL") {
       if (args[2] === 'leave') {
         this.game.playerManager.kick(nowPlayer.id);
       }
-      if (args[2] === 'answer') {
+      else if (args[2] === 'answer') {
         nowPlayer.status.set("PLAYING");
         interaction.followUp({ content: format(this.strings.currentAnswer, { answer: this.answerContent }), ephemeral: true });
+      }
+      else {
+        throw new HZGError(ErrorCodes.InvalidButtonInteraction);
       }
     }
     else if (args[1] === "PLAY") {
@@ -159,6 +150,9 @@ export class DjsLightsUp extends DjsGameWrapper {
         this.game.winner = nowPlayer;
         endStatus = "WIN";
       }
+    }
+    else {
+      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
 
     return {

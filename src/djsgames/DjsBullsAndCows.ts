@@ -83,7 +83,7 @@ export class DjsBullsAndCows extends DjsGameWrapper {
 
 
   protected buttonFilter(i: ButtonInteraction): boolean {
-    return i.user.id === this.game.playerManager.nowPlayer.id;
+    return i.customId.startsWith("HZG") && i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter(m: Message): boolean {
@@ -96,10 +96,6 @@ export class DjsBullsAndCows extends DjsGameWrapper {
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
-
     nowPlayer.status.set("IDLE");
     return {
       content: this.hardMode ? this.gameHeader : this.content, 
@@ -107,26 +103,20 @@ export class DjsBullsAndCows extends DjsGameWrapper {
   }
 
   protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
     const args = input.split('_');
-
-    if (args[0] !== "HZG") {
+    if (args[1] === 'CTRL' && args[2] === 'leave') {
+      this.game.playerManager.kick(nowPlayer.id);
+    }
+    else {
       throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
 
-    this.game.playerManager.kick(nowPlayer.id);
     return {
       content: this.hardMode ? this.gameHeader : this.content, 
     };
   }
 
   protected messageToDo(nowPlayer: Player, input: string): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
-
     nowPlayer.status.set("PLAYING");
     nowPlayer.addStep();
 

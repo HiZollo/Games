@@ -93,7 +93,7 @@ export class DjsFlipTrip extends DjsGameWrapper {
 
 
   protected buttonFilter(i: ButtonInteraction): boolean {
-    return i.user.id === this.game.playerManager.nowPlayer.id;
+    return i.customId.startsWith("HZG") && i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter(): boolean {
@@ -101,10 +101,6 @@ export class DjsFlipTrip extends DjsGameWrapper {
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
-
     nowPlayer.status.set("IDLE");
     return {
       content: this.boardContent, 
@@ -112,17 +108,9 @@ export class DjsFlipTrip extends DjsGameWrapper {
   }
 
   protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
     const args = input.split('_');
-
-    if (args[0] !== "HZG") {
-      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
-    }
-
     let endStatus = "";
-    if (args[1] === "CTRL") {
+    if (args[1] === "CTRL" && args[2] === "leave") {
       this.game.playerManager.kick(nowPlayer.id);
     }
     else if (args[1] === "PLAY") {
@@ -139,6 +127,9 @@ export class DjsFlipTrip extends DjsGameWrapper {
         this.game.winner = nowPlayer;
         endStatus = "WIN";
       }
+    }
+    else {
+      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
 
     return {

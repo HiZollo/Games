@@ -78,7 +78,7 @@ export class DjsFinalCode extends DjsGameWrapper {
 
 
   protected buttonFilter(i: ButtonInteraction): boolean {
-    return i.user.id === this.game.playerManager.nowPlayer.id;
+    return i.customId.startsWith("HZG") && i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter(m: Message): boolean {
@@ -90,10 +90,6 @@ export class DjsFinalCode extends DjsGameWrapper {
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
-
     nowPlayer.status.set("IDLE");
     return {
       content: format(this.strings.previous.idle, { player: nowPlayer.username }) + '\n', 
@@ -101,16 +97,14 @@ export class DjsFinalCode extends DjsGameWrapper {
   }
 
   protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
-    if (!this.mainMessage) {
-      throw new HZGError(ErrorCodes.InvalidMainMessage);
-    }
     const args = input.split('_');
-
-    if (args[0] !== "HZG") {
+    if (args[1] === 'CTRL' && args[2] === 'leave') {
+      this.game.playerManager.kick(nowPlayer.id);
+    }
+    else {
       throw new HZGError(ErrorCodes.InvalidButtonInteraction);
     }
 
-    this.game.playerManager.kick(nowPlayer.id);
     return {
       content: format(this.strings.previous.left, { player: nowPlayer.username }) + '\n', 
     };
