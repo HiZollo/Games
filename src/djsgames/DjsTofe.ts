@@ -29,7 +29,7 @@ export class DjsTofe extends DjsGameWrapper {
     this.mainMessage = undefined;
     this.controllerMessage = undefined;
 
-    this.inputMode = 0b10;
+    this.inputMode = 0b00;
     this.buttonFilter = this.buttonFilter.bind(this);
     this.messageFilter = this.messageFilter.bind(this);
     
