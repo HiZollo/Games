@@ -15,6 +15,7 @@ export {
   GomokuOptions, 
   LightsUpOptions, 
   TicTacToeOptions, 
+  TofeOptions, 
 
   DjsGameWrapperOptions, 
   DjsBullsAndCowsOptions, 
@@ -23,6 +24,7 @@ export {
   DjsGomokuOptions, 
   DjsLightsUpOptions, 
   DjsTicTacToeOptions, 
+  DjsTofeOptions, 
 
   IBullsAndCows, 
   IFinalCode, 
@@ -30,6 +32,7 @@ export {
   IGomoku, 
   ILightsUp, 
   ITicTacToe, 
+  ITofe, 
 
   BullsAndCowsResult, 
 
@@ -40,15 +43,18 @@ export {
   GomokuStrings, 
   LightsUpStrings, 
   TicTacToeStrings, 
+  TofeStrings, 
 
   ControllerStrings, 
   LightsUpControllerStrings, 
+  TofeControllerStrings, 
 
   EndMessageStrings, 
   FlipTripEndMessageStrings, 
   GomokuEndMessageStrings, 
   LightsUpEndMessageStrings, 
   TicTacToeEndMessageStrings, 
+  TofeEndMessageStrings, 
 
   FinalCodePreviousStrings, 
   GomokuPreviousStrings, 

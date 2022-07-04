@@ -1,4 +1,4 @@
-import { ButtonInteraction, Client, Collection, CommandInteraction, Message, MessageActionRow, MessageEmbed } from 'discord.js';
+import { ButtonInteraction, Client, Collection, CommandInteraction, Message, MessageEmbed } from 'discord.js';
 import { HZGError, ErrorCodes } from '../errors';
 import { Game, Player } from '../struct';
 import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types/interfaces';
@@ -12,7 +12,6 @@ export abstract class DjsGameWrapper {
   // actual displaying things
   public abstract strings: GameStrings;
   public abstract mainMessage: Message | void;
-  public abstract controller: MessageActionRow;
   public abstract controllerMessage: Message | void;
   public abstract initialize(): Promise<void>;
   public abstract getEndContent(): string;

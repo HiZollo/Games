@@ -27,7 +27,7 @@ export class DjsFlipTrip extends DjsGameWrapper {
     this.strings = overwrite(JSON.parse(JSON.stringify(flipTrip)), strings);
     this.controller = new MessageActionRow().addComponents(
       new MessageButton()
-        .setCustomId('HZG_CTRL_stop')
+        .setCustomId('HZG_CTRL_leave')
         .setLabel(this.strings.controller.leave)
         .setStyle("DANGER")
     );

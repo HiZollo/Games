@@ -6,7 +6,8 @@ import { GameUtil } from '../util/GameUtil';
 export class TicTacToe extends Game implements ITicTacToe {
   public board: (string | null)[][];
   public boardSize: number;
-  public occupiedCount: number;
+  
+  protected occupiedCount: number;
 
   constructor({ players, boardSize = 3 }: TicTacToeOptions ) {
     if (!(1 <= boardSize && boardSize <= 5)) {

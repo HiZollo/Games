@@ -4,3 +4,4 @@ export { FlipTrip } from './FlipTrip';
 export { Gomoku } from './Gomoku';
 export { LightsUp } from './LightsUp';
 export { TicTacToe } from './TicTacToe';
+export { Tofe } from './Tofe';

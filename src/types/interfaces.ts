@@ -1,4 +1,5 @@
 import { CommandInteraction, Message, MessageActionRow } from 'discord.js';
+import { TofeDirections } from './enums';
 import { Range } from '../struct/Range';
 
 
@@ -62,6 +63,11 @@ export interface TicTacToeOptions {
   boardSize: number
 }
 
+export interface TofeOptions {
+  players: PlayerOptions[], 
+  hardMode: boolean
+}
+
 
 
 // implemented discord.js game options
@@ -94,6 +100,10 @@ export interface DjsLightsUpOptions extends DjsGameWrapperOptions, LightsUpOptio
 
 export interface DjsTicTacToeOptions extends DjsGameWrapperOptions, LightsUpOptions {
   strings: TicTacToeStrings
+}
+
+export interface DjsTofeOptions extends DjsGameWrapperOptions, TofeOptions {
+  strings: TofeStrings
 }
 
 
@@ -144,6 +154,14 @@ export interface ITicTacToe {
   fill(row: number, col: number): void, 
   win(row: number, col: number): (string | null), 
   draw(): boolean
+}
+
+export interface ITofe {
+  board: (number | null)[][], 
+  boardSize: number, 
+  hardMode?: boolean, 
+  operate(direction: TofeDirections): boolean, 
+  win(): boolean
 }
 
 
@@ -212,6 +230,11 @@ export interface TicTacToeStrings extends GameStrings {
   endMessages: TicTacToeEndMessageStrings
 }
 
+export interface TofeStrings extends GameStrings {
+  controller: TofeControllerStrings, 
+  endMessages: TofeEndMessageStrings
+}
+
 
 export interface ControllerStrings {
   leave: string
@@ -219,6 +242,13 @@ export interface ControllerStrings {
 
 export interface LightsUpControllerStrings extends ControllerStrings {
   answer: string
+}
+
+export interface TofeControllerStrings extends ControllerStrings {
+  up: string, 
+  down: string, 
+  left: string, 
+  right: string
 }
 
 
@@ -251,6 +281,10 @@ export interface LightsUpEndMessageStrings extends EndMessageStrings {
 
 export interface TicTacToeEndMessageStrings extends EndMessageStrings {
   draw: string
+}
+
+export interface TofeEndMessageStrings extends EndMessageStrings {
+  lose: string
 }
 
 

@@ -153,5 +153,29 @@
         "message": "**Time**: <min>:<sec>\n**Attempt(s)**: <step>"
       }
     }
+  },
+  "tofe": {
+    "name": "2048",
+    "controller": {
+      "up": "⬆️", 
+      "down": "⬇️", 
+      "left": "⬅️", 
+      "right": "➡️", 
+      "leave": "Leave"
+    },
+    "endMessages": {
+      "win": "<player>, you successfully got 2048!",
+      "lose": "<player>, you losed, so close!",
+      "idle": "The game has been stopped because of idleness.",
+      "stopped": "The game has been stopped manually.",
+      "deleted": "Wait? I can't see the board, where does it go?",
+      "gameStats": {
+        "header": "Game Stats - <game>",
+        "message": "**Total Time**: <min>:<sec>\n**Total Step(s)**: <step>"
+      },
+      "playerStats": {
+        "message": "**Time**: <min>:<sec>\n**Step(s)**: <step>"
+      }
+    }
   }
 }

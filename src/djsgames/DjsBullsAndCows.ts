@@ -7,6 +7,8 @@ import { DjsBullsAndCowsOptions, BullsAndCowsStrings, DjsInputResult } from '../
 import { format, overwrite } from '../util/Functions';
 import { bullsAndCows } from '../util/strings.json';
 
+const MAX_CONTENT_LENGTH = 2000;
+
 export class DjsBullsAndCows extends DjsGameWrapper {
   public hardMode: boolean;
 
@@ -156,7 +158,7 @@ export class DjsBullsAndCows extends DjsGameWrapper {
     }
 
     this.game.playerManager.next();
-    while (result.content && result.content.length > 2000) {
+    while (result.content && result.content.length > MAX_CONTENT_LENGTH) {
       const matches = result.content.match(/([\s\S]*?)\n([\s\S]*?)\n([\s\S]*)/);
       if (matches) {
         result.content = matches[1] + '\n' + matches[3];

@@ -6,7 +6,8 @@ import { GameUtil } from '../util/GameUtil';
 export class Gomoku extends Game implements IGomoku {
   public board: (string | null)[][];
   public boardSize: number;
-  public occupiedCount: number;
+  
+  protected occupiedCount: number;
 
   constructor({ players, boardSize = 19 }: GomokuOptions ) {
     if (!(1 <= boardSize && boardSize <= 19)) {

@@ -5,3 +5,4 @@ export { DjsFlipTrip } from './DjsFlipTrip';
 export { DjsGomoku } from './DjsGomoku';
 export { DjsLightsUp } from './DjsLightsUp';
 export { DjsTicTacToe } from './DjsTicTacToe';
+export { DjsTofe } from './DjsTofe';
