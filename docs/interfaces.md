@@ -20,7 +20,6 @@ This is the documentation for all interfaces.
 | win          | ([BullsAndCowsResult](./others.md/#BullsAndCowsResult)) => boolean  | Checks if the result from the guess satisfies winning conditions |
 
 
-
 # IFinalCode
 | parameter | type                                | description                                                                                               |
 |-----------|-------------------------------------|-----------------------------------------------------------------------------------------------------------|
@@ -28,7 +27,6 @@ This is the documentation for all interfaces.
 | range     | [Range](./classes/struct.md/#Range) | The range of the answer                                                                                   |
 | guess     | (number) => 1 \| 0 \| -1            | Compares a number with the answer, and returns `1` if the number is larger, `-1` if smaller, `0` if equal |
 | win       | () => boolean                       | Checks if the game satisfies the winning conditions                                                       |
-
 
 
 # IFlipTrip
@@ -40,16 +38,14 @@ This is the documentation for all interfaces.
 | win       | () => boolean       | Checks if the game satisfies the winning conditions                     |
 
 
-
 # IGomoku
 | parameter | type                               | description                                                                          |
-|-----------|---------------------|-----------------------------------------------------------------------------------------------------|
+|-----------|------------------------------------|--------------------------------------------------------------------------------------|
 | board     | (string \| null)[][]               | The current state of the board                                                       |
 | boardSize | number                             | The dimensions of the board                                                          |
 | draw      | () => boolean                      | The range of the answer                                                              |
 | fill      | (number, number) => void           | Fills a speciric location with the current player's symbol                           |
 | win       | (number, number) => string \| null | Checks if any lines passing through a speciric location satisfies winning conditions |
-
 
 
 # ILightsUp
@@ -62,12 +58,22 @@ This is the documentation for all interfaces.
 | win       | () => boolean            | Checks if the game satisfies the winning conditions                     |
 
 
-
 # ITicTacToe
 | parameter | type                               | description                                                                          |
-|-----------|---------------------|-----------------------------------------------------------------------------------------------------|
+|-----------|------------------------------------|--------------------------------------------------------------------------------------|
 | board     | (string \| null)[][]               | The current state of the board                                                       |
 | boardSize | number                             | The dimensions of the board                                                          |
 | draw      | () => boolean                      | The range of the answer                                                              |
 | fill      | (number, number) => void           | Fills a speciric location with the current player's symbol                           |
 | win       | (number, number) => string \| null | Checks if any lines passing through a speciric location satisfies winning conditions |
+
+
+# ITofe
+| parameter | type                                                       | description                                                                       |
+|-----------|------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| board     | (number \| null)[][]                                       | The current state of the board                                                    |
+| boardSize | number                                                     | The dimensions of the board                                                       |
+| hardMode  | boolean                                                    | Whether to enable hard mode                                                       |
+| score     | number                                                     | The score of the game                                                             |
+| operate   | ([TofeDirections](./enums.md/#TofeDirections)) => boolean  | Pushes the tiles along the given direction and returns if the operation successes |
+| win       | () => boolean                                              | Checks if the game satisfies the winning conditions                               |

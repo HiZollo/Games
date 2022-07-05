@@ -9,6 +9,7 @@ This is the documentation for all game classes that implemented with [discord.js
 - [DjsGomoku](#DjsGomoku)
 - [DjsLightsUp](#DjsLightsUp)
 - [DjsTicTacToe](#DjsTicTacToe)
+- [DjsTofe](#DjsTofe)
 
 
 # DjsGameWrapper
@@ -109,7 +110,7 @@ new DjsBullsAndCows(djsBullsAndCowsOptions);
 
 ### .strings
 - The display strings
-- Type: [GameStrings](../strings.md/#GameStrings)
+- Type: [BullsAndCowsStrings](../strings.md/#BullsAndCowsStrings)
 
 ### .time
 - How long to consider a player idle (in milliseconds)
@@ -169,7 +170,7 @@ new DjsFinalCode(djsFinalCodeOptions);
 
 ### .strings
 - The display strings
-- Type: [GameStrings](../strings.md/#GameStrings)
+- Type: [FinalCodeStrings](../strings.md/#FinalCodeStrings)
 
 ### .time
 - How long to consider a player idle (in milliseconds)
@@ -229,7 +230,7 @@ new DjsFlipTrip(djsFlipTripOptions);
 
 ### .strings
 - The display strings
-- Type: [GameStrings](../strings.md/#GameStrings)
+- Type: [FlipTripStrings](../strings.md/#FlipTripStrings)
 
 ### .time
 - How long to consider a player idle (in milliseconds)
@@ -289,7 +290,7 @@ new DjsGomoku(djsGomokuOptions);
 
 ### .strings
 - The display strings
-- Type: [GameStrings](../strings.md/#GameStrings)
+- Type: [GomokuStrings](../strings.md/#GomokuStrings)
 
 ### .time
 - How long to consider a player idle (in milliseconds)
@@ -353,7 +354,7 @@ new DjsLightsUp(djsLightsUpOptions);
 
 ### .strings
 - The display strings
-- Type: [GameStrings](../strings.md/#GameStrings)
+- Type: [LightsUpStrings](../strings.md/#LightsUpStrings)
 
 ### .time
 - How long to consider a player idle (in milliseconds)
@@ -413,7 +414,67 @@ new DjsTicTacToe(djsTicTacToeOptions);
 
 ### .strings
 - The display strings
-- Type: [GameStrings](../strings.md/#GameStrings)
+- Type: [TicTacToeStrings](../strings.md/#TicTacToeStrings)
+
+### .time
+- How long to consider a player idle (in milliseconds)
+- Type: number
+
+## methods
+### .conclude()
+- Sends a conclusion message of the game
+- Returns: Promise\<void>
+
+### .initialize()
+- Initializes the game
+- Returns: Promise\<void>
+
+### .getEndContent()
+- Gets the content to show on the concluding message
+- Returns: string
+
+### .start()
+- Starts running the game
+- Returns: Promise\<void>
+
+
+# DjsTofe
+> extends [DjsGameWrapper](#DjsGameWrapper)
+
+The class for *2048*, discord.js version.
+
+## constructor
+```js
+new DjsTofe(djsTofeOptions);
+```
+| parameter      | type                                           | default    | description          |
+|----------------|------------------------------------------------|------------|----------------------|
+| djsTofeOptions |[djsTofeOptions](../options.md/#DjsTofeOptions) | *required* | Options for the game |
+
+## properties
+### .client
+- The client that instantiated this
+- Type: Client
+
+### .controller
+- The controller buttons
+- Type: [MessageActionRow](https://discord.js.org/#/docs/main/stable/class/MessageActionRow)[]
+
+### .controllerMessage
+- The message where the controllers are on
+- Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .mainMessage
+- The message where most of the information are shown
+- Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .source
+- The source that instantiated this
+- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .strings
+- The display strings
+- Type: [TofeStrings](../strings.md/#TofeStrings)
 
 ### .time
 - How long to consider a player idle (in milliseconds)

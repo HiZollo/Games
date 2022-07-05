@@ -8,6 +8,7 @@ This is the documentation for all game classes.
 - [Gomoku](#Gomoku)
 - [LightsUp](#LightsUp)
 - [TicTacToe](#TicTacToe)
+- [Tofe](#Tofe)
 
 
 # BullsAndCows
@@ -293,10 +294,6 @@ new Gomoku(gomokuOptions);
 - The loser of the game
 - Type: [Player](./struct.md/#Player) | null
 
-### .occupiedCount
-- The number of occupied grids
-- Type: number
-
 ### .ongoing
 - Whether the game is ongoing
 - Type: boolean
@@ -467,10 +464,6 @@ new TicTacToe(ticTacToeOptions);
 - The loser of the game
 - Type: [Player](./struct.md/#Player) | null
 
-### .occupiedCount
-- The number of occupied grids
-- Type: number
-
 ### .ongoing
 - Whether the game is ongoing
 - Type: boolean
@@ -522,3 +515,97 @@ new TicTacToe(ticTacToeOptions);
 | col       | number | *required* | The column index |
 - Checks if any lines passing through (`row`, `col`) satisfies winning conditions
 - Returns: string | null (the winner's symbol if valid)
+
+
+# Tofe
+> extends [Game](./struct.md/#Game) implements [ITofe](../interfaces.md/#ITofe)
+
+The class for *2048*.
+
+## constructor
+```js
+new Tofe(tofeOptions);
+```
+| parameter   | type                                      | default    | description          |
+|-------------|-------------------------------------------|------------|----------------------|
+| tofeOptions | [TofeOptions](../options.md/#TofeOptions) | *required* | Options for the game |
+
+## properties
+### .board
+- The current state of the board
+- Type: (number | null)[][]
+
+### .boardSize
+- The dimensions of the board
+- Type: number
+
+### .duration
+- The duration of the game (in millisecond)
+- Type: number | null
+
+### .endTime
+- The end time of the game (in millisecond)
+- Type: number | null
+
+### .hardMode
+- Whether the game is in hard mode
+- Type: boolean
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
+
+### .numberCount
+- The number of digits that can possibly appear in the answer
+- Type: number
+
+### .ongoing
+- Whether the game is ongoing
+- Type: boolean
+
+### .playerManager
+- The player manager for the game
+- Type: [PlayerManager](./struct.md/#PlayerManager)
+
+### .score
+- The current score of the game
+- Type: number
+
+### .startTime
+- The start time of the game (in millisecond)
+- Type: number | null
+
+### .status
+- The status manager of the game
+- Type: [GameStatusManager](./struct.md/#GameStatusManager)
+
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
+
+## methods
+### .end(status)
+| parameter | type   | default    | description                |
+|-----------|--------|------------|----------------------------|
+| status    | string | *required* | The end status of the game |
+- Ends the game with a certain status
+- Returns: void
+
+### .initialize()
+- Initializes the game
+- Returns: void
+
+### .lose()
+- Checks if the game satisfies the losing conditions
+- Returns: boolean
+
+### .operate(direction)
+| parameter | type                                          | default    | description                           |
+|-----------|-----------------------------------------------|------------|---------------------------------------|
+| direction | [TofeDirections](../enums.md/#TofeDirections) | *required* | An array with a digit in each element |
+- Compares the query with the answer
+- Returns: [BullsAndCowsResult](../others.md/#BullsAndCowsResult)
+
+### .win()
+- Checks if the game satisfies the winning conditions
+- Returns: boolean

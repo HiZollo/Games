@@ -11,6 +11,7 @@ This is the documentation for all options.
 - [GomokuOptions](#GomokuOptions)
 - [LightsUpOptions](#LightsUpOptions)
 - [TicTacToeOptions](#TicTacToeOptions)
+- [TofeOptions](#TofeOptions)
 - [DjsGameWrapperOptions](#DjsGameWrapperOptions)
 - [DjsBullsAndCowsOptions](#DjsBullsAndCowsOptions)
 - [DjsFinalCodeOptions](#DjsFinalCodeOptions)
@@ -18,6 +19,7 @@ This is the documentation for all options.
 - [DjsGomokuOptions](#DjsGomokuOptions)
 - [DjsLightsUpOptions](#DjsLightsUpOptions)
 - [DjsTicTacToeOptions](#DjsTicTacToeOptions)
+- [DjsTofeOptions](#DjsTofeOptions)
 
 
 # PlayerOptions
@@ -93,6 +95,13 @@ This is the documentation for all options.
 | players   | [PlayerOptions](#PlayerOptions)[] | *required* | All players' data           |
 
 
+# TofeOptions
+| parameter | type                              | default    | description                 |
+|-----------|-----------------------------------|------------|-----------------------------|
+| hardMode  | number                            | `false`    | Whether to enable hard mode |
+| players   | [PlayerOptions](#PlayerOptions)[] | *required* | All players' data           |
+
+
 # DjsGameWrapperOptions
 | parameter | type                                                                                                                                                           | default    | description                        |
 |-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|------------------------------------|
@@ -141,10 +150,17 @@ This is the documentation for all options.
 | strings      | [LightsUpStrings](./strings.md/#LightsUpStrings) | [strings.json#lightsUp](../src/util/strings.json) | The display strings |
 
 
-
 # DjsTicTacToeOptions
 > extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [TicTacToeOptions](#TicTacToeOptions)
 
 | parameter    | type                                               | default                                            | description         |
 |--------------|----------------------------------------------------|----------------------------------------------------|---------------------|
 | strings      | [TicTacToeStrings](./strings.md/#TicTacToeStrings) | [strings.json#ticTacToe](../src/util/strings.json) | The display strings |
+
+
+# DjsTofeOptions
+> extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [TofeOptions](#TofeOptions)
+
+| parameter    | type                                     | default                                       | description         |
+|--------------|------------------------------------------|--------------------------------- -------------|---------------------|
+| strings      | [TofeStrings](./strings.md/#TofeStrings) | [strings.json#tofe](../src/util/strings.json) | The display strings |

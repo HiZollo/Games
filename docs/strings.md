@@ -10,15 +10,18 @@ This is the documentation for all display strings in games implemented with disc
   - [GomokuStrings](#GomokuStrings)
   - [LightsUpStrings](#LightsUpStrings)
   - [TicTacToeStrings](#TicTacToeStrings)
+  - [TofeStrings](#TofeStrings)
 - [Controller Strings](#Controller-Strings)
   - [ControllerStrings](#ControllerStrings)
   - [LightsUpControllerStrings](#LightsUpControllerStrings)
+  - [TofeControllerStrings](#TofeControllerStrings)
 - [End Message Strings](#End-Message-Strings)
   - [EndMessageStrings](#EndMessageStrings)
   - [FlipTripEndMessageStrings](#FlipTripEndMessageStrings)
   - [GomokuEndMessageStrings](#GomokuEndMessageStrings)
   - [LightsUpEndMessageStrings](#LightsUpEndMessageStrings)
   - [TicTacToeEndMessageStrings](#TicTacToeEndMessageStrings)
+  - [TofeEndMessageStrings](#TofeEndMessageStrings)
 - [Previous Strings](#Previous-Strings)
   - [FinalCodePreviousStrings](#FinalCodePreviousStrings)
   - [GomokuPreviousStrings](#GomokuPreviousStrings)
@@ -92,6 +95,15 @@ This is the documentation for all display strings in games implemented with disc
 | nowPlayer   | string                                                    | The message that shows the current player and symbol |
 | previous    | [TicTacToePreviousStrings](#TicTacToePreviousStrings)     | The message about the previous step                  |
 
+# TofeStrings
+> extends [GameStrings](#GameStrings)
+
+| parameter   | type                                            | description                                         |
+|-------------|-------------------------------------------------|-----------------------------------------------------|
+| controller  | [TofeControllerStrings](#TofeControllerStrings) | The controller buttons' labels                      |
+| endMessages | [TofeEndMessageStrings](#TofeEndMessageStrings) | The messages that shows when `conclude()` is called |
+| score       | string                                          | The score message of the game                       |
+
 
 # Controller Strings
 ## ControllerStrings
@@ -105,6 +117,16 @@ This is the documentation for all display strings in games implemented with disc
 | parameter | type   | description                          |
 |-----------|--------|--------------------------------------|
 | answer    | string | The label on the show answer buttton |
+
+## TofeControllerStrings
+> extends [ControllerStrings](#ControllerStrings)
+
+| parameter | type   | description                          |
+|-----------|--------|--------------------------------------|
+| up        | string | The label on the move up buttton     |
+| down      | string | The label on the move down buttton   |
+| left      | string | The label on the move left buttton   |
+| right     | string | The label on the move right buttton  |
 
 
 # End Message Strings
@@ -146,6 +168,13 @@ This is the documentation for all display strings in games implemented with disc
 | parameter | type   | description                                           |
 |-----------|--------|-------------------------------------------------------|
 | draw      | string | The strings that shows when the game ends with a draw |
+
+## TofeEndMessageStrings
+> extends [EndMessageStrings](#EndMessageStrings)
+
+| parameter | type   | description                                |
+|-----------|--------|--------------------------------------------|
+| lose      | string | The strings that shows when a player loses |
 
 
 # Previous Strings

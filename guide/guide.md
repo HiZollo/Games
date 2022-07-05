@@ -136,6 +136,19 @@ await game.conclude();
 ```
 
 
+## Tofe
+```js
+const game = new DjsTofe({
+  source: interaction ?? message, 
+  players: [user] // one player only
+});
+
+await game.initialize();
+await game.start();
+await game.conclude();
+```
+
+
 # Additional Materials
 - [Game Rules](./gamerules.md)
 - [String Customization](./strings.md)
