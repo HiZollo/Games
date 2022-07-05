@@ -170,23 +170,30 @@ new PlayerManager(playerManagerOptions);
 
 ## methods
 ### .assign(n)
-| parameter | type           | default    | description             |
-|-----------|----------------|------------|-------------------------|
-| n         | number         | *required* | The index of the player |
+| parameter | type   | default    | description             |
+|-----------|--------|------------|-------------------------|
+| n         | number | *required* | The index of the player |
 - Assigns a player as the current player
 - Returns: void
 
+### .kick(id)
+| parameter | type             | default    | description          |
+|-----------|------------------|------------|----------------------|
+| id        | number \| string | *required* | The id of the player |
+- Kicks a player from the player manager
+- Returns: void
+
 ### .next(n)
-| parameter | type           | default | description |
-|-----------|----------------|---------|-------------|
-| n         | number         | `1`     |             |
+| parameter | type   | default | description |
+|-----------|--------|---------|-------------|
+| n         | number | `1`     |             |
 - Changes the current player to the `n`-th next player
 - Returns: void
 
 ### .prev(n)
-| parameter | type           | default | description |
-|-----------|----------------|---------|-------------|
-| n         | number         | `1`     |             |
+| parameter | type   | default | description |
+|-----------|--------|---------|-------------|
+| n         | number | `1`     |             |
 - Changes the current player to the `n`-th previous player
 - Returns: void
 
