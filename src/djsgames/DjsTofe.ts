@@ -57,11 +57,11 @@ export class DjsTofe extends DjsGameWrapper {
       if (!this.source.deferred) {
         await this.source.deferReply();
       }
-      this.mainMessage = await this.source.editReply({ content: '\u200b', components: this.displayBoard });
+      this.mainMessage = await this.source.editReply({ content: format(this.strings.score, { score: this.game.score }), components: this.displayBoard });
       this.controllerMessage = await this.source.followUp({ content: '\u200b', components: this.controller });
     }
     else {
-      this.mainMessage = await this.source.channel.send({ content: '\u200b', components: this.displayBoard });
+      this.mainMessage = await this.source.channel.send({ content: format(this.strings.score, { score: this.game.score }), components: this.displayBoard });
       this.controllerMessage = await this.mainMessage.reply({ content: '\u200b', components: this.controller });
     }
   }
@@ -141,6 +141,7 @@ export class DjsTofe extends DjsGameWrapper {
     }
 
     return {
+      content: format(this.strings.score, { score: this.game.score }), 
       components: this.displayBoard, 
       endStatus: endStatus
     };

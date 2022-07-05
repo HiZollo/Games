@@ -159,6 +159,7 @@ export interface ITicTacToe {
 export interface ITofe {
   board: (number | null)[][], 
   boardSize: number, 
+  score: number, 
   hardMode?: boolean, 
   operate(direction: TofeDirections): boolean, 
   win(): boolean
@@ -231,6 +232,7 @@ export interface TicTacToeStrings extends GameStrings {
 }
 
 export interface TofeStrings extends GameStrings {
+  score: string, 
   controller: TofeControllerStrings, 
   endMessages: TofeEndMessageStrings
 }

@@ -163,6 +163,7 @@
       "right": "➡️", 
       "leave": "Leave"
     },
+    "score": "Score: <score>", 
     "endMessages": {
       "win": "<player>, you successfully got 2048!",
       "lose": "<player>, you lost, so close!",

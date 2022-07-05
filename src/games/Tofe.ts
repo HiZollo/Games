@@ -9,6 +9,7 @@ export class Tofe extends Game implements ITofe {
   public board: (number | null)[][];
   public boardSize: number;
   public hardMode: boolean;
+  public score: number;
 
   protected maxNumber: number;
   protected occupiedCount: number;
@@ -19,6 +20,7 @@ export class Tofe extends Game implements ITofe {
     this.board = [];
     this.boardSize = 4;
     this.hardMode = hardMode;
+    this.score = 0;
 
     this.maxNumber = 1;
     this.occupiedCount = 0;
@@ -115,13 +117,14 @@ export class Tofe extends Game implements ITofe {
     let success = false;
     for (let i = rowStart, j = colStart, a = 0; a < this.boardSize; i += rowInc, j += colInc, a++)
       for (let r = i, c = j, b = 0; b < this.boardSize - 1; r += dr, c += dc, b++) {
-        if (this.board[r][c] !== null && this.board[r][c] === this.board[r + dr][c + dc]) {
-          let number = this.board[r][c];
-          number = number ? number * 2 : 2;
-          this.board[r][c] = number
+        let number = this.board[r][c];
+        if (number !== null && number === this.board[r + dr][c + dc]) {
+          number *= 2;
+          this.board[r][c] = number;
           this.board[r + dr][c + dc] = null;
           this.maxNumber = Math.max(this.maxNumber, number);
           this.occupiedCount--;
+          this.score += number;
           success = true;
         }
       }
