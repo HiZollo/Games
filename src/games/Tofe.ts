@@ -52,7 +52,7 @@ export class Tofe extends Game implements ITofe {
   }
 
   lose(): boolean {
-    return this.occupiedCount >= this.boardSize ** 2 && !this.operable();
+    return !this.operable();
   }
   
   protected generate(): void {
@@ -65,7 +65,23 @@ export class Tofe extends Game implements ITofe {
           emptySlots.push([i, j]);
     
     const [row, col] = emptySlots[GameUtil.randomInt(0, emptySlots.length - 1)];
-    const number = this.randomNumber();
+    let number: number;
+    if (!this.hardMode && emptySlots.length === 1) {
+      const directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+      const numbers: number[] = [];
+      for (let [dr, dc] of directions) {
+        const r = row + dr, c = col + dc;
+        if (0 <= r && r < this.boardSize && 0 <= c && c < this.boardSize) {
+          const n = this.board[r][c];
+          if (n !== null) numbers.push(n);
+        }
+      }
+      number = numbers[GameUtil.randomInt(0, numbers.length - 1)];
+    }
+    else {
+      number = this.randomNumber();
+    }
+
     this.board[row][col] = number;
     this.maxNumber = Math.max(this.maxNumber, number);
     this.occupiedCount++;
@@ -166,6 +182,8 @@ export class Tofe extends Game implements ITofe {
   }
 
   private operable(): boolean {
+    if (this.occupiedCount < this.boardSize ** 2) return true;
+
     for (let i = 0; i < this.boardSize; i++) {
       for (let j = 0; j < this.boardSize - 1; j++) {
         if (this.board[i][j] === this.board[i][j + 1]) return true;
