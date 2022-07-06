@@ -186,6 +186,7 @@ export interface BullsAndCowsResult {
 
 export interface GameStrings {
   name: string,
+  playerLeft: string,
   controller: ControllerStrings,
   endMessages: EndMessageStrings
 }
@@ -293,17 +294,14 @@ export interface TofeEndMessageStrings extends EndMessageStrings {
 export interface FinalCodePreviousStrings {
   tooSmall: string, 
   tooLarge: string, 
-  idle: string, 
-  left: string
+  idle: string
 }
 
 export interface GomokuPreviousStrings {
   move: string, 
-  idle: string, 
-  left: string
+  idle: string
 }
 
 export interface TicTacToePreviousStrings {
-  idle: string, 
-  left: string
+  idle: string
 }

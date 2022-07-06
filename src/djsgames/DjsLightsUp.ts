@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
+import { ButtonInteraction, CacheType, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { LightsUp } from '../games';
@@ -96,11 +96,20 @@ export class DjsLightsUp extends DjsGameWrapper {
 
 
   protected buttonFilter(i: ButtonInteraction): boolean {
-    return i.customId.startsWith("HZG") && i.user.id === this.game.playerManager.nowPlayer.id;
+    return i.customId.startsWith("HZG_PLAY") && i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter(): boolean {
     return false;
+  }
+
+  protected async ctrlCollected(interaction: ButtonInteraction<CacheType>): Promise<void> {
+    super.ctrlCollected(interaction);
+    
+    const args = interaction.customId.split('_');
+    if (args[2] === 'answer') {
+      await interaction.followUp({ content: format(this.strings.currentAnswer, { answer: this.answerContent }), ephemeral: true });
+    }
   }
 
   protected idleToDo(nowPlayer: Player): DjsInputResult {
@@ -110,34 +119,18 @@ export class DjsLightsUp extends DjsGameWrapper {
     };
   }
 
-  protected buttonToDo(nowPlayer: Player, input: string, interaction: ButtonInteraction): DjsInputResult {
+  protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
     const args = input.split('_');
     let endStatus = "";
-    if (args[1] === "CTRL") {
-      if (args[2] === 'leave') {
-        this.game.playerManager.kick(nowPlayer.id);
-      }
-      else if (args[2] === 'answer') {
-        nowPlayer.status.set("PLAYING");
-        interaction.followUp({ content: format(this.strings.currentAnswer, { answer: this.answerContent }), ephemeral: true });
-      }
-      else {
-        throw new HZGError(ErrorCodes.InvalidButtonInteraction);
-      }
-    }
-    else if (args[1] === "PLAY") {
-      nowPlayer.status.set("PLAYING");
-      nowPlayer.addStep();
 
-      this.flip(parseInt(args[2], 10), parseInt(args[3], 10));
+    nowPlayer.status.set("PLAYING");
+    nowPlayer.addStep();
 
-      if (this.game.win()) {
-        this.game.winner = nowPlayer;
-        endStatus = "WIN";
-      }
-    }
-    else {
-      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
+    this.flip(parseInt(args[2], 10), parseInt(args[3], 10));
+
+    if (this.game.win()) {
+      this.game.winner = nowPlayer;
+      endStatus = "WIN";
     }
 
     return {

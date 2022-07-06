@@ -1,4 +1,4 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
+import { Message, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { AI } from '../AI/AI';
 import { HZGError, ErrorCodes } from '../errors';
@@ -55,8 +55,8 @@ export class DjsFinalCode extends DjsGameWrapper {
   }
 
 
-  protected buttonFilter(i: ButtonInteraction): boolean {
-    return i.customId.startsWith("HZG") && i.user.id === this.game.playerManager.nowPlayer.id;
+  protected buttonFilter(): boolean {
+    return false;
   }
 
   protected messageFilter(m: Message): boolean {
@@ -74,18 +74,8 @@ export class DjsFinalCode extends DjsGameWrapper {
     };
   }
 
-  protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
-    const args = input.split('_');
-    if (args[1] === 'CTRL' && args[2] === 'leave') {
-      this.game.playerManager.kick(nowPlayer.id);
-    }
-    else {
-      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
-    }
-
-    return {
-      content: format(this.strings.previous.left, { player: nowPlayer.username }) + '\n', 
-    };
+  protected buttonToDo(): DjsInputResult {
+    throw new HZGError(ErrorCodes.InvalidButtonInteraction);
   }
 
   protected messageToDo(nowPlayer: Player, input: string): DjsInputResult {

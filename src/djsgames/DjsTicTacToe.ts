@@ -83,7 +83,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
 
 
   protected buttonFilter(i: ButtonInteraction): boolean {
-    return i.customId.startsWith("HZG") && i.user.id === this.game.playerManager.nowPlayer.id;
+    return i.customId.startsWith("HZG_PLAY") && i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter(): boolean {
@@ -101,27 +101,19 @@ export class DjsTicTacToe extends DjsGameWrapper {
     const args = input.split('_');
     let content = '';
     let endStatus = "";
-    if (args[1] === "CTRL" && args[2] === 'leave') {
-      this.game.playerManager.kick(nowPlayer.id);
-      content = format(this.strings.previous.left, { player: nowPlayer.username }) + '\n';
-    }
-    else if (args[1] === "PLAY") {
-      nowPlayer.status.set("PLAYING");
-      nowPlayer.addStep();
+    
+    nowPlayer.status.set("PLAYING");
+    nowPlayer.addStep();
 
-      const [row, col] = [parseInt(args[2]), parseInt(args[3])];
-      this.fill(row, col);
+    const [row, col] = [parseInt(args[2]), parseInt(args[3])];
+    this.fill(row, col);
 
-      if (this.game.win(row, col)) {
-        this.game.winner = nowPlayer;
-        endStatus = "WIN";
-      }
-      else if (this.game.draw()) {
-        endStatus = "DRAW";
-      }
+    if (this.game.win(row, col)) {
+      this.game.winner = nowPlayer;
+      endStatus = "WIN";
     }
-    else {
-      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
+    else if (this.game.draw()) {
+      endStatus = "DRAW";
     }
 
     return {

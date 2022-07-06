@@ -3,6 +3,7 @@
     "name": "Bulls and Cows",
     "initial": "<player>, please guess a number.",
     "query": "You get `<a>A<b>B` from `<query>`.",
+    "playerLeft": "<player> has left the game.", 
     "controller": {
       "leave": "Leave"
     },
@@ -25,11 +26,11 @@
     "previous": {
       "tooSmall": "<query> is too small!",
       "tooLarge": "<query> is too large!", 
-      "idle": "<player> lost their turn.",
-      "left": "<player> has left the game."
+      "idle": "<player> lost their turn."
     },
     "interval": "The answer lies between <min> and <max> now.",
     "nowPlayer": "It is <player>'s turn.",
+    "playerLeft": "<player> has left the game.", 
     "controller": {
       "leave": "Leave"
     },
@@ -51,6 +52,7 @@
     "name": "Flip Trip",
     "numbers": ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"],
     "pieces": ["⚪", "⚫"],
+    "playerLeft": "<player> has left the game.", 
     "controller": {
       "leave": "Leave"
     },
@@ -77,10 +79,10 @@
     "corner": "🔹",
     "previous": {
       "move": "Last move is placed at `<col><row>` by <player>.",
-      "idle": "<player> lost their turn.",
-      "left": "<player> has left the game."
+      "idle": "<player> lost their turn."
     },
     "nowPlayer": "It is <player>'s turn (<symbol>).",
+    "playerLeft": "<player> has left the game.", 
     "controller": {
       "leave": "Leave"
     },
@@ -103,6 +105,7 @@
     "name": "Lights-up",
     "answerSymbols": ["🔴", "🟡"],
     "currentAnswer": "The answer to the board is: \n<answer>",
+    "playerLeft": "<player> has left the game.", 
     "controller": {
       "answer": "Answer",
       "leave": "Leave"
@@ -132,10 +135,10 @@
       ["\u200b", "\u200b", "\u200b", "\u200b"]
     ],
     "previous": {
-      "idle": "<player> lost their turn.",
-      "left": "<player> has left the game."
+      "idle": "<player> lost their turn."
     },
     "nowPlayer": "It is <player>'s turn (<symbol>).",
+    "playerLeft": "<player> has left the game.", 
     "controller": {
       "leave": "Leave"
     },
@@ -156,6 +159,8 @@
   },
   "tofe": {
     "name": "2048",
+    "playerLeft": "<player> has left the game.", 
+    "score": "Score: <score>", 
     "controller": {
       "up": "⬆️", 
       "down": "⬇️", 
@@ -163,7 +168,6 @@
       "right": "➡️", 
       "leave": "Leave"
     },
-    "score": "Score: <score>", 
     "endMessages": {
       "win": "<player>, you successfully got 2048!",
       "lose": "<player>, you lost, so close!",

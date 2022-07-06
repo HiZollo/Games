@@ -47,15 +47,15 @@ export class PlayerManager {
   }
 
   get usernames(): string[] {
-    return this.players.map(p => p.username);
+    return this.players.filter(p => p.status.now !== "LEFT").map(p => p.username);
   }
 
   get ids(): (number | string)[] {
-    return this.players.map(p => p.id);
+    return this.players.filter(p => p.status.now !== "LEFT").map(p => p.id);
   }
 
   get symbols(): (string | null)[] {
-    return this.players.map(p => p.symbol);
+    return this.players.filter(p => p.status.now !== "LEFT").map(p => p.symbol);
   }
 
   get alive(): boolean {

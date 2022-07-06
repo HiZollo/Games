@@ -69,7 +69,7 @@ export class DjsTofe extends DjsGameWrapper {
 
 
   protected buttonFilter(i: ButtonInteraction): boolean {
-    return i.customId.startsWith("HZG") && i.user.id === this.game.playerManager.nowPlayer.id;
+    return i.customId.startsWith("HZG_PLAY") && i.user.id === this.game.playerManager.nowPlayer.id;
   }
 
   protected messageFilter(): boolean {
@@ -84,43 +84,34 @@ export class DjsTofe extends DjsGameWrapper {
   protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
     const args = input.split('_');
     let endStatus = "";
-    if (args[1] === "CTRL") {
-      if (args[2] === 'leave') {
-        this.game.playerManager.kick(nowPlayer.id);
-      }
-      else {
-        let success = false;
-        switch (args[2]) {
-          case 'up':
-            success = this.game.operate(TofeDirections.Up);
-            break;
-          case 'down':
-            success = this.game.operate(TofeDirections.Down);
-            break;
-          case 'left':
-            success = this.game.operate(TofeDirections.Left);
-            break;
-          case 'right':
-            success = this.game.operate(TofeDirections.Right);
-            break;
-        }
-
-        nowPlayer.status.set("PLAYING");
-        if (success) {
-          nowPlayer.addStep();
-        }
-        if (this.game.win()) {
-          this.game.winner = nowPlayer;
-          endStatus = "WIN";
-        }
-        else if (this.game.lose()) {
-          this.game.loser = nowPlayer;
-          endStatus = "LOSE";
-        }
-      }
+    let success = false;
+    
+    switch (args[2]) {
+      case 'up':
+        success = this.game.operate(TofeDirections.Up);
+        break;
+      case 'down':
+        success = this.game.operate(TofeDirections.Down);
+        break;
+      case 'left':
+        success = this.game.operate(TofeDirections.Left);
+        break;
+      case 'right':
+        success = this.game.operate(TofeDirections.Right);
+        break;
     }
-    else {
-      throw new HZGError(ErrorCodes.InvalidButtonInteraction);
+
+    nowPlayer.status.set("PLAYING");
+    if (success) {
+      nowPlayer.addStep();
+    }
+    if (this.game.win()) {
+      this.game.winner = nowPlayer;
+      endStatus = "WIN";
+    }
+    else if (this.game.lose()) {
+      this.game.loser = nowPlayer;
+      endStatus = "LOSE";
     }
 
     return {
@@ -160,30 +151,30 @@ export class DjsTofe extends DjsGameWrapper {
   private get newController(): MessageActionRow[] {
     return [new MessageActionRow().addComponents(
       new MessageButton()
-        .setCustomId('HZG_CTRL_empty_1')
+        .setCustomId('HZG_PLAY_empty_1')
         .setLabel('\u200b')
         .setStyle("SECONDARY")
         .setDisabled(true), 
       new MessageButton()
-        .setCustomId('HZG_CTRL_up')
+        .setCustomId('HZG_PLAY_up')
         .setLabel(this.strings.controller.up)
         .setStyle("PRIMARY"), 
       new MessageButton()
-        .setCustomId('HZG_CTRL_empty_2')
+        .setCustomId('HZG_PLAY_empty_2')
         .setLabel('\u200b')
         .setStyle("SECONDARY")
         .setDisabled(true), 
     ), new MessageActionRow().addComponents(
       new MessageButton()
-        .setCustomId('HZG_CTRL_left')
+        .setCustomId('HZG_PLAY_left')
         .setLabel(this.strings.controller.left)
         .setStyle("PRIMARY"), 
       new MessageButton()
-        .setCustomId('HZG_CTRL_down')
+        .setCustomId('HZG_PLAY_down')
         .setLabel(this.strings.controller.down)
         .setStyle("PRIMARY"), 
       new MessageButton()
-        .setCustomId('HZG_CTRL_right')
+        .setCustomId('HZG_PLAY_right')
         .setLabel(this.strings.controller.right)
         .setStyle("PRIMARY"), 
     ), new MessageActionRow().addComponents(

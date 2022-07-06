@@ -1,4 +1,5 @@
-import { ButtonInteraction, Client, Collection, CommandInteraction, Message, MessageActionRow, MessageEmbed } from 'discord.js';
+import { EventEmitter } from 'events';
+import { ButtonInteraction, Client, Collection, CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageEmbed } from 'discord.js';
 import { HZGError, ErrorCodes } from '../errors';
 import { Game, Player } from '../struct';
 import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types/interfaces';
@@ -10,6 +11,9 @@ export abstract class DjsGameWrapper {
   public time: number;
   public mainMessage: Message | void;
   public subMessage: Message | void;
+
+  protected controllerCollector: InteractionCollector<ButtonInteraction> | void;
+  protected nowPlayerLeftWatcher: EventEmitter;
 
   public abstract strings: GameStrings;
   public abstract getEndContent(): string;
@@ -31,13 +35,16 @@ export abstract class DjsGameWrapper {
       throw new HZGError(ErrorCodes.InvalidChannel);
     }
 
-    this.time = time;
-
     this.client = source.client;
     this.source = source;
+    this.time = time;
 
     this.mainMessage = undefined;
     this.subMessage = undefined;
+    this.controllerCollector = undefined;
+    this.nowPlayerLeftWatcher = new EventEmitter();
+
+    this.ctrlCollected = this.ctrlCollected.bind(this);
   }
 
   public async initialize(main: { content: string, components: MessageActionRow[] }, sub?: { content: string, components: MessageActionRow[] }): Promise<void> {
@@ -58,6 +65,13 @@ export abstract class DjsGameWrapper {
       this.mainMessage = await this.source.channel.send({ content: main.content, components: main.components });
       this.subMessage = sub ? (await this.mainMessage.reply({ content: sub.content, components: sub.components })) : this.mainMessage;
     }
+
+    this.controllerCollector = this.subMessage.createMessageComponentCollector({
+      componentType: "BUTTON", 
+      filter: (i: ButtonInteraction): boolean => {
+        return i.customId.startsWith("HZG_CTRL") && this.game.playerManager.ids.includes(i.user.id);
+      }
+    });
   }
 
   // main logic
@@ -70,6 +84,10 @@ export abstract class DjsGameWrapper {
     else {
       const input = await this.getInput();
       const parsedInput = this.parseInput(input);
+
+      if (nowPlayer.status.now === "LEFT") {
+        return;
+      }
   
       if (input === null || parsedInput === null) {
         result = this.idleToDo(nowPlayer);
@@ -89,9 +107,11 @@ export abstract class DjsGameWrapper {
   }
 
   async start(): Promise<void> {
-    if (this.mainMessage === undefined || this.subMessage === undefined) {
+    if (this.mainMessage === undefined || this.subMessage === undefined || this.controllerCollector === undefined) {
       throw new HZGError(ErrorCodes.GameNotInitialized);
     }
+
+    this.controllerCollector.on('collect', this.ctrlCollected);
 
     let nowPlayer: Player = this.game.playerManager.nowPlayer;
     while (this.game.ongoing && this.game.playerManager.alive) {
@@ -112,12 +132,14 @@ export abstract class DjsGameWrapper {
   }
 
   async conclude(): Promise<void> {
-    if (this.mainMessage === undefined || this.subMessage === undefined) {
+    if (this.mainMessage === undefined || this.subMessage === undefined || this.controllerCollector === undefined) {
       throw new HZGError(ErrorCodes.GameNotInitialized);
     }
     if (this.game.ongoing) {
       throw new HZGError(ErrorCodes.GameNotEnded);
     }
+
+    this.controllerCollector.off('collect', this.ctrlCollected);
 
     const content = this.getEndContent();
     const embeds = [this.getEndEmbed()];
@@ -126,8 +148,7 @@ export abstract class DjsGameWrapper {
     });
   }
 
-
-  private getEndEmbed(): MessageEmbed {
+  getEndEmbed(): MessageEmbed {
     if (this.game.duration == null) {
       throw new HZGError(ErrorCodes.GameNotEnded);
     }
@@ -152,12 +173,42 @@ export abstract class DjsGameWrapper {
     return embed;
   }
 
-  private async getInput(): Promise<ButtonInteraction | Message | null> {
-    // Since awaitMessageComponent() may reject, a must-resolving Promise is needed
-    const promises: (Promise<ButtonInteraction | Collection<string, Message> | null> | void)[] = [sleep(this.time, null)];
 
-    // button input from controller message
-    promises.push(this.subMessage?.awaitMessageComponent({
+  protected async ctrlCollected(interaction: ButtonInteraction): Promise<void> {
+    if (interaction.customId === 'HZG_CTRL_leave') {
+      if (interaction.user.id === this.game.playerManager.nowPlayer.id) {
+        this.nowPlayerLeftWatcher.emit('left');
+      }
+
+      const message = await interaction.reply({ content: format(this.strings.playerLeft, { player: this.game.playerManager.nowPlayer.username }), fetchReply: true });
+      if ('delete' in message) {
+        setTimeout(() => {
+          message.delete().catch(() => {});
+        }, 3e3);
+      }
+
+      this.game.playerManager.kick(interaction.user.id);
+      this.game.playerManager.next();
+    }
+  }
+  
+
+  private async getInput(): Promise<ButtonInteraction | Message | null> {
+    if (this.mainMessage === undefined || this.subMessage === undefined) {
+      throw new HZGError(ErrorCodes.GameNotInitialized);
+    }
+
+    // Since awaitMessageComponent() may reject, a must-resolving Promise is needed
+    const promises: Promise<ButtonInteraction | Collection<string, Message> | null>[] = [sleep(this.time, null)];
+
+    promises.push(new Promise(resolve => {
+      this.nowPlayerLeftWatcher.on('left', () => {
+        resolve(null);
+      })
+    }));
+
+    // button input from sub message
+    promises.push(this.subMessage.awaitMessageComponent({
       filter: this.buttonFilter,
       componentType: "BUTTON",
       time: this.time
@@ -165,7 +216,7 @@ export abstract class DjsGameWrapper {
   
     // button input from main message
     if (this.inputMode & 0b10)
-      promises.push(this.mainMessage?.awaitMessageComponent({
+      promises.push(this.mainMessage.awaitMessageComponent({
         filter: this.buttonFilter,
         componentType: "BUTTON",
         time: this.time
@@ -180,6 +231,8 @@ export abstract class DjsGameWrapper {
       }));
   
     const input = await Promise.any(promises);
+    this.nowPlayerLeftWatcher.removeAllListeners('left');
+
     if (input == null) {
       return null;
     }
