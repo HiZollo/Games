@@ -3,13 +3,12 @@ import { TofeDirections } from '../types/enums';
 import { ITofe, TofeOptions } from '../types/interfaces'
 import { GameUtil } from '../util/GameUtil';
 
-const WIN_MAX_NUMBER = 2048;
-
 export class Tofe extends Game implements ITofe {
   public board: (number | null)[][];
   public boardSize: number;
   public hardMode: boolean;
   public score: number;
+  public winningNumber: number;
 
   protected maxNumber: number;
   protected occupiedCount: number;
@@ -21,6 +20,7 @@ export class Tofe extends Game implements ITofe {
     this.boardSize = 4;
     this.hardMode = hardMode;
     this.score = 0;
+    this.winningNumber = 2048;
 
     this.maxNumber = 1;
     this.occupiedCount = 0;
@@ -50,7 +50,7 @@ export class Tofe extends Game implements ITofe {
   }
 
   win(): boolean {
-    return this.maxNumber >= WIN_MAX_NUMBER;
+    return this.maxNumber >= this.winningNumber;
   }
 
   lose(): boolean {
