@@ -1,4 +1,4 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
+import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
 import { FlipTrip } from '../games';
@@ -11,9 +11,6 @@ const MAX_BUTTON_PER_ROW = 5;
 
 export class DjsFlipTrip extends DjsGameWrapper {
   public strings: FlipTripStrings;
-  public mainMessage: Message | void;
-  public controller: MessageActionRow;
-  public controllerMessage: Message | void;
 
   protected game: FlipTrip;
   protected inputMode: number;
@@ -25,15 +22,6 @@ export class DjsFlipTrip extends DjsGameWrapper {
     this.game = new FlipTrip({ players, boardSize });
 
     this.strings = overwrite(JSON.parse(JSON.stringify(flipTrip)), strings);
-    this.controller = new MessageActionRow().addComponents(
-      new MessageButton()
-        .setCustomId('HZG_CTRL_leave')
-        .setLabel(this.strings.controller.leave)
-        .setStyle("DANGER")
-    );
-
-    this.mainMessage = undefined;
-    this.controllerMessage = undefined;
 
     this.inputMode = 0b10;
     this.buttonFilter = this.buttonFilter.bind(this);
@@ -43,8 +31,6 @@ export class DjsFlipTrip extends DjsGameWrapper {
   }
 
   async initialize(): Promise<void> {
-    this.game.initialize();
-    
     for (let i = 0; i < this.game.boardSize; i++) {
       if (i % MAX_BUTTON_PER_ROW === 0) {
         this.boardButtons.push(new MessageActionRow());
@@ -57,20 +43,17 @@ export class DjsFlipTrip extends DjsGameWrapper {
       );
     }
 
-    if ('editReply' in this.source) {
-      if (!this.source.inCachedGuild()) { // type guard
-        throw new HZGError(ErrorCodes.GuildNotCached);
-      }
-      if (!this.source.deferred) {
-        await this.source.deferReply();
-      }
-      this.mainMessage = await this.source.editReply({ content: this.boardContent, components: [...this.boardButtons, this.controller] });
-      this.controllerMessage = this.mainMessage;
-    }
-    else {
-      this.mainMessage = await this.source.channel.send({ content: this.boardContent, components: [...this.boardButtons, this.controller] });
-      this.controllerMessage = this.mainMessage;
-    }
+    const components = [
+      ...this.boardButtons, 
+      new MessageActionRow().addComponents(
+        new MessageButton()
+          .setCustomId('HZG_CTRL_leave')
+          .setLabel(this.strings.controller.leave)
+          .setStyle("DANGER")
+      )
+    ];
+
+    await super.initialize({ content: this.boardContent, components });
   }
 
   getEndContent(): string {

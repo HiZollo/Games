@@ -1,4 +1,4 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
+import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
 import { Tofe } from '../games';
@@ -10,9 +10,6 @@ import { tofe } from '../util/strings.json';
 
 export class DjsTofe extends DjsGameWrapper {
   public strings: TofeStrings;
-  public mainMessage: Message | void;
-  public controller: MessageActionRow[];
-  public controllerMessage: Message | void;
 
   protected game: Tofe;
   protected inputMode: number;
@@ -24,12 +21,8 @@ export class DjsTofe extends DjsGameWrapper {
     this.game = new Tofe({ players, hardMode });
 
     this.strings = overwrite(JSON.parse(JSON.stringify(tofe)), strings);
-    this.controller = this.newController;
 
-    this.mainMessage = undefined;
-    this.controllerMessage = undefined;
-
-    this.inputMode = 0b00;
+    this.inputMode = 0b10;
     this.buttonFilter = this.buttonFilter.bind(this);
     this.messageFilter = this.messageFilter.bind(this);
     
@@ -37,8 +30,11 @@ export class DjsTofe extends DjsGameWrapper {
   }
 
   async initialize(): Promise<void> {
-    this.game.initialize();
-    
+    await super.initialize(
+      { content: format(this.strings.score, { score: this.game.score }), components: [] }, 
+      { content: '\u200b', components: this.newController }
+    );
+
     for (let i = 0; i < this.game.boardSize; i++) {
       this.boardButtons.push([]);
       for (let j = 0; j < this.game.boardSize; j++) {
@@ -50,20 +46,7 @@ export class DjsTofe extends DjsGameWrapper {
       }
     }
 
-    if ('editReply' in this.source) {
-      if (!this.source.inCachedGuild()) { // type guard
-        throw new HZGError(ErrorCodes.GuildNotCached);
-      }
-      if (!this.source.deferred) {
-        await this.source.deferReply();
-      }
-      this.mainMessage = await this.source.editReply({ content: format(this.strings.score, { score: this.game.score }), components: this.displayBoard });
-      this.controllerMessage = await this.source.followUp({ content: '\u200b', components: this.controller });
-    }
-    else {
-      this.mainMessage = await this.source.channel.send({ content: format(this.strings.score, { score: this.game.score }), components: this.displayBoard });
-      this.controllerMessage = await this.mainMessage.reply({ content: '\u200b', components: this.controller });
-    }
+    await this.mainMessage?.edit({ components: this.displayBoard });
   }
 
   getEndContent(): string {
@@ -170,7 +153,7 @@ export class DjsTofe extends DjsGameWrapper {
   protected async end(status: string): Promise<void> {
     this.game.end(status);
 
-    await this.controllerMessage?.delete().catch(() => {});
+    await this.subMessage?.delete().catch(() => {});
   }
 
 

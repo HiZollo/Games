@@ -10,9 +10,6 @@ import { finalCode } from '../util/strings.json';
 
 export class DjsFinalCode extends DjsGameWrapper {
   public strings: FinalCodeStrings;
-  public mainMessage: Message | void;
-  public controller: MessageActionRow;
-  public controllerMessage: Message | void;
 
   protected game: FinalCode;
   protected inputMode: number;
@@ -23,15 +20,6 @@ export class DjsFinalCode extends DjsGameWrapper {
     this.game = new FinalCode({ players, range });
 
     this.strings = overwrite(JSON.parse(JSON.stringify(finalCode)), strings);
-    this.controller = new MessageActionRow().addComponents(
-      new MessageButton()
-        .setCustomId('HZG_CTRL_leave')
-        .setLabel(this.strings.controller.leave)
-        .setStyle("DANGER")
-    );
-
-    this.mainMessage = undefined;
-    this.controllerMessage = undefined;
 
     this.inputMode = 0b01;
     this.buttonFilter = this.buttonFilter.bind(this);
@@ -39,25 +27,15 @@ export class DjsFinalCode extends DjsGameWrapper {
   }
 
   async initialize(): Promise<void> {
-    this.game.initialize();
-
     const content = format(this.strings.interval, { min: this.game.range.min, max: this.game.range.max }) + '\n'
                   + format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` });
-
-    if ('editReply' in this.source) {
-      if (!this.source.inCachedGuild()) { // type guard
-        throw new HZGError(ErrorCodes.GuildNotCached);
-      }
-      if (!this.source.deferred) {
-        await this.source.deferReply();
-      }
-      this.mainMessage = await this.source.editReply({ content: content, components: [this.controller] });
-      this.controllerMessage = this.mainMessage;
-    }
-    else {
-      this.mainMessage = await this.source.channel.send({ content: content, components: [this.controller] });
-      this.controllerMessage = this.mainMessage;
-    }
+    const components = [new MessageActionRow().addComponents(
+      new MessageButton()
+        .setCustomId('HZG_CTRL_leave')
+        .setLabel(this.strings.controller.leave)
+        .setStyle("DANGER")
+    )];
+    await super.initialize({ content, components })
   }
 
   getEndContent(): string {

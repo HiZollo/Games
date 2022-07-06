@@ -1,4 +1,4 @@
-import { ButtonInteraction, Client, Collection, CommandInteraction, Message, MessageEmbed } from 'discord.js';
+import { ButtonInteraction, Client, Collection, CommandInteraction, Message, MessageActionRow, MessageEmbed } from 'discord.js';
 import { HZGError, ErrorCodes } from '../errors';
 import { Game, Player } from '../struct';
 import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types/interfaces';
@@ -8,15 +8,12 @@ export abstract class DjsGameWrapper {
   public client: Client;
   public source: CommandInteraction | Message;
   public time: number;
+  public mainMessage: Message | void;
+  public subMessage: Message | void;
 
-  // actual displaying things
   public abstract strings: GameStrings;
-  public abstract mainMessage: Message | void;
-  public abstract controllerMessage: Message | void;
-  public abstract initialize(): Promise<void>;
   public abstract getEndContent(): string;
   
-  // logic implementation
   protected abstract game: Game;
   protected abstract inputMode: number;
   protected abstract buttonFilter(i: ButtonInteraction): boolean;
@@ -38,6 +35,29 @@ export abstract class DjsGameWrapper {
 
     this.client = source.client;
     this.source = source;
+
+    this.mainMessage = undefined;
+    this.subMessage = undefined;
+  }
+
+  public async initialize(main: { content: string, components: MessageActionRow[] }, sub?: { content: string, components: MessageActionRow[] }): Promise<void> {
+    this.game.initialize();
+
+    if ('editReply' in this.source) {
+      if (!this.source.inCachedGuild()) { // type guard
+        throw new HZGError(ErrorCodes.GuildNotCached);
+      }
+      if (!this.source.deferred) {
+        await this.source.deferReply();
+      }
+
+      this.mainMessage = await this.source.editReply({ content: main.content, components: main.components });
+      this.subMessage = sub ? (await this.source.followUp({ content: sub.content, components: sub.components })) : this.mainMessage;
+    }
+    else {
+      this.mainMessage = await this.source.channel.send({ content: main.content, components: main.components });
+      this.subMessage = sub ? (await this.mainMessage.reply({ content: sub.content, components: sub.components })) : this.mainMessage;
+    }
   }
 
   // main logic
@@ -69,6 +89,10 @@ export abstract class DjsGameWrapper {
   }
 
   async start(): Promise<void> {
+    if (this.mainMessage === undefined || this.subMessage === undefined) {
+      throw new HZGError(ErrorCodes.GameNotInitialized);
+    }
+
     let nowPlayer: Player = this.game.playerManager.nowPlayer;
     while (this.game.ongoing && this.game.playerManager.alive) {
       nowPlayer = this.game.playerManager.nowPlayer;
@@ -88,13 +112,16 @@ export abstract class DjsGameWrapper {
   }
 
   async conclude(): Promise<void> {
+    if (this.mainMessage === undefined || this.subMessage === undefined) {
+      throw new HZGError(ErrorCodes.GameNotInitialized);
+    }
     if (this.game.ongoing) {
       throw new HZGError(ErrorCodes.GameNotEnded);
     }
 
     const content = this.getEndContent();
     const embeds = [this.getEndEmbed()];
-    await this.mainMessage?.reply({ content, embeds }).catch(() => {
+    await this.mainMessage.reply({ content, embeds }).catch(() => {
       this.source.channel?.send({ content, embeds });
     });
   }
@@ -130,7 +157,7 @@ export abstract class DjsGameWrapper {
     const promises: (Promise<ButtonInteraction | Collection<string, Message> | null> | void)[] = [sleep(this.time, null)];
 
     // button input from controller message
-    promises.push(this.controllerMessage?.awaitMessageComponent({
+    promises.push(this.subMessage?.awaitMessageComponent({
       filter: this.buttonFilter,
       componentType: "BUTTON",
       time: this.time

@@ -1,9 +1,10 @@
 import { ErrorCodes } from './ErrorCodes';
 
 export const Messages = {
+  [ErrorCodes.GameAlreadyEnded]: `The game has already ended.`, 
   [ErrorCodes.GameAlreadyInitialized]: `The game has already been initialized.`, 
-  [ErrorCodes.GameAlreadyEnded]: `The game has already been ended.`, 
   [ErrorCodes.GameNotEnded]: `The game has not ended yet.`, 
+  [ErrorCodes.GameNotInitialized]: `The game has not been initialized yet.`, 
 
   [ErrorCodes.DuplicatedIds]: `Duplicated ids are not allowed.`, 
   [ErrorCodes.DuplicatedSymbols]: `Duplicated symbols are not allowed.`, 

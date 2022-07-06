@@ -1,4 +1,4 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
+import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { LightsUp } from '../games';
@@ -11,9 +11,6 @@ export class DjsLightsUp extends DjsGameWrapper {
   public answered: boolean;
 
   public strings: LightsUpStrings;
-  public mainMessage: Message | void;
-  public controller: MessageActionRow;
-  public controllerMessage: Message | void;
 
   protected game: LightsUp;
   protected inputMode: number;
@@ -28,19 +25,6 @@ export class DjsLightsUp extends DjsGameWrapper {
     this.game = new LightsUp({ players, boardSize });
 
     this.strings = overwrite(JSON.parse(JSON.stringify(lightsUp)), strings);
-    this.controller = new MessageActionRow().addComponents(
-      new MessageButton()
-        .setCustomId('HZG_CTRL_answer')
-        .setLabel(this.strings.controller.answer)
-        .setStyle("SUCCESS"), 
-      new MessageButton()
-        .setCustomId('HZG_CTRL_leave')
-        .setLabel(this.strings.controller.leave)
-        .setStyle("DANGER")
-    );
-
-    this.mainMessage = undefined;
-    this.controllerMessage = undefined;
 
     this.inputMode = 0b10;
     this.buttonFilter = this.buttonFilter.bind(this);
@@ -51,7 +35,21 @@ export class DjsLightsUp extends DjsGameWrapper {
   }
 
   async initialize(): Promise<void> {
-    this.game.initialize();
+    const subComponents = [new MessageActionRow().addComponents(
+      new MessageButton()
+        .setCustomId('HZG_CTRL_answer')
+        .setLabel(this.strings.controller.answer)
+        .setStyle("SUCCESS"), 
+      new MessageButton()
+        .setCustomId('HZG_CTRL_leave')
+        .setLabel(this.strings.controller.leave)
+        .setStyle("DANGER")
+    )]
+    
+    await super.initialize(
+      { content: '\u200b', components: [] }, 
+      { content: '\u200b', components: subComponents }
+    );
 
     for (let i = 0; i < this.game.boardSize; i++) {
       this.boardButtons.push([]);
@@ -64,20 +62,7 @@ export class DjsLightsUp extends DjsGameWrapper {
       }
     }
 
-    if ('editReply' in this.source) {
-      if (!this.source.inCachedGuild()) { // type guard
-        throw new HZGError(ErrorCodes.GuildNotCached);
-      }
-      if (!this.source.deferred) {
-        await this.source.deferReply();
-      }
-      this.mainMessage = await this.source.editReply({ content: '\u200b', components: this.displayBoard });
-      this.controllerMessage = await this.source.followUp({ content: '\u200b', components: [this.controller] });
-    }
-    else {
-      this.mainMessage = await this.source.channel.send({ content: '\u200b', components: this.displayBoard });
-      this.controllerMessage = await this.mainMessage.reply({ content: '\u200b', components: [this.controller] });
-    }
+    await this.mainMessage?.edit({ components: this.displayBoard });
   }
 
   flip(row: number, col: number): void {
@@ -191,7 +176,7 @@ export class DjsLightsUp extends DjsGameWrapper {
     });
 
     await this.mainMessage?.edit({ components: this.displayBoard }).catch(() => {});
-    await this.controllerMessage?.delete().catch(() => {});
+    await this.subMessage?.delete().catch(() => {});
   }
 
 

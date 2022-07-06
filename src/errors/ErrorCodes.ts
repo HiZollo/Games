@@ -1,6 +1,7 @@
 export enum ErrorCodes {
-  GameAlreadyInitialized, 
   GameAlreadyEnded, 
+  GameAlreadyInitialized, 
+  GameNotInitialized, 
   GameNotEnded, 
 
   DuplicatedIds, 

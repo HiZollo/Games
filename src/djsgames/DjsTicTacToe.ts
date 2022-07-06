@@ -1,4 +1,4 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton } from 'discord.js';
+import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { AI } from '../AI/AI';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
@@ -10,9 +10,7 @@ import { ticTacToe } from '../util/strings.json';
 
 export class DjsTicTacToe extends DjsGameWrapper {
   public strings: TicTacToeStrings;
-  public mainMessage: Message | void;
   public controller: MessageActionRow;
-  public controllerMessage: Message | void;
 
   protected game: TicTacToe;
   protected inputMode: number;
@@ -34,9 +32,6 @@ export class DjsTicTacToe extends DjsGameWrapper {
         .setStyle("DANGER")
     );
 
-    this.mainMessage = undefined;
-    this.controllerMessage = undefined;
-
     this.inputMode = 0b01;
     this.buttonFilter = this.buttonFilter.bind(this);
     this.messageFilter = this.messageFilter.bind(this);
@@ -45,34 +40,19 @@ export class DjsTicTacToe extends DjsGameWrapper {
   }
 
   async initialize(): Promise<void> {
-    this.game.initialize();
-
     for (let i = 0; i < this.game.boardSize; i++) {
       this.boardButtons.push([]);
       for (let j = 0; j < this.game.boardSize; j++) {
-        this.boardButtons[i].push(new MessageButton()
-        .setCustomId(`HZG_PLAY_${i}_${j}`)
-        .setLabel(this.strings.labels[i][j])
-        .setStyle("PRIMARY")
-      );
+        this.boardButtons[i][j] = new MessageButton()
+          .setCustomId(`HZG_PLAY_${i}_${j}`)
+          .setLabel(this.strings.labels[i][j])
+          .setStyle("PRIMARY");
       }
     }
 
-    const content = format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>`, symbol: this.game.playerManager.nowPlayer.symbol });
-    if ('editReply' in this.source) {
-      if (!this.source.inCachedGuild()) { // type guard
-        throw new HZGError(ErrorCodes.GuildNotCached);
-      }
-      if (!this.source.deferred) {
-        await this.source.deferReply();
-      }
-      this.mainMessage = await this.source.editReply({ content: content, components: [...this.displayBoard, this.controller] });
-      this.controllerMessage = this.mainMessage;
-    }
-    else {
-      this.mainMessage = await this.source.channel.send({ content: content, components: [...this.displayBoard, this.controller] });
-      this.controllerMessage = this.mainMessage;
-    }
+    const player = this.game.playerManager.nowPlayer;
+    const content = format(this.strings.nowPlayer, { player: `<@${player.id}>`, symbol: player.symbol });
+    await super.initialize({ content, components: [...this.displayBoard, this.controller] });
   }
 
   fill(row: number, col: number): void {
