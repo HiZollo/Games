@@ -1,6 +1,6 @@
 import { GameStatusManager, PlayerManager } from './';
 import { HZGError, ErrorCodes } from '../errors';
-import { GameOptions } from '../types/interfaces';
+import { GameOptions } from '../types';
 
 export abstract class Game {
   public playerManager: PlayerManager;

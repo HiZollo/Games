@@ -1,8 +1,6 @@
 import { ErrorCodes, HZGError } from '../errors';
 import { Game, Range } from '../struct';
-import { BigTwoTrickType } from '../types/enums';
-import { IBigTwo, BigTwoOptions } from '../types/interfaces'
-import { BigTwoTrick } from '../types/types';
+import { BigTwoOptions, BigTwoTrick, BigTwoTrickType, IBigTwo } from '../types';
 import { GameUtil } from '../util/GameUtil';
 
 const CARD_COUNT = 52;

@@ -3,7 +3,7 @@ import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
 import { FlipTrip } from '../games';
 import { Player } from '../struct';
-import { DjsFlipTripOptions, FlipTripStrings, DjsInputResult } from '../types/interfaces';
+import { DjsFlipTripOptions, FlipTripStrings, DjsInputResult } from '../types';
 import { format, overwrite } from '../util/Functions';
 import { flipTrip } from '../util/strings.json';
 

@@ -1,6 +1,6 @@
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { Game, Range } from '../struct';
-import { IGomoku, GomokuOptions } from '../types/interfaces'
+import { IGomoku, GomokuOptions } from '../types'
 import { GameUtil } from '../util/GameUtil';
 
 export class Gomoku extends Game implements IGomoku {

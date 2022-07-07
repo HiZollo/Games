@@ -1,6 +1,5 @@
 import { Game, Range } from '../struct';
-import { TofeDirections } from '../types/enums';
-import { ITofe, TofeOptions } from '../types/interfaces'
+import { ITofe, TofeDirections, TofeOptions } from '../types'
 import { GameUtil } from '../util/GameUtil';
 
 export class Tofe extends Game implements ITofe {

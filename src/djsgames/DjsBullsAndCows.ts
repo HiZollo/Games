@@ -3,7 +3,7 @@ import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
 import { BullsAndCows } from '../games';
 import { Player } from '../struct';
-import { DjsBullsAndCowsOptions, BullsAndCowsStrings, DjsInputResult } from '../types/interfaces';
+import { DjsBullsAndCowsOptions, BullsAndCowsStrings, DjsInputResult } from '../types';
 import { format, overwrite } from '../util/Functions';
 import { bullsAndCows } from '../util/strings.json';
 

@@ -3,8 +3,7 @@ import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
 import { Tofe } from '../games';
 import { Player } from '../struct';
-import { TofeDirections } from '../types/enums';
-import { DjsTofeOptions, TofeStrings, DjsInputResult } from '../types/interfaces';
+import { DjsTofeOptions, TofeDirections, TofeStrings, DjsInputResult } from '../types';
 import { format, overwrite } from '../util/Functions';
 import { tofe } from '../util/strings.json';
 

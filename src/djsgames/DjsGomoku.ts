@@ -3,7 +3,7 @@ import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { Gomoku } from '../games';
 import { Player } from '../struct';
-import { DjsGomokuOptions, GomokuStrings, DjsInputResult } from '../types/interfaces';
+import { DjsGomokuOptions, GomokuStrings, DjsInputResult } from '../types';
 import { format, overwrite } from '../util/Functions';
 import { gomoku } from '../util/strings.json';
 

@@ -1,6 +1,6 @@
 import { Player, Range } from './';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
-import { PlayerManagerOptions } from '../types/interfaces';
+import { PlayerManagerOptions } from '../types';
 
 export class PlayerManager {
   public players: Player[];

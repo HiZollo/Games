@@ -1,12 +1,11 @@
 import { ButtonInteraction, InteractionCollector, MessageActionRow, MessageButton, MessageSelectMenu, MessageSelectOptionData, SelectMenuInteraction } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
-import { BigTwo } from '../games/BigTwo';
+import { BigTwo } from '../games';
 import { Player } from '../struct';
-import { DjsBigTwoOptions, BigTwoStrings, DjsInputResult } from '../types/interfaces';
+import { DjsBigTwoOptions, BigTwoStrings, BigTwoTrick, BigTwoTrickType, DjsInputResult } from '../types';
 import { format, overwrite, sleep } from '../util/Functions';
 import { bigTwo } from '../util/strings.json';
-import { BigTwoTrick, BigTwoTrickType } from '../types';
 
 export class DjsBigTwo extends DjsGameWrapper {
   public strings: BigTwoStrings;

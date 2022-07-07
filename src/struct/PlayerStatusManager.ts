@@ -1,6 +1,6 @@
 import { StatusManager } from './';
 import { HZGError, ErrorCodes } from '../errors';
-import { StatusManagerOptions } from '../types/interfaces';
+import { StatusManagerOptions } from '../types';
 
 export class PlayerStatusManager extends StatusManager {
   constructor({ initial, status }: StatusManagerOptions) {

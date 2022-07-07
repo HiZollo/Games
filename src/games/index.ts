@@ -1,3 +1,4 @@
+export { BigTwo } from './BigTwo';
 export { BullsAndCows } from './BullsAndCows';
 export { FinalCode } from './FinalCode';
 export { FlipTrip } from './FlipTrip';

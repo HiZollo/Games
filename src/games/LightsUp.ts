@@ -1,5 +1,5 @@
 import { Game, Range } from '../struct';
-import { ILightsUp, LightsUpOptions } from '../types/interfaces'
+import { ILightsUp, LightsUpOptions } from '../types'
 import { GameUtil } from '../util/GameUtil';
 
 export class LightsUp extends Game implements ILightsUp {

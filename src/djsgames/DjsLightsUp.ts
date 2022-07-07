@@ -3,7 +3,7 @@ import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { LightsUp } from '../games';
 import { Player } from '../struct';
-import { DjsLightsUpOptions, LightsUpStrings, DjsInputResult } from '../types/interfaces';
+import { DjsLightsUpOptions, LightsUpStrings, DjsInputResult } from '../types';
 import { format, overwrite } from '../util/Functions';
 import { lightsUp } from '../util/strings.json';
 

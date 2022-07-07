@@ -1,6 +1,6 @@
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { Game, Range } from '../struct';
-import { ITicTacToe, TicTacToeOptions } from '../types/interfaces'
+import { ITicTacToe, TicTacToeOptions } from '../types'
 import { GameUtil } from '../util/GameUtil';
 
 export class TicTacToe extends Game implements ITicTacToe {

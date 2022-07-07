@@ -4,7 +4,7 @@ import { AI } from '../AI/AI';
 import { HZGError, ErrorCodes } from '../errors';
 import { FinalCode } from '../games/FinalCode';
 import { Player } from '../struct';
-import { DjsFinalCodeOptions, FinalCodeStrings, DjsInputResult } from '../types/interfaces';
+import { DjsFinalCodeOptions, FinalCodeStrings, DjsInputResult } from '../types';
 import { format, overwrite } from '../util/Functions';
 import { finalCode } from '../util/strings.json';
 

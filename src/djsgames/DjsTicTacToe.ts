@@ -4,7 +4,7 @@ import { AI } from '../AI/AI';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { TicTacToe } from '../games';
 import { Player } from '../struct';
-import { DjsTicTacToeOptions, TicTacToeStrings, DjsInputResult } from '../types/interfaces';
+import { DjsTicTacToeOptions, TicTacToeStrings, DjsInputResult } from '../types';
 import { format, overwrite } from '../util/Functions';
 import { ticTacToe } from '../util/strings.json';
 

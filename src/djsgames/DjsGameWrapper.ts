@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import { ButtonInteraction, Client, Collection, CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageEmbed } from 'discord.js';
 import { HZGError, ErrorCodes } from '../errors';
 import { Game, Player } from '../struct';
-import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types/interfaces';
+import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types';
 import { fixedDigits, format, sleep } from '../util/Functions';
 
 export abstract class DjsGameWrapper {

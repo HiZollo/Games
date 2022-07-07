@@ -1,6 +1,6 @@
 import { HZGError, HZGTypeError, ErrorCodes } from '../errors';
 import { Game, Range } from '../struct';
-import { IFinalCode, FinalCodeOptions } from '../types/interfaces'
+import { IFinalCode, FinalCodeOptions } from '../types'
 import { GameUtil } from '../util/GameUtil';
 
 export class FinalCode extends Game implements IFinalCode {

@@ -1,5 +1,5 @@
 import { HZGError, ErrorCodes } from '../errors';
-import { StatusManagerOptions } from "../types/interfaces";
+import { StatusManagerOptions } from "../types";
 
 export class StatusManager {
   public statusCount: number;
