@@ -12,7 +12,7 @@ export class DjsBigTwo extends DjsGameWrapper {
 
   protected game: BigTwo;
   protected inputMode: number;
-  protected bundles: ({ messageId: string, menu: MessageSelectMenu, buttons: MessageButton[], cards: number[] })[];
+  protected bundles: ({ messageId: string, menu: MessageSelectMenu, buttons: MessageButton[], selectedCards: number[] })[];
   protected buttonCollector: InteractionCollector<ButtonInteraction> | void;
   protected menuCollector: InteractionCollector<SelectMenuInteraction> | void;
 
@@ -27,8 +27,8 @@ export class DjsBigTwo extends DjsGameWrapper {
     this.bundles = [];
     this.buttonCollector = undefined;
     this.menuCollector = undefined;
-    this.cardPlayed = this.cardPlayed.bind(this);
-    this.cardSelected = this.cardSelected.bind(this);
+    this.playerAction = this.playerAction.bind(this);
+    this.playerSelect = this.playerSelect.bind(this);
   }
 
   async initialize(): Promise<void> {
@@ -68,7 +68,7 @@ export class DjsBigTwo extends DjsGameWrapper {
             .setLabel(this.strings.cards.pass)
             .setStyle("DANGER"), 
         ], 
-        cards: []
+        selectedCards: []
       };
     }
 
@@ -108,11 +108,11 @@ export class DjsBigTwo extends DjsGameWrapper {
     if (this.buttonCollector === undefined || this.menuCollector === undefined) {
       throw new HZGError(ErrorCodes.GameNotInitialized);
     }
-    this.buttonCollector.on('collect', this.cardPlayed);
-    this.menuCollector.on('collect', this.cardSelected);
+    this.buttonCollector.on('collect', this.playerAction);
+    this.menuCollector.on('collect', this.playerSelect);
     await super.start();
-    this.buttonCollector.off('collect', this.cardPlayed);
-    this.menuCollector.off('collect', this.cardSelected);
+    this.buttonCollector.off('collect', this.playerAction);
+    this.menuCollector.off('collect', this.playerSelect);
   }
 
   public async conclude(): Promise<void> {
@@ -164,36 +164,41 @@ export class DjsBigTwo extends DjsGameWrapper {
     }
   }
 
-  protected async cardPlayed(interaction: ButtonInteraction): Promise<void> {
+  protected async playerAction(interaction: ButtonInteraction): Promise<void> {
     const index = this.game.playerManager.getIndex(interaction.user.id);
     if (index < 0) return;
+
+    let content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n';
     if (interaction.user.id !== this.game.playerManager.nowPlayer.id) {
-      const content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
-                    + this.strings.cards.notYourTurn;
+      content += this.strings.cards.notYourTurn;
       return await interaction.update({ content });
     }
 
     const args = interaction.customId.split('_');
     if (args[2] === 'play') {
-      if (this.bundles[index].cards.length === 0) {
-        const content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
-                      + this.strings.cards.noSelection;
-        return await interaction.reply({ content, ephemeral: true });
+      const cards = this.bundles[index].selectedCards;
+      if (cards.length === 0) {
+        content += this.strings.cards.noSelection;
+        return await interaction.update({ content });
       }
-      this.conveyor.emit('cardsPlayed', JSON.parse(JSON.stringify(this.bundles[index].cards)));
-      this.bundles[index].menu.setDisabled(true);
+      this.conveyor.emit('cardsPlayed', JSON.parse(JSON.stringify(cards)));
+      this.game.playerManager.players[index].addStep();
+      this.game.play(cards);
 
-      const trick = this.game.cardsToTrick(this.bundles[index].cards);
-      const content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
-                    + format(this.strings.cards.played, { cards: this.cardsToString(this.bundles[index].cards), trick: this.trickToString(trick) })
+      content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
+              + format(this.strings.cards.played, { cards: this.cardsToString(cards), trick: this.trickToString(this.game.cardsToTrick(cards)) });
+
+      this.bundles[index].menu
+        .setMaxValues(Math.min(this.game.cards[index].length, 5))
+        .setOptions(this.getOptions(this.game.cards[index]));
       const components = [new MessageActionRow().addComponents(this.bundles[index].menu), new MessageActionRow().addComponents(...this.bundles[index].buttons)];
-      await interaction.update({ content, components });
-
-      this.bundles[index].cards = [];
-      return;
+      
+      this.bundles[index].selectedCards = [];
+      return await interaction.update({ content, components });
     }
     else if (args[2] === 'pass') {
       this.conveyor.emit('cardsPlayed', []);
+      this.game.pass();
       const content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
                     + this.strings.cards.passed;
       return await interaction.update({ content });
@@ -201,26 +206,25 @@ export class DjsBigTwo extends DjsGameWrapper {
     throw new HZGError(ErrorCodes.InvalidButtonInteraction);
   }
 
-  protected async cardSelected(interaction: SelectMenuInteraction): Promise<void> {
+  protected async playerSelect(interaction: SelectMenuInteraction): Promise<void> {
     const index = this.game.playerManager.getIndex(interaction.user.id);
     if (index < 0) return;
+
+    let content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n';
     if (interaction.user.id !== this.game.playerManager.nowPlayer.id) {
-      const content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
-                    + this.strings.cards.notYourTurn;
+      content += this.strings.cards.notYourTurn;
       return await interaction.update({ content });
     }
 
     const cards = interaction.values.map(c => parseInt(c, 10)).sort((a, b) => a - b);
     const trick = this.game.cardsToTrick(cards);
     if (!this.game.playable(trick)) {
-      const content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
-                    + format(this.strings.cards.invalid, { cards: this.cardsToString(cards) });
+      content += format(this.strings.cards.invalid, { cards: this.cardsToString(cards) });
       return await interaction.update({ content });
     }
 
-    this.bundles[index].cards = cards;
-    const content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
-                  + format(this.strings.cards.selected, { cards: this.cardsToString(cards), trick: this.trickToString(trick) });
+    this.bundles[index].selectedCards = cards;
+    content += format(this.strings.cards.selected, { cards: this.cardsToString(cards), trick: this.trickToString(trick) });
     await interaction.update({ content });
   }
 
@@ -247,24 +251,13 @@ export class DjsBigTwo extends DjsGameWrapper {
     let endStatus = "";
     if (!input.length) {
       content = format(this.strings.previous.pass, { player: nowPlayer.username });
-      this.game.pass();
     }
     else {
-      nowPlayer.addStep();
-      this.game.play(input);
-
       if (this.game.win()) {
         this.winner = nowPlayer;
         endStatus = "WIN";
       }
-
-      const index = this.game.playerManager.getIndex(nowPlayer.id);
-      if (index >= 0) {
-        this.bundles[index].menu.setMaxValues(Math.min(this.game.cards[index].length, 5)).setOptions(this.getOptions(this.game.cards[index])).setDisabled(false);
-      }
-      
-      const trick = this.game.cardsToTrick(input);
-      content = format(this.strings.previous.play, { player: nowPlayer.username, trick: this.trickToString(trick) });
+      content = format(this.strings.previous.play, { player: nowPlayer.username, trick: this.trickToString(this.game.cardsToTrick(input)) });
     }
 
     return {

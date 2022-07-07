@@ -9,7 +9,7 @@
       "pass": "Pass", 
       "play": "Play", 
       "selected": "**You selected**: [<cards>] (<trick>)\nClick on [Play] button to play the cards.", 
-      "played": "[<cards>] (<trick>) successfully played.\nClick on [Cards] button again to update your cards.", 
+      "played": "[<cards>] (<trick>) successfully played.", 
       "passed": "You passed this turn.", 
       "invalid": "[<cards>] is invalid or not playable.", 
       "notYourTurn": "It's not your turn yet.", 

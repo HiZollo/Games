@@ -34,6 +34,13 @@ export class BigTwo extends Game implements IBigTwo {
     this.cards.forEach(c => {
       c.sort((a, b) => a - b);
     });
+
+    for (let i = 0; i < this.playerManager.playerCount; i++) {
+      if (this.cards[i].includes(0)) {
+        this.playerManager.index = i;
+        break;
+      }
+    }
   }
 
   playable(trick: BigTwoTrick): boolean {
