@@ -100,8 +100,10 @@ export class PlayerManager {
     const index = this.getIndex(id);
     if (index === -1) return;
     this.players[index].status.set("LEFT");
-    this.conclude(this.players[index]);
     this.inGamePlayerCount--;
+    if (index === this.index) {
+      this.conclude(this.players[index]);
+    }
   }
 
   getIndex(id: number | string): number {

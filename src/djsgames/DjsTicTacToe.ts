@@ -97,7 +97,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
     };
   }
 
-  protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
+  protected playToDo(nowPlayer: Player, input: string): DjsInputResult {
     const args = input.split('_');
     let content = '';
     let endStatus = "";
@@ -121,10 +121,6 @@ export class DjsTicTacToe extends DjsGameWrapper {
       content: content, 
       endStatus: endStatus
     };
-  }
-
-  protected messageToDo(): DjsInputResult {
-    return {};
   }
 
   protected async botMove(bot: Player): Promise<DjsInputResult> {

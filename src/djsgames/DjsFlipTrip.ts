@@ -90,7 +90,7 @@ export class DjsFlipTrip extends DjsGameWrapper {
     };
   }
 
-  protected buttonToDo(nowPlayer: Player, input: string): DjsInputResult {
+  protected playToDo(nowPlayer: Player, input: string): DjsInputResult {
     const args = input.split('_');
     let endStatus = "";
     
@@ -112,10 +112,6 @@ export class DjsFlipTrip extends DjsGameWrapper {
       content: this.boardContent, 
       endStatus: endStatus
     };
-  }
-
-  protected messageToDo(): DjsInputResult {
-    return {};
   }
 
   protected async botMove(): Promise<DjsInputResult> {

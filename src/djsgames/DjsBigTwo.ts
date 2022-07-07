@@ -36,7 +36,6 @@ export class DjsBigTwo extends DjsGameWrapper {
       throw new HZGError(ErrorCodes.InvalidChannel);
     }
 
-    const content = format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` });
     const components = [new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId('HZG_CTRL_leave')
@@ -47,7 +46,7 @@ export class DjsBigTwo extends DjsGameWrapper {
         .setLabel(this.strings.controller.cards)
         .setStyle("SECONDARY")
     )];
-    await super.initialize({ content, components });
+    await super.initialize({ content: '\u200b', components });
 
     for (let i = 0; i < this.game.playerManager.playerCount; i++) {
       this.bundles[i] = {
@@ -72,6 +71,7 @@ export class DjsBigTwo extends DjsGameWrapper {
       };
     }
 
+    await this.mainMessage?.edit({ content: format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` }) });
     this.buttonCollector = this.source.channel.createMessageComponentCollector({
       filter: i => this.bundles.some(({ messageId }) => i.message.id === messageId) && i.customId.startsWith("HZG_PLAY"), 
       componentType: "BUTTON"
@@ -80,28 +80,6 @@ export class DjsBigTwo extends DjsGameWrapper {
       filter: i => this.bundles.some(({ messageId }) => i.message.id === messageId) && i.customId.startsWith("HZG_PLAY"), 
       componentType: "SELECT_MENU"
     });
-  }
-
-  protected async run(nowPlayer: Player): Promise<void> {
-    let result: DjsInputResult;
-
-    const input = await this.getBigTwoInput();
-
-    if (nowPlayer.status.now === "LEFT") {
-      return;
-    }
-
-    if (input === null) {
-      result = this.idleToDo(nowPlayer);
-    }
-    else {
-      result = this.playToDo(nowPlayer, input);
-    }
-
-    result = await this.update(result);
-    if (result.endStatus) {
-      await this.end(result.endStatus);
-    }
   }
 
   async start(): Promise<void> {
@@ -296,7 +274,7 @@ export class DjsBigTwo extends DjsGameWrapper {
     return cards.map(c => ({ label: this.cardToString(c), value: `${c}` }));
   }
 
-  private async getBigTwoInput(): Promise<number[] | null> {
+  protected async getInput(): Promise<any> {
     // Since awaitMessageComponent() may reject, a must-resolving Promise is needed
     const promises: Promise<number[] | null>[] = [sleep(this.time, null)];
 
@@ -311,7 +289,7 @@ export class DjsBigTwo extends DjsGameWrapper {
         resolve(cards);
       });
     }));
-    
+
     const result = await Promise.any(promises);
     this.conveyor.removeAllListeners('cardsPlayed').removeAllListeners('playerLeft');
     return result;

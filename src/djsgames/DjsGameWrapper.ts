@@ -25,8 +25,7 @@ export abstract class DjsGameWrapper {
   protected abstract buttonFilter(i: ButtonInteraction): boolean;
   protected abstract messageFilter(m: Message): boolean;
   protected abstract idleToDo(nowPlayer: Player): DjsInputResult;
-  protected abstract buttonToDo(nowPlayer: Player, input: string, interaction?: ButtonInteraction): DjsInputResult;
-  protected abstract messageToDo(nowPlayer: Player, input: string, message?: Message): DjsInputResult;
+  protected abstract playToDo(nowPlayer: Player, input: any): DjsInputResult;
   protected abstract botMove(bot: Player): Promise<DjsInputResult>;
   protected abstract update(result: DjsInputResult): Promise<DjsInputResult>;
   protected abstract end(status: string): Promise<void>;
@@ -81,27 +80,20 @@ export abstract class DjsGameWrapper {
   // main logic
   protected async run(nowPlayer: Player): Promise<void> {
     let result: DjsInputResult;
-
     if (nowPlayer.bot) {
       result = await this.botMove(nowPlayer);
     }
     else {
       const input = await this.getInput();
-      const parsedInput = this.parseInput(input);
 
       if (nowPlayer.status.now === "LEFT") {
-        this.game.playerManager.next();
-        return;
+        result = { content: format(this.strings.playerLeft, { player: nowPlayer.username }) };
       }
-  
-      if (input === null || parsedInput === null) {
+      else if (input === null) {
         result = this.idleToDo(nowPlayer);
       }
-      else if ('customId' in input) {
-        result = this.buttonToDo(nowPlayer, parsedInput, input);
-      }
       else {
-        result = this.messageToDo(nowPlayer, parsedInput, input);
+        result = this.playToDo(nowPlayer, input);
       }
     }
 
@@ -184,6 +176,7 @@ export abstract class DjsGameWrapper {
       const index = this.game.playerManager.getIndex(interaction.user.id);
       if (index < 0) return;
 
+      this.game.playerManager.kick(interaction.user.id);
       if (interaction.user.id === this.game.playerManager.nowPlayer.id) {
         this.conveyor.emit('playerLeft');
       }
@@ -194,13 +187,11 @@ export abstract class DjsGameWrapper {
           message.delete().catch(() => {});
         }, 3e3);
       }
-
-      this.game.playerManager.kick(interaction.user.id);
     }
   }
   
 
-  private async getInput(): Promise<ButtonInteraction | Message | null> {
+  protected async getInput(): Promise<any> {
     if (this.mainMessage === undefined || this.subMessage === undefined) {
       throw new HZGError(ErrorCodes.GameNotInitialized);
     }
@@ -243,9 +234,9 @@ export abstract class DjsGameWrapper {
     if (input == null) {
       return null;
     }
-    if ('update' in input) {
+    if ('customId' in input) {
       await input.update({});
-      return input;
+      return input.customId;
     }
 
     const message = input.first();
@@ -253,19 +244,6 @@ export abstract class DjsGameWrapper {
       return null;
     }
     await message.delete().catch(() => {});
-    return message;
-  }
-
-  private parseInput(input: ButtonInteraction | Message | null): string | null {
-    if (input === null) {
-      return null;
-    }
-    if ('customId' in input) {
-      return input.customId;
-    }
-    if ('content' in input) {
-      return input.content;
-    }
-    return null;
+    return message.content;
   }
 }

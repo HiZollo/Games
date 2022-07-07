@@ -74,11 +74,7 @@ export class DjsFinalCode extends DjsGameWrapper {
     };
   }
 
-  protected buttonToDo(): DjsInputResult {
-    throw new HZGError(ErrorCodes.InvalidButtonInteraction);
-  }
-
-  protected messageToDo(nowPlayer: Player, input: string): DjsInputResult {
+  protected playToDo(nowPlayer: Player, input: string): DjsInputResult {
     nowPlayer.status.set("PLAYING");
     nowPlayer.addStep();
 
