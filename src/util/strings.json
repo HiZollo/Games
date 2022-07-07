@@ -1,4 +1,55 @@
 {
+  "bigTwo": {
+    "name": "Big Two", 
+    "ranks": ["3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2"], 
+    "suits": ["♣", "♦", "♥", "♠"], 
+    "cards": {
+      "cards": "**Your cards**: [<cards>]", 
+      "menu": "Please select one to five cards.", 
+      "pass": "Pass", 
+      "play": "Play", 
+      "selected": "**You selected**: [<cards>] (<trick>)\nClick on [Play] button to play the cards.", 
+      "played": "[<cards>] (<trick>) successfully played.\nClick on [Cards] button again to update your cards.", 
+      "passed": "You passed this turn.", 
+      "invalid": "[<cards>] is invalid or not playable.", 
+      "notYourTurn": "It's not your turn yet.", 
+      "noSelection": "You haven't select any cards."
+    }, 
+    "previous": {
+      "play": "<player> plays **<trick>**.", 
+      "pass": "<player> has passed.", 
+      "idle": "<player> lost their turn."
+    },
+    "tricks": {
+      "none": "none", 
+      "single": "a single <card>", 
+      "pair": "a pair of <rank>", 
+      "straight": "a <rank>-high straight", 
+      "fullHouse": "a <rank>s full", 
+      "fourOfAKind": "four of a kind, <rank>s", 
+      "straightFlush": "a <rank>-high straight flush"
+    }, 
+    "nowPlayer": "It is <player>'s turn.", 
+    "cardsOnTable": "**Cards on table**: [<cards>]", 
+    "playerLeft": "<player> has left the game.", 
+    "controller": {
+      "cards": "Cards", 
+      "leave": "Leave"
+    },
+    "endMessages": {
+      "win": "<player> is the winner of the game!",
+      "idle": "The game has been stopped because of idleness.",
+      "stopped": "The game has been stopped manually.",
+      "deleted": "Wait? I can't see the message, where does it go?",
+      "gameStats": {
+        "header": "Game Stats - <game>",
+        "message": "**Total Time**: <min>:<sec>\n**Total Play(s)**: <step>"
+      },
+      "playerStats": {
+        "message": "**Time**: <min>:<sec>\n**Play(s)**: <step>"
+      }
+    }
+  },
   "bullsAndCows": {
     "name": "Bulls and Cows",
     "initial": "<player>, please guess a number.",

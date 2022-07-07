@@ -1,6 +1,6 @@
 import { CommandInteraction, Message, MessageActionRow } from 'discord.js';
-import { TofeDirections } from './enums';
-import { Range } from '../struct/Range';
+import { BigTwoTrick, TofeDirections } from './';
+import { Range } from '../struct';
 
 
 
@@ -11,6 +11,9 @@ export interface PlayerOptions {
   bot?: boolean, 
   symbol?: string | null, 
   username?: string
+}
+
+export interface BigTwoPlayerOptions extends PlayerOptions {
 }
 
 export interface PlayerManagerOptions {
@@ -32,6 +35,10 @@ export interface StatusManagerOptions {
 
 
 // implemented game options
+
+export interface BigTwoOptions {
+  players: PlayerOptions[] 
+}
 
 export interface BullsAndCowsOptions {
   players: PlayerOptions[], 
@@ -77,6 +84,10 @@ export interface DjsGameWrapperOptions {
   time: number
 }
 
+export interface DjsBigTwoOptions extends DjsGameWrapperOptions, BigTwoOptions {
+  strings: BigTwoStrings
+}
+
 export interface DjsBullsAndCowsOptions extends DjsGameWrapperOptions, BullsAndCowsOptions {
   hardMode: boolean, 
   strings: BullsAndCowsStrings
@@ -109,6 +120,15 @@ export interface DjsTofeOptions extends DjsGameWrapperOptions, TofeOptions {
 
 
 // interfaces to implement
+
+export interface IBigTwo {
+  currentCards: number[], 
+  currentTrick: BigTwoTrick, 
+  play(cards: number[]): void, 
+  reset(): void, 
+  cardsToTrick(cards: number[]): BigTwoTrick, 
+  win(): boolean
+}
 
 export interface IBullsAndCows {
   answer: number[], 
@@ -191,6 +211,17 @@ export interface GameStrings {
   endMessages: EndMessageStrings
 }
 
+export interface BigTwoStrings extends GameStrings {
+  ranks: string[], 
+  suits: string[], 
+  cards: BigTwoCardsStrings, 
+  previous: BigTwoPreviousStrings, 
+  tricks: BigTwoTrickStrings, 
+  nowPlayer: string, 
+  cardsOnTable: string, 
+  controller: BigTwoControllerStrings
+}
+
 export interface BullsAndCowsStrings extends GameStrings {
   initial: string, 
   query: string
@@ -243,6 +274,10 @@ export interface ControllerStrings {
   leave: string
 }
 
+export interface BigTwoControllerStrings extends ControllerStrings {
+  cards: string
+}
+
 export interface LightsUpControllerStrings extends ControllerStrings {
   answer: string
 }
@@ -291,6 +326,12 @@ export interface TofeEndMessageStrings extends EndMessageStrings {
 }
 
 
+export interface BigTwoPreviousStrings {
+  play: string, 
+  pass: string, 
+  idle: string
+}
+
 export interface FinalCodePreviousStrings {
   tooSmall: string, 
   tooLarge: string, 
@@ -304,4 +345,28 @@ export interface GomokuPreviousStrings {
 
 export interface TicTacToePreviousStrings {
   idle: string
+}
+
+
+export interface BigTwoCardsStrings {
+  cards: string, 
+  menu: string, 
+  pass: string, 
+  play: string, 
+  selected: string, 
+  played: string, 
+  passed: string, 
+  invalid: string, 
+  notYourTurn: string, 
+  noSelection: string
+}
+
+export interface BigTwoTrickStrings {
+  none: string, 
+  single: string, 
+  pair: string, 
+  straight: string, 
+  fullHouse: string, 
+  fourOfAKind: string, 
+  straightFlush: string
 }

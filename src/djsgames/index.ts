@@ -1,4 +1,5 @@
 export { DjsGameWrapper } from './DjsGameWrapper';
+export { DjsBigTwo } from './DjsBigTwo';
 export { DjsBullsAndCows } from './DjsBullsAndCows';
 export { DjsFinalCode } from './DjsFinalCode';
 export { DjsFlipTrip } from './DjsFlipTrip';

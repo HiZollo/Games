@@ -1,4 +1,4 @@
-import { ButtonInteraction, CacheType, MessageActionRow, MessageButton } from 'discord.js';
+import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { LightsUp } from '../games';
@@ -103,7 +103,7 @@ export class DjsLightsUp extends DjsGameWrapper {
     return false;
   }
 
-  protected async ctrlCollected(interaction: ButtonInteraction<CacheType>): Promise<void> {
+  protected async ctrlCollected(interaction: ButtonInteraction): Promise<void> {
     super.ctrlCollected(interaction);
     
     const args = interaction.customId.split('_');

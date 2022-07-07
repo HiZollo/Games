@@ -5,6 +5,7 @@ import { PlayerManagerOptions } from '../types/interfaces';
 export class PlayerManager {
   public players: Player[];
   public playerCount: number;
+  public inGamePlayerCount: number;
   public index: number;
   private lastMoveTime: number;
 
@@ -34,6 +35,7 @@ export class PlayerManager {
     }
 
     this.playerCount = players.length;
+    this.inGamePlayerCount = this.playerCount;
     this.index = firstPlayerIndex;
     this.lastMoveTime = Date.now();
   }
@@ -95,10 +97,16 @@ export class PlayerManager {
   }
 
   kick(id: number | string): void {
-    const index = this.players.findIndex(p => p.id === id);
+    const index = this.getIndex(id);
     if (index === -1) return;
     this.players[index].status.set("LEFT");
     this.conclude(this.players[index]);
+    this.inGamePlayerCount--;
+  }
+
+  getIndex(id: number | string): number {
+    const index = this.players.findIndex(p => p.id === id);
+    return this.players[index].status.now === "LEFT" ? -1 : index;
   }
 
   private conclude(player: Player): void {

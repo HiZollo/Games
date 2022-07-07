@@ -17,6 +17,8 @@ export enum ErrorCodes {
   InvalidRangeLength, 
   OutOfRange, 
 
+  BigTwoTrickNotPlayable, 
+
   BullsAndCowsQueryLength, 
   BullsAndCowsDuplicatedNumbers, 
 

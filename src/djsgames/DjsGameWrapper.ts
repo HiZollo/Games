@@ -13,7 +13,7 @@ export abstract class DjsGameWrapper {
   public subMessage: Message | void;
 
   protected controllerCollector: InteractionCollector<ButtonInteraction> | void;
-  protected nowPlayerLeftWatcher: EventEmitter;
+  protected conveyor: EventEmitter;
 
   public abstract strings: GameStrings;
   public abstract getEndContent(): string;
@@ -42,7 +42,7 @@ export abstract class DjsGameWrapper {
     this.mainMessage = undefined;
     this.subMessage = undefined;
     this.controllerCollector = undefined;
-    this.nowPlayerLeftWatcher = new EventEmitter();
+    this.conveyor = new EventEmitter();
 
     this.ctrlCollected = this.ctrlCollected.bind(this);
   }
@@ -75,7 +75,7 @@ export abstract class DjsGameWrapper {
   }
 
   // main logic
-  private async run(nowPlayer: Player): Promise<void> {
+  protected async run(nowPlayer: Player): Promise<void> {
     let result: DjsInputResult;
 
     if (nowPlayer.bot) {
@@ -86,6 +86,7 @@ export abstract class DjsGameWrapper {
       const parsedInput = this.parseInput(input);
 
       if (nowPlayer.status.now === "LEFT") {
+        this.game.playerManager.next();
         return;
       }
   
@@ -176,11 +177,14 @@ export abstract class DjsGameWrapper {
 
   protected async ctrlCollected(interaction: ButtonInteraction): Promise<void> {
     if (interaction.customId === 'HZG_CTRL_leave') {
+      const index = this.game.playerManager.getIndex(interaction.user.id);
+      if (index < 0) return;
+
       if (interaction.user.id === this.game.playerManager.nowPlayer.id) {
-        this.nowPlayerLeftWatcher.emit('left');
+        this.conveyor.emit('playerLeft');
       }
 
-      const message = await interaction.reply({ content: format(this.strings.playerLeft, { player: this.game.playerManager.nowPlayer.username }), fetchReply: true });
+      const message = await interaction.reply({ content: format(this.strings.playerLeft, { player: this.game.playerManager.players[index].username }), fetchReply: true });
       if ('delete' in message) {
         setTimeout(() => {
           message.delete().catch(() => {});
@@ -188,7 +192,6 @@ export abstract class DjsGameWrapper {
       }
 
       this.game.playerManager.kick(interaction.user.id);
-      this.game.playerManager.next();
     }
   }
   
@@ -202,9 +205,9 @@ export abstract class DjsGameWrapper {
     const promises: Promise<ButtonInteraction | Collection<string, Message> | null>[] = [sleep(this.time, null)];
 
     promises.push(new Promise(resolve => {
-      this.nowPlayerLeftWatcher.on('left', () => {
+      this.conveyor.on('playerLeft', () => {
         resolve(null);
-      })
+      });
     }));
 
     // button input from sub message
@@ -231,7 +234,7 @@ export abstract class DjsGameWrapper {
       }));
   
     const input = await Promise.any(promises);
-    this.nowPlayerLeftWatcher.removeAllListeners('left');
+    this.conveyor.removeAllListeners('playerLeft');
 
     if (input == null) {
       return null;
