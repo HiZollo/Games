@@ -340,15 +340,15 @@ export class DjsBigTwo extends DjsGameWrapper {
       case BigTwoTrickType.Single:
         return format(tricks.single, { card: this.cardToString(trick[1]) });
       case BigTwoTrickType.Pair:
-        return format(tricks.pair , { rank: this.strings.ranks[trick[1] >> 2] });
+        return format(tricks.pair, { rank: this.strings.ranks[trick[1] >> 2] });
       case BigTwoTrickType.Straight:
-        return format(tricks.straight , { rank: this.strings.ranks[trick[1] >> 2] });
+        return format(tricks.straight, { rank: this.strings.ranks[trick[1] >> 2] });
       case BigTwoTrickType.FullHouse:
-        return format(tricks.fullHouse , { rank: this.strings.ranks[trick[1] >> 2] });
+        return format(tricks.fullHouse, { rank: this.strings.ranks[trick[1] >> 2] });
       case BigTwoTrickType.FourOfAKind:
-        return format(tricks.fourOfAKind , { rank: this.strings.ranks[trick[1] >> 2] });
+        return format(tricks.fourOfAKind, { rank: this.strings.ranks[trick[1] >> 2] });
       case BigTwoTrickType.StraightFlush:
-        return format(tricks.straightFlush , { rank: this.strings.ranks[trick[1] >> 2] });
+        return format(tricks.straightFlush, { rank: this.strings.ranks[trick[1] >> 2] });
     }
   }
 }

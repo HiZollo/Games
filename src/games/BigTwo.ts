@@ -115,7 +115,7 @@ export class BigTwo extends Game implements IBigTwo {
     if (ranks[4] - ranks[0] === 4) return cards[4]; // 3-7 to 10-A
     if (!(ranks[0] === 0 && ranks[1] === 1 && ranks[2] === 2 && ranks[4] === 12)) return -1;
     if (ranks[3] === 3) return cards[4]; // 2-6
-    if (ranks[3] === 11) return cards[3] - 44; // A-5
+    if (ranks[3] === 11) return cards[2]; // A-5
     return -1;
   }
 }
