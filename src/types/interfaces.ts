@@ -214,7 +214,7 @@ export interface GameStrings {
 export interface BigTwoStrings extends GameStrings {
   ranks: string[], 
   suits: string[], 
-  cards: BigTwoCardsStrings, 
+  player: BigTwoPlayerStrings, 
   previous: BigTwoPreviousStrings, 
   tricks: BigTwoTrickStrings, 
   nowPlayer: string, 
@@ -348,7 +348,7 @@ export interface TicTacToePreviousStrings {
 }
 
 
-export interface BigTwoCardsStrings {
+export interface BigTwoPlayerStrings {
   cards: string, 
   menu: string, 
   pass: string, 

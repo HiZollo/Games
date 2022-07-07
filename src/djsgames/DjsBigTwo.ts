@@ -54,18 +54,18 @@ export class DjsBigTwo extends DjsGameWrapper {
         messageId: '', 
         menu: new MessageSelectMenu()
           .setCustomId('HZG_PLAY_select')
-          .setPlaceholder(this.strings.cards.menu)
+          .setPlaceholder(this.strings.player.menu)
           .setMinValues(1)
           .setMaxValues(5)
           .setOptions(this.getOptions(this.game.cards[i])), 
         buttons: [
           new MessageButton()
             .setCustomId('HZG_PLAY_play')
-            .setLabel(this.strings.cards.play)
+            .setLabel(this.strings.player.play)
             .setStyle("SUCCESS"), 
           new MessageButton()
             .setCustomId('HZG_PLAY_pass')
-            .setLabel(this.strings.cards.pass)
+            .setLabel(this.strings.player.pass)
             .setStyle("DANGER"), 
         ], 
         selectedCards: []
@@ -157,7 +157,7 @@ export class DjsBigTwo extends DjsGameWrapper {
       }
 
       const index = this.game.playerManager.getIndex(interaction.user.id);
-      const content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) });
+      const content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) });
       const components = [new MessageActionRow().addComponents(this.bundles[index].menu), new MessageActionRow().addComponents(...this.bundles[index].buttons)];
 
       this.bundles[index].messageId = (await interaction.reply({ content, components, ephemeral: true, fetchReply: true })).id;
@@ -168,9 +168,9 @@ export class DjsBigTwo extends DjsGameWrapper {
     const index = this.game.playerManager.getIndex(interaction.user.id);
     if (index < 0) return;
 
-    let content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n';
+    let content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n';
     if (interaction.user.id !== this.game.playerManager.nowPlayer.id) {
-      content += this.strings.cards.notYourTurn;
+      content += this.strings.player.notYourTurn;
       return await interaction.update({ content });
     }
 
@@ -178,15 +178,15 @@ export class DjsBigTwo extends DjsGameWrapper {
     if (args[2] === 'play') {
       const cards = this.bundles[index].selectedCards;
       if (cards.length === 0) {
-        content += this.strings.cards.noSelection;
+        content += this.strings.player.noSelection;
         return await interaction.update({ content });
       }
       this.conveyor.emit('cardsPlayed', JSON.parse(JSON.stringify(cards)));
       this.game.playerManager.players[index].addStep();
       this.game.play(cards);
 
-      content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
-              + format(this.strings.cards.played, { cards: this.cardsToString(cards), trick: this.trickToString(this.game.cardsToTrick(cards)) });
+      content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
+              + format(this.strings.player.played, { cards: this.cardsToString(cards), trick: this.trickToString(this.game.cardsToTrick(cards)) });
 
       this.bundles[index].menu
         .setMaxValues(Math.min(this.game.cards[index].length, 5))
@@ -199,8 +199,8 @@ export class DjsBigTwo extends DjsGameWrapper {
     else if (args[2] === 'pass') {
       this.conveyor.emit('cardsPlayed', []);
       this.game.pass();
-      const content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
-                    + this.strings.cards.passed;
+      const content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
+                    + this.strings.player.passed;
       return await interaction.update({ content });
     }
     throw new HZGError(ErrorCodes.InvalidButtonInteraction);
@@ -210,21 +210,21 @@ export class DjsBigTwo extends DjsGameWrapper {
     const index = this.game.playerManager.getIndex(interaction.user.id);
     if (index < 0) return;
 
-    let content = format(this.strings.cards.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n';
+    let content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n';
     if (interaction.user.id !== this.game.playerManager.nowPlayer.id) {
-      content += this.strings.cards.notYourTurn;
+      content += this.strings.player.notYourTurn;
       return await interaction.update({ content });
     }
 
     const cards = interaction.values.map(c => parseInt(c, 10)).sort((a, b) => a - b);
     const trick = this.game.cardsToTrick(cards);
     if (!this.game.playable(trick)) {
-      content += format(this.strings.cards.invalid, { cards: this.cardsToString(cards) });
+      content += format(this.strings.player.invalid, { cards: this.cardsToString(cards) });
       return await interaction.update({ content });
     }
 
     this.bundles[index].selectedCards = cards;
-    content += format(this.strings.cards.selected, { cards: this.cardsToString(cards), trick: this.trickToString(trick) });
+    content += format(this.strings.player.selected, { cards: this.cardsToString(cards), trick: this.trickToString(trick) });
     await interaction.update({ content });
   }
 
