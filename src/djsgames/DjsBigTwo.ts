@@ -112,14 +112,14 @@ export class DjsBigTwo extends DjsGameWrapper {
     this.buttonCollector.on('collect', this.cardPlayed);
     this.menuCollector.on('collect', this.cardSelected);
     await super.start();
+    this.buttonCollector.off('collect', this.cardPlayed);
+    this.menuCollector.off('collect', this.cardSelected);
   }
 
   public async conclude(): Promise<void> {
     if (this.buttonCollector === undefined || this.menuCollector === undefined) {
       throw new HZGError(ErrorCodes.GameNotInitialized);
     }
-    this.buttonCollector.off('collect', this.cardPlayed);
-    this.menuCollector.off('collect', this.cardSelected);
     await super.conclude();
   }
 
@@ -127,7 +127,7 @@ export class DjsBigTwo extends DjsGameWrapper {
     const message = this.strings.endMessages;
     switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.game.winner?.id}>` });
+        return format(message.win, { player: `<@${this.winner?.id}>` });
       case "IDLE":
         return message.idle;
       case "STOPPED":
@@ -255,7 +255,7 @@ export class DjsBigTwo extends DjsGameWrapper {
       this.game.play(input);
 
       if (this.game.win()) {
-        this.game.winner = nowPlayer;
+        this.winner = nowPlayer;
         endStatus = "WIN";
       }
 

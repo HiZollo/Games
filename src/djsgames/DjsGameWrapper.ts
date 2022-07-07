@@ -11,6 +11,8 @@ export abstract class DjsGameWrapper {
   public time: number;
   public mainMessage: Message | void;
   public subMessage: Message | void;
+  public loser: Player | null;
+  public winner: Player | null;
 
   protected controllerCollector: InteractionCollector<ButtonInteraction> | void;
   protected conveyor: EventEmitter;
@@ -41,6 +43,8 @@ export abstract class DjsGameWrapper {
 
     this.mainMessage = undefined;
     this.subMessage = undefined;
+    this.loser = null;
+    this.winner = null;
     this.controllerCollector = undefined;
     this.conveyor = new EventEmitter();
 
@@ -120,6 +124,8 @@ export abstract class DjsGameWrapper {
       await this.run(nowPlayer);
     }
 
+    this.controllerCollector.off('collect', this.ctrlCollected);
+
     if (this.game.ongoing) {
       switch (nowPlayer.status.now) {
         case "IDLE":
@@ -139,8 +145,6 @@ export abstract class DjsGameWrapper {
     if (this.game.ongoing) {
       throw new HZGError(ErrorCodes.GameNotEnded);
     }
-
-    this.controllerCollector.off('collect', this.ctrlCollected);
 
     const content = this.getEndContent();
     const embeds = [this.getEndEmbed()];

@@ -60,9 +60,9 @@ export class DjsFlipTrip extends DjsGameWrapper {
     const message = this.strings.endMessages;
     switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.game.winner?.id}>`, size: this.game.boardSize });
+        return format(message.win, { player: `<@${this.winner?.id}>`, size: this.game.boardSize });
       case "LOSE":
-        return format(message.lose, { player: `<@${this.game.loser?.id}>`, state: this.pieces, perm: this.game.permutationCount - this.game.playerManager.totalSteps });
+        return format(message.lose, { player: `<@${this.loser?.id}>`, state: this.pieces, perm: this.game.permutationCount - this.game.playerManager.totalSteps });
       case "IDLE":
         return message.idle;
       case "STOPPED":
@@ -100,11 +100,11 @@ export class DjsFlipTrip extends DjsGameWrapper {
     const legal = this.game.flip(parseInt(args[2], 10));
 
     if (!legal) {
-      this.game.loser = nowPlayer;
+      this.loser = nowPlayer;
       endStatus = "LOSE";
     }
     else if (this.game.win()) {
-      this.game.winner = nowPlayer;
+      this.winner = nowPlayer;
       endStatus = "WIN";
     }
 

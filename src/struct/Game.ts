@@ -1,4 +1,4 @@
-import { GameStatusManager, Player, PlayerManager } from './';
+import { GameStatusManager, PlayerManager } from './';
 import { HZGError, ErrorCodes } from '../errors';
 import { GameOptions } from '../types/interfaces';
 
@@ -7,8 +7,6 @@ export abstract class Game {
   public status: GameStatusManager;
   public startTime: number | null;
   public endTime: number | null;
-  public winner: Player | null;
-  public loser: Player | null;
   private initialized: boolean;
   private ended: boolean;
 
@@ -21,9 +19,6 @@ export abstract class Game {
 
     this.startTime = null;
     this.endTime = null;
-
-    this.winner = null;
-    this.loser = null;
 
     this.initialized = false;
     this.ended = false;

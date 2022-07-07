@@ -67,7 +67,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
     const message = this.strings.endMessages;
     switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.game.winner?.id}>` });
+        return format(message.win, { player: `<@${this.winner?.id}>` });
       case "IDLE":
         return message.idle;
       case "DRAW":
@@ -109,7 +109,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
     this.fill(row, col);
 
     if (this.game.win(row, col)) {
-      this.game.winner = nowPlayer;
+      this.winner = nowPlayer;
       endStatus = "WIN";
     }
     else if (this.game.draw()) {
@@ -139,7 +139,7 @@ export class DjsTicTacToe extends DjsGameWrapper {
     this.fill(row, col);
 
     if (this.game.win(row, col)) {
-      this.game.winner = bot;
+      this.winner = bot;
       endStatus = "WIN";
     }
     else if (this.game.draw()) {

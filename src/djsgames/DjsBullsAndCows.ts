@@ -48,7 +48,7 @@ export class DjsBullsAndCows extends DjsGameWrapper {
     const message = this.strings.endMessages;
     switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.game.winner?.id}>`, answer: this.game.answer.join('') });
+        return format(message.win, { player: `<@${this.winner?.id}>`, answer: this.game.answer.join('') });
       case "IDLE":
         return message.idle;
       case "STOPPED":
@@ -91,7 +91,7 @@ export class DjsBullsAndCows extends DjsGameWrapper {
     const status = this.game.guess(query);
     let endStatus = "";
     if (this.game.win(status)) {
-      this.game.winner = nowPlayer;
+      this.winner = nowPlayer;
       endStatus = "WIN";
     }
 

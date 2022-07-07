@@ -62,6 +62,10 @@ export class DjsLightsUp extends DjsGameWrapper {
       }
     }
 
+    if (this.game.win()) {
+      this.end("JACKPOT");
+    }
+
     await this.mainMessage?.edit({ components: this.displayBoard });
   }
 
@@ -80,9 +84,9 @@ export class DjsLightsUp extends DjsGameWrapper {
     const message = this.strings.endMessages;
     switch (this.game.status.now) {
       case "JACKPOT":
-        return format(message.jackpot, { player: `<@${this.game.winner?.id}>` });
+        return format(message.jackpot, { player: `<@${this.winner?.id}>` });
       case "WIN":
-        return format(this.answered ? message.win : message.unansweredWin, { player: `<@${this.game.winner?.id}>` });
+        return format(this.answered ? message.win : message.unansweredWin, { player: `<@${this.winner?.id}>` });
       case "IDLE":
         return message.idle;
       case "STOPPED":
@@ -129,7 +133,7 @@ export class DjsLightsUp extends DjsGameWrapper {
     this.flip(parseInt(args[2], 10), parseInt(args[3], 10));
 
     if (this.game.win()) {
-      this.game.winner = nowPlayer;
+      this.winner = nowPlayer;
       endStatus = "WIN";
     }
 

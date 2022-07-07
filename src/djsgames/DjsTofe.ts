@@ -53,9 +53,9 @@ export class DjsTofe extends DjsGameWrapper {
     const message = this.strings.endMessages;
     switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.game.winner?.id}>` });
+        return format(message.win, { player: `<@${this.winner?.id}>` });
       case "LOSE":
-        return format(message.lose, { player: `<@${this.game.loser?.id}>` });
+        return format(message.lose, { player: `<@${this.loser?.id}>` });
       case "IDLE":
         return message.idle;
       case "STOPPED":
@@ -106,11 +106,11 @@ export class DjsTofe extends DjsGameWrapper {
       nowPlayer.addStep();
     }
     if (this.game.win()) {
-      this.game.winner = nowPlayer;
+      this.winner = nowPlayer;
       endStatus = "WIN";
     }
     else if (this.game.lose()) {
-      this.game.loser = nowPlayer;
+      this.loser = nowPlayer;
       endStatus = "LOSE";
     }
 

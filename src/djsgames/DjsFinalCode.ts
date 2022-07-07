@@ -42,7 +42,7 @@ export class DjsFinalCode extends DjsGameWrapper {
     const message = this.strings.endMessages;
     switch (this.game.status.now) {
       case "WIN":
-        return format(message.win, { player: `<@${this.game.winner?.id}>`, answer: this.game.answer });
+        return format(message.win, { player: `<@${this.winner?.id}>`, answer: this.game.answer });
       case "IDLE":
         return message.idle;
       case "STOPPED":
@@ -88,7 +88,7 @@ export class DjsFinalCode extends DjsGameWrapper {
     let endStatus = "";
 
     if (result === 0) {
-      this.game.winner = nowPlayer;
+      this.winner = nowPlayer;
       endStatus = "WIN";
     }
     else {
@@ -112,7 +112,7 @@ export class DjsFinalCode extends DjsGameWrapper {
     let endStatus = "";
 
     if (result === 0) {
-      this.game.winner = bot;
+      this.winner = bot;
       endStatus = "WIN";
     }
     else {
