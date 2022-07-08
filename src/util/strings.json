@@ -8,7 +8,7 @@
       "menu": "Please select one to five cards.", 
       "pass": "Pass", 
       "play": "Play", 
-      "selected": "**You selected**: [<cards>] (<trick>)\nClick on [Play] button to play the cards.", 
+      "selected": "**You selected**: [<cards>] (<trick>)\nWhen it's your turn, click on [Play] button to play the cards.", 
       "played": "[<cards>] (<trick>) successfully played.", 
       "passed": "You passed this turn.", 
       "invalid": "[<cards>] is invalid or not playable.", 
@@ -29,8 +29,11 @@
       "fourOfAKind": "four of a kind, <rank>s", 
       "straightFlush": "a <rank>-high straight flush"
     }, 
+    "hbar": "———————————————————", 
     "nowPlayer": "It is <player>'s turn.", 
     "cardsOnTable": "**Cards on table**: [<cards>]", 
+    "cardsLeft": "<player>: <number> cards left", 
+    "openCards": "<player>: [<cards>]", 
     "playerLeft": "<player> has left the game.", 
     "controller": {
       "cards": "Cards", 

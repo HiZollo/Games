@@ -43,7 +43,8 @@ export class BigTwo extends Game implements IBigTwo {
     }
   }
 
-  playable(trick: BigTwoTrick): boolean {
+  playable(cards: number[]): boolean {
+    const trick = this.cardsToTrick(cards);
     if (trick[0] === BigTwoTrickType.None) return false;
     if (this.currentTrick[0] === BigTwoTrickType.None) return true;
     if (trick[0] !== this.currentTrick[0]) return false;
@@ -52,7 +53,7 @@ export class BigTwo extends Game implements IBigTwo {
 
   play(cards: number[]): void {
     const trick = this.cardsToTrick(cards);
-    if (!this.playable(trick)) {
+    if (!this.playable(cards)) {
       throw new HZGError(ErrorCodes.BigTwoTrickNotPlayable);
     }
     this.currentCards = cards;

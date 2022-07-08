@@ -71,7 +71,7 @@ export class DjsBigTwo extends DjsGameWrapper {
       };
     }
 
-    await this.mainMessage?.edit({ content: format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` }) });
+    await this.mainMessage?.edit({ content: this.getMainContent() });
     this.buttonCollector = this.source.channel.createMessageComponentCollector({
       filter: i => this.bundles.some(({ messageId }) => i.message.id === messageId) && i.customId.startsWith("HZG_PLAY"), 
       componentType: "BUTTON"
@@ -146,7 +146,11 @@ export class DjsBigTwo extends DjsGameWrapper {
     const index = this.game.playerManager.getIndex(interaction.user.id);
     if (index < 0) return;
 
-    let content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n';
+    const cards = this.bundles[index].selectedCards;
+    const trick = this.game.cardsToTrick(cards);
+    let content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
+                + (cards.length ? format(this.strings.player.selected, { cards: this.cardsToString(cards), trick: this.trickToString(trick) }) + '\n' : '');
+    
     if (interaction.user.id !== this.game.playerManager.nowPlayer.id) {
       content += this.strings.player.notYourTurn;
       return await interaction.update({ content });
@@ -154,21 +158,27 @@ export class DjsBigTwo extends DjsGameWrapper {
 
     const args = interaction.customId.split('_');
     if (args[2] === 'play') {
-      const cards = this.bundles[index].selectedCards;
       if (cards.length === 0) {
         content += this.strings.player.noSelection;
         return await interaction.update({ content });
       }
+      if (!this.game.playable(cards)) {
+        content += format(this.strings.player.invalid, { cards: this.cardsToString(cards) });
+        return await interaction.update({ content });
+      }
+
       this.conveyor.emit('cardsPlayed', JSON.parse(JSON.stringify(cards)));
       this.game.playerManager.players[index].addStep();
       this.game.play(cards);
 
       content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
               + format(this.strings.player.played, { cards: this.cardsToString(cards), trick: this.trickToString(this.game.cardsToTrick(cards)) });
-
-      this.bundles[index].menu
-        .setMaxValues(Math.min(this.game.cards[index].length, 5))
-        .setOptions(this.getOptions(this.game.cards[index]));
+      
+      if (this.game.cards[index].length > 0) {
+        this.bundles[index].menu
+          .setMaxValues(Math.min(this.game.cards[index].length, 5))
+          .setOptions(this.getOptions(this.game.cards[index]));
+      }
       const components = [new MessageActionRow().addComponents(this.bundles[index].menu), new MessageActionRow().addComponents(...this.bundles[index].buttons)];
       
       this.bundles[index].selectedCards = [];
@@ -177,8 +187,8 @@ export class DjsBigTwo extends DjsGameWrapper {
     else if (args[2] === 'pass') {
       this.conveyor.emit('cardsPlayed', []);
       this.game.pass();
-      const content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n'
-                    + this.strings.player.passed;
+      
+      content += this.strings.player.passed;
       return await interaction.update({ content });
     }
     throw new HZGError(ErrorCodes.InvalidButtonInteraction);
@@ -189,19 +199,14 @@ export class DjsBigTwo extends DjsGameWrapper {
     if (index < 0) return;
 
     let content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) }) + '\n';
-    if (interaction.user.id !== this.game.playerManager.nowPlayer.id) {
-      content += this.strings.player.notYourTurn;
-      return await interaction.update({ content });
-    }
-
     const cards = interaction.values.map(c => parseInt(c, 10)).sort((a, b) => a - b);
-    const trick = this.game.cardsToTrick(cards);
-    if (!this.game.playable(trick)) {
+    if (!this.game.playable(cards)) {
       content += format(this.strings.player.invalid, { cards: this.cardsToString(cards) });
       return await interaction.update({ content });
     }
 
     this.bundles[index].selectedCards = cards;
+    const trick = this.game.cardsToTrick(cards);
     content += format(this.strings.player.selected, { cards: this.cardsToString(cards), trick: this.trickToString(trick) });
     await interaction.update({ content });
   }
@@ -254,8 +259,7 @@ export class DjsBigTwo extends DjsGameWrapper {
     }
 
     this.game.playerManager.next();
-    result.content = format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` }) + '\n'
-                   + result.content + '\n' + format(this.strings.cardsOnTable, { cards: this.cardsToString(this.game.currentCards) });
+    result.content = this.getMainContent(result.content);
     await this.mainMessage.edit(result).catch(() => {
       result.endStatus = "DELETED";
     });
@@ -265,8 +269,7 @@ export class DjsBigTwo extends DjsGameWrapper {
   protected async end(status: string): Promise<void> {
     this.game.end(status);
 
-    const content = format(this.strings.cardsOnTable, { cards: this.cardsToString(this.game.currentCards) });
-    await this.mainMessage?.edit({ content: content, components: [] }).catch(() => {});
+    await this.mainMessage?.edit({ content: this.mainEndContent, components: [] }).catch(() => {});
   }
 
 
@@ -321,5 +324,41 @@ export class DjsBigTwo extends DjsGameWrapper {
       case BigTwoTrickType.StraightFlush:
         return format(tricks.straightFlush, { rank: this.strings.ranks[trick[1] >> 2] });
     }
+  }
+
+  private getMainContent(extra?: string): string {
+    return `
+${this.strings.hbar}
+${format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` })}${extra ? `\n${extra}`: ''}
+${this.strings.hbar}
+${format(this.strings.cardsOnTable, { cards: this.cardsToString(this.game.currentCards) })}
+${this.strings.hbar}
+${this.playerCardsLeft}
+${this.strings.hbar}
+`;
+  }
+
+  private get mainEndContent(): string {
+    return `
+${this.strings.hbar}
+${format(this.strings.cardsOnTable, { cards: this.cardsToString(this.game.currentCards) })}
+${this.strings.hbar}
+${this.playerOpenCards}
+${this.strings.hbar}
+`;
+  }
+
+  private get playerCardsLeft(): string {
+    return this.game.cards
+      .map((c, i) => format(this.strings.cardsLeft, { player: this.game.playerManager.players[i].username, number: c.length }))
+      .map((s, i) => this.game.playerManager.players[i].status.now === "LEFT" ? `~~${s}~~` : s )
+      .join('\n');
+  }
+
+  private get playerOpenCards(): string {
+    return this.game.cards
+      .map((c, i) => format(this.strings.openCards, { player: this.game.playerManager.players[i].username, cards: this.cardsToString(c) }))
+      .map((s, i) => this.game.playerManager.players[i].status.now === "LEFT" ? `~~${s}~~` : s )
+      .join('\n');
   }
 }

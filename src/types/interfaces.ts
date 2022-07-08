@@ -217,8 +217,11 @@ export interface BigTwoStrings extends GameStrings {
   player: BigTwoPlayerStrings, 
   previous: BigTwoPreviousStrings, 
   tricks: BigTwoTrickStrings, 
+  hbar: string, 
   nowPlayer: string, 
   cardsOnTable: string, 
+  cardsLeft: string, 
+  openCards: string, 
   controller: BigTwoControllerStrings
 }
 
