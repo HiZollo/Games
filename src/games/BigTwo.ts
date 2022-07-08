@@ -47,6 +47,7 @@ export class BigTwo extends Game implements IBigTwo {
     const trick = this.cardsToTrick(cards);
     if (trick[0] === BigTwoTrickType.None) return false;
     if (this.currentTrick[0] === BigTwoTrickType.None) return true;
+    if (trick[0] >= BigTwoTrickType.FourOfAKind && trick[0] > this.currentTrick[0]) return true;
     if (trick[0] !== this.currentTrick[0]) return false;
     return trick[1] > this.currentTrick[1];
   }
