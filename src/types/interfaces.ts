@@ -1,5 +1,5 @@
 import { CommandInteraction, Message, MessageActionRow } from 'discord.js';
-import { BigTwoTrick, TofeDirections } from './';
+import { TofeDirections } from './';
 import { Range } from '../struct';
 
 
@@ -11,9 +11,6 @@ export interface PlayerOptions {
   bot?: boolean, 
   symbol?: string | null, 
   username?: string
-}
-
-export interface BigTwoPlayerOptions extends PlayerOptions {
 }
 
 export interface PlayerManagerOptions {
@@ -122,11 +119,9 @@ export interface DjsTofeOptions extends DjsGameWrapperOptions, TofeOptions {
 // interfaces to implement
 
 export interface IBigTwo {
+  cards: number[][], 
   currentCards: number[], 
-  currentTrick: BigTwoTrick, 
   play(cards: number[]): void, 
-  reset(): void, 
-  cardsToTrick(cards: number[]): BigTwoTrick, 
   win(): boolean
 }
 

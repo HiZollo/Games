@@ -66,14 +66,10 @@ export class BigTwo extends Game implements IBigTwo {
   pass(): void {
     this.passCount++;
     if (this.passCount >= this.playerManager.inGamePlayerCount - 1) {
-      this.reset();
+      this.currentCards = [];
+      this.currentTrick = [BigTwoTrickType.None, -1];
       this.passCount = 0;
     }
-  }
-
-  reset(): void {
-    this.currentCards = [];
-    this.currentTrick = [BigTwoTrickType.None, -1];
   }
 
   win(): boolean {

@@ -7,7 +7,7 @@ export class Tofe extends Game implements ITofe {
   public boardSize: number;
   public hardMode: boolean;
   public score: number;
-  public winningNumber: number;
+  public goal: number;
 
   protected maxNumber: number;
   protected occupiedCount: number;
@@ -19,7 +19,7 @@ export class Tofe extends Game implements ITofe {
     this.boardSize = 4;
     this.hardMode = hardMode;
     this.score = 0;
-    this.winningNumber = 2048;
+    this.goal = 2048;
 
     this.maxNumber = 1;
     this.occupiedCount = 0;
@@ -49,7 +49,7 @@ export class Tofe extends Game implements ITofe {
   }
 
   win(): boolean {
-    return this.maxNumber >= this.winningNumber;
+    return this.maxNumber >= this.goal;
   }
 
   lose(): boolean {

@@ -5,6 +5,7 @@ This is the documentation for all options.
 - [PlayerOptions](#PlayerOptions)
 - [PlayerManagerOptions](#PlayerManagerOptions)
 - [GameOptions](#GameOptions)
+- [BigTwoOptions](#BigTwoOptions)
 - [BullsAndCowsOptions](#BullsAndCowsOptions)
 - [FinalCodeOptions](#FinalCodeOptions)
 - [FlipTripOptions](#FlipTripOptions)
@@ -13,6 +14,7 @@ This is the documentation for all options.
 - [TicTacToeOptions](#TicTacToeOptions)
 - [TofeOptions](#TofeOptions)
 - [DjsGameWrapperOptions](#DjsGameWrapperOptions)
+- [DjsBigTwoOptions](#DjsBigTwoOptions)
 - [DjsBullsAndCowsOptions](#DjsBullsAndCowsOptions)
 - [DjsFinalCodeOptions](#DjsFinalCodeOptions)
 - [DjsFlipTripOptions](#DjsFlipTripOptions)
@@ -51,6 +53,12 @@ This is the documentation for all options.
 |-----------|----------|-------------|----------------------------|
 | initial   | string   | `status[0]` | The initial status         |
 | status    | string[] | `[]`        | The possible game statuses |
+
+
+# BigTwoOptions 
+| parameter    | type                              | default    | description       |
+|--------------|-----------------------------------|------------|-------------------|
+| players      | [PlayerOptions](#PlayerOptions)[] | *required* | All players' data |
 
 
 # BullsAndCowsOptions
@@ -107,6 +115,14 @@ This is the documentation for all options.
 |-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|------------------------------------|
 | source    | [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) \| [Message](https://discord.js.org/#/docs/main/stable/class/Message) | *required* | The source to instantiate the game |
 | time      | number                                                                                                                                                         | `60e3`     | How long to consider a player idle |
+
+
+# DjsBigTwoOptions
+> extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [BigTwoOptions](#BigTwoOptions)
+
+| parameter    | type                                         | default                                         | description         |
+|--------------|----------------------------------------------|-------------------------------------------------|---------------------|
+| strings      | [BigTwoStrings](./strings.md/#BigTwoStrings) | [strings.json#bigTwo](../src/util/strings.json) | The display strings |
 
 
 # DjsBullsAndCowsOptions

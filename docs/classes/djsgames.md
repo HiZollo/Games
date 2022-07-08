@@ -3,6 +3,7 @@ This is the documentation for all game classes that implemented with [discord.js
 
 # Table of Contents
 - [DjsGameWrapper](#DjsGameWrapper)
+- [DjsBigTwo](#DjsBigTwo)
 - [DjsBullsAndCows](#DjsBullsAndCows)
 - [DjsFinalCode](#DjsFinalCode)
 - [DjsFlipTrip](#DjsFlipTrip)
@@ -28,15 +29,15 @@ new DjsGameWrapper(djsGameWrapperOptions);
 - The client that instantiated this
 - Type: Client
 
-### `abstract` .controller
-- The controller buttons
-- Type: [MessageActionRow](https://discord.js.org/#/docs/main/stable/class/MessageActionRow)
-
-### `abstract` .controllerMessage
-- The message where the controllers are on
+### .subMessage
+- The subordinate message, or the main message if a subordinate message does not exist in a game
 - Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
-### `abstract` .mainMessage
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
+
+### .mainMessage
 - The message where most of the information are shown
 - Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
@@ -52,16 +53,80 @@ new DjsGameWrapper(djsGameWrapperOptions);
 - How long to consider a player idle (in milliseconds)
 - Type: number
 
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
+
 ## methods
 ### .conclude()
 - Sends a conclusion message of the game
 - Returns: Promise\<void>
 
-### `abstract` .initialize()
+### .initialize()
 - Initializes the game
 - Returns: Promise\<void>
 
 ### `abstract` .getEndContent()
+- Gets the content to show on the concluding message
+- Returns: string
+
+### .start()
+- Starts running the game
+- Returns: Promise\<void>
+
+
+# DjsBigTwo
+> extends [DjsGameWrapper](#DjsGameWrapper)
+
+The class for *Bulls and Cows*, discord.js version.
+
+## constructor
+```js
+new DjsBigTwo(djsBigTwoOptions);
+```
+| parameter        | type                                                | default    | description          |
+|------------------|-----------------------------------------------------|------------|----------------------|
+| djsBigTwoOptions | [djsBigTwoOptions](../options.md/#DjsBigTwoOptions) | *required* | Options for the game |
+
+## properties
+### .client
+- The client that instantiated this
+- Type: Client
+
+### .subMessage
+- The subordinate message, or the main message if a subordinate message does not exist in a game
+- Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
+
+### .mainMessage
+- The message where most of the information are shown
+- Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .source
+- The source that instantiated this
+- Type: [CommandInteraction](https://discord.js.org/#/docs/main/stable/class/CommandInteraction) | [Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .strings
+- The display strings
+- Type: [BigTwoStrings](../strings.md/#BigTwoStrings)
+
+### .time
+- How long to consider a player idle (in milliseconds)
+- Type: number
+
+## methods
+### .conclude()
+- Sends a conclusion message of the game
+- Returns: Promise\<void>
+
+### .initialize()
+- Initializes the game
+- Returns: Promise\<void>
+
+### .getEndContent()
 - Gets the content to show on the concluding message
 - Returns: string
 
@@ -88,17 +153,17 @@ new DjsBullsAndCows(djsBullsAndCowsOptions);
 - The client that instantiated this
 - Type: Client
 
-### .controller
-- The controller buttons
-- Type: [MessageActionRow](https://discord.js.org/#/docs/main/stable/class/MessageActionRow)
-
-### .controllerMessage
-- The message where the controllers are on
+### .subMessage
+- The subordinate message, or the main message if a subordinate message does not exist in a game
 - Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
 
 ### .hardMode
 - Whether the game is in hard mode
 - Type: boolean
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ### .mainMessage
 - The message where most of the information are shown
@@ -152,13 +217,13 @@ new DjsFinalCode(djsFinalCodeOptions);
 - The client that instantiated this
 - Type: Client
 
-### .controller
-- The controller buttons
-- Type: [MessageActionRow](https://discord.js.org/#/docs/main/stable/class/MessageActionRow)
-
-### .controllerMessage
-- The message where the controllers are on
+### .subMessage
+- The subordinate message, or the main message if a subordinate message does not exist in a game
 - Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ### .mainMessage
 - The message where most of the information are shown
@@ -175,6 +240,10 @@ new DjsFinalCode(djsFinalCodeOptions);
 ### .time
 - How long to consider a player idle (in milliseconds)
 - Type: number
+
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .conclude()
@@ -212,13 +281,13 @@ new DjsFlipTrip(djsFlipTripOptions);
 - The client that instantiated this
 - Type: Client
 
-### .controller
-- The controller buttons
-- Type: [MessageActionRow](https://discord.js.org/#/docs/main/stable/class/MessageActionRow)
-
-### .controllerMessage
-- The message where the controllers are on
+### .subMessage
+- The subordinate message, or the main message if a subordinate message does not exist in a game
 - Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ### .mainMessage
 - The message where most of the information are shown
@@ -235,6 +304,10 @@ new DjsFlipTrip(djsFlipTripOptions);
 ### .time
 - How long to consider a player idle (in milliseconds)
 - Type: number
+
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .conclude()
@@ -272,13 +345,13 @@ new DjsGomoku(djsGomokuOptions);
 - The client that instantiated this
 - Type: Client
 
-### .controller
-- The controller buttons
-- Type: [MessageActionRow](https://discord.js.org/#/docs/main/stable/class/MessageActionRow)
-
-### .controllerMessage
-- The message where the controllers are on
+### .subMessage
+- The subordinate message, or the main message if a subordinate message does not exist in a game
 - Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ### .mainMessage
 - The message where most of the information are shown
@@ -295,6 +368,10 @@ new DjsGomoku(djsGomokuOptions);
 ### .time
 - How long to consider a player idle (in milliseconds)
 - Type: number
+
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .conclude()
@@ -336,13 +413,13 @@ new DjsLightsUp(djsLightsUpOptions);
 - The client that instantiated this
 - Type: Client
 
-### .controller
-- The controller buttons
-- Type: [MessageActionRow](https://discord.js.org/#/docs/main/stable/class/MessageActionRow)
-
-### .controllerMessage
-- The message where the controllers are on
+### .subMessage
+- The subordinate message, or the main message if a subordinate message does not exist in a game
 - Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ### .mainMessage
 - The message where most of the information are shown
@@ -359,6 +436,10 @@ new DjsLightsUp(djsLightsUpOptions);
 ### .time
 - How long to consider a player idle (in milliseconds)
 - Type: number
+
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .conclude()
@@ -400,9 +481,13 @@ new DjsTicTacToe(djsTicTacToeOptions);
 - The controller buttons
 - Type: [MessageActionRow](https://discord.js.org/#/docs/main/stable/class/MessageActionRow)
 
-### .controllerMessage
-- The message where the controllers are on
+### .subMessage
+- The subordinate message, or the main message if a subordinate message does not exist in a game
 - Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ### .mainMessage
 - The message where most of the information are shown
@@ -419,6 +504,10 @@ new DjsTicTacToe(djsTicTacToeOptions);
 ### .time
 - How long to consider a player idle (in milliseconds)
 - Type: number
+
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .conclude()
@@ -456,13 +545,13 @@ new DjsTofe(djsTofeOptions);
 - The client that instantiated this
 - Type: Client
 
-### .controller
-- The controller buttons
-- Type: [MessageActionRow](https://discord.js.org/#/docs/main/stable/class/MessageActionRow)[]
-
-### .controllerMessage
-- The message where the controllers are on
+### .subMessage
+- The subordinate message, or the main message if a subordinate message does not exist in a game
 - Type: ?[Message](https://discord.js.org/#/docs/main/stable/class/Message)
+
+### .loser
+- The loser of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ### .mainMessage
 - The message where most of the information are shown
@@ -479,6 +568,10 @@ new DjsTofe(djsTofeOptions);
 ### .time
 - How long to consider a player idle (in milliseconds)
 - Type: number
+
+### .winner
+- The winner of the game
+- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .conclude()

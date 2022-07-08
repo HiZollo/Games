@@ -187,7 +187,7 @@ export class DjsTofe extends DjsGameWrapper {
       for (let j = 0; j < this.game.boardSize; j++) {
         this.boardButtons[i][j]
           .setLabel(`${this.game.board[i][j] ?? '\u200b'}`)
-          .setStyle(this.game.board[i][j] === this.game.winningNumber ? "SUCCESS" : "PRIMARY");
+          .setStyle(this.game.board[i][j] === this.game.goal ? "SUCCESS" : "PRIMARY");
         result[i].addComponents(this.boardButtons[i][j]);
       }
     }

@@ -2,12 +2,23 @@ This is the documentation for all interfaces.
 
 
 # Table of Contents
+- [IBigTwo](#IBigTwo)
 - [IBullsAndCows](#IBullsAndCows)
 - [IFinalCode](#IFinalCode)
 - [IFlipTrip](#IFlipTrip)
 - [IGomoku](#IGomoku)
 - [ILightsUp](#ILightsUp)
 - [ITicTacToe](#ITicTacToe)
+- [ITofe](#ITofe)
+
+
+# IBigTwo
+| parameter    | type               | description                                        |
+|--------------|--------------------|----------------------------------------------------|
+| cards        | number[][]         | The cards that owned by individual players         |
+| currentCards | number[]           | The last combination of cards that has been played |
+| play         | (number[]) => void | Plays a combination of cards                       |
+| win          | () => void         | Checks if the current player wins                  |
 
 
 # IBullsAndCows

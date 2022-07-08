@@ -2,6 +2,7 @@ This is the documentation for all game classes.
 
 
 # Table of Contents
+- [BigTwo](#BigTwo)
 - [BullsAndCows](#BullsAndCows)
 - [FinalCode](#FinalCode)
 - [FlipTrip](#FlipTrip)
@@ -9,6 +10,99 @@ This is the documentation for all game classes.
 - [LightsUp](#LightsUp)
 - [TicTacToe](#TicTacToe)
 - [Tofe](#Tofe)
+
+
+# BigTwo
+> extends [Game](./struct.md/#Game) implements [IBigTwo](../interfaces.md/#IBigTwo)
+
+The class for *Big Two*.
+
+## constructor
+```js
+new BigTwo(bigTwoOptions);
+```
+| parameter     | type                                          | default    | description          |
+|---------------|-----------------------------------------------|------------|----------------------|
+| bigTwoOptions | [BigTwoOptions](../options.md/#BigTwoOptions) | *required* | Options for the game |
+
+## properties
+### .cards
+- The cards that owned by individual players
+- Type: number[][]
+
+### .currentCards
+- The last combination of cards that has been played
+- Type: number[]
+
+### .duration
+- The duration of the game (in millisecond)
+- Type: number | null
+
+### .endTime
+- The end time of the game (in millisecond)
+- Type: number | null
+
+### .ongoing
+- Whether the game is ongoing
+- Type: boolean
+
+### .passCount
+- The number of passed players
+- Type: number
+
+### .playerManager
+- The player manager for the game
+- Type: [PlayerManager](./struct.md/#PlayerManager)
+
+### .startTime
+- The start time of the game (in millisecond)
+- Type: number | null
+
+### .status
+- The status manager of the game
+- Type: [GameStatusManager](./struct.md/#GameStatusManager)
+
+## methods
+### .cardsToTrick(cards)
+| parameter | type     | default    | description        |
+|-----------|----------|------------|--------------------|
+| cards     | number[] | *required* | The cards to check |
+- Transforms a combination of cards to a trick object
+- Returns: [BigTwoTrick](../types.md/#BigTwoTrick)
+
+### .end(status)
+| parameter | type   | default    | description                |
+|-----------|--------|------------|----------------------------|
+| status    | string | *required* | The end status of the game |
+- Ends the game with a certain status
+- Returns: void
+
+### .initialize()
+- Initializes the game
+- Returns: void
+
+### .pass()
+- Passes the ability of playing cards to the next player 
+- Returns: void
+
+### .play(cards)
+| parameter | type     | default    | description        |
+|-----------|----------|------------|--------------------|
+| cards     | number[] | *required* | The cards to check |
+- Plays a combination of cards, an error will be thrown if the combination is not playable
+- Type: void
+
+### .playable(cards)
+| parameter | type     | default    | description        |
+|-----------|----------|------------|--------------------|
+| cards     | number[] | *required* | The cards to check |
+- Checks if a combination of cards is playable in current situation
+- Type: boolean
+
+
+### .win()
+- Checks if the current player wins
+- Returns: boolean
 
 
 # BullsAndCows
@@ -41,10 +135,6 @@ new BullsAndCows(bullsAndCowsOptions);
 - The end time of the game (in millisecond)
 - Type: number | null
 
-### .loser
-- The loser of the game
-- Type: [Player](./struct.md/#Player) | null
-
 ### .numberCount
 - The number of digits that can possibly appear in the answer
 - Type: number
@@ -64,10 +154,6 @@ new BullsAndCows(bullsAndCowsOptions);
 ### .status
 - The status manager of the game
 - Type: [GameStatusManager](./struct.md/#GameStatusManager)
-
-### .winner
-- The winner of the game
-- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .end(status)
@@ -122,10 +208,6 @@ new FinalCode(finalCodeOptions);
 - The end time of the game (in millisecond)
 - Type: number | null
 
-### .loser
-- The loser of the game
-- Type: [Player](./struct.md/#Player) | null
-
 ### .range
 - The range of the answer
 - Type: [Range](./struct.md/#Range)
@@ -145,10 +227,6 @@ new FinalCode(finalCodeOptions);
 ### .status
 - The status manager of the game
 - Type: [GameStatusManager](./struct.md/#GameStatusManager)
-
-### .winner
-- The winner of the game
-- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .end(status)
@@ -204,10 +282,6 @@ new FlipTrip(flipTripOptions);
 - The end time of the game (in millisecond)
 - Type: number | null
 
-### .loser
-- The loser of the game
-- Type: [Player](./struct.md/#Player) | null
-
 ### .ongoing
 - Whether the game is ongoing
 - Type: boolean
@@ -231,10 +305,6 @@ new FlipTrip(flipTripOptions);
 ### .status
 - The status manager of the game
 - Type: [GameStatusManager](./struct.md/#GameStatusManager)
-
-### .winner
-- The winner of the game
-- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .end(status)
@@ -290,10 +360,6 @@ new Gomoku(gomokuOptions);
 - The end time of the game (in millisecond)
 - Type: number | null
 
-### .loser
-- The loser of the game
-- Type: [Player](./struct.md/#Player) | null
-
 ### .ongoing
 - Whether the game is ongoing
 - Type: boolean
@@ -309,10 +375,6 @@ new Gomoku(gomokuOptions);
 ### .status
 - The status manager of the game
 - Type: [GameStatusManager](./struct.md/#GameStatusManager)
-
-### .winner
-- The winner of the game
-- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .draw()
@@ -344,7 +406,7 @@ new Gomoku(gomokuOptions);
 | row       | number | *required* | The row index    |
 | col       | number | *required* | The column index |
 - Checks if any lines passing through (`row`, `col`) satisfies winning conditions
-- Returns: string | null (the winner's symbol if valid)
+- Returns: string | null (the symbol that forms a line)
 
 
 # LightsUp
@@ -381,10 +443,6 @@ new LightsUp(lightsUpOptions);
 - The end time of the game (in millisecond)
 - Type: number | null
 
-### .loser
-- The loser of the game
-- Type: [Player](./struct.md/#Player) | null
-
 ### .ongoing
 - Whether the game is ongoing
 - Type: boolean
@@ -400,10 +458,6 @@ new LightsUp(lightsUpOptions);
 ### .status
 - The status manager of the game
 - Type: [GameStatusManager](./struct.md/#GameStatusManager)
-
-### .winner
-- The winner of the game
-- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .end(status)
@@ -460,10 +514,6 @@ new TicTacToe(ticTacToeOptions);
 - The end time of the game (in millisecond)
 - Type: number | null
 
-### .loser
-- The loser of the game
-- Type: [Player](./struct.md/#Player) | null
-
 ### .ongoing
 - Whether the game is ongoing
 - Type: boolean
@@ -479,10 +529,6 @@ new TicTacToe(ticTacToeOptions);
 ### .status
 - The status manager of the game
 - Type: [GameStatusManager](./struct.md/#GameStatusManager)
-
-### .winner
-- The winner of the game
-- Type: [Player](./struct.md/#Player) | null
 
 ## methods
 ### .draw()
@@ -514,7 +560,7 @@ new TicTacToe(ticTacToeOptions);
 | row       | number | *required* | The row index    |
 | col       | number | *required* | The column index |
 - Checks if any lines passing through (`row`, `col`) satisfies winning conditions
-- Returns: string | null (the winner's symbol if valid)
+- Returns: string | null (the symbol that forms a line)
 
 
 # Tofe
@@ -551,10 +597,6 @@ new Tofe(tofeOptions);
 - Whether the game is in hard mode
 - Type: boolean
 
-### .loser
-- The loser of the game
-- Type: [Player](./struct.md/#Player) | null
-
 ### .numberCount
 - The number of digits that can possibly appear in the answer
 - Type: number
@@ -579,9 +621,9 @@ new Tofe(tofeOptions);
 - The status manager of the game
 - Type: [GameStatusManager](./struct.md/#GameStatusManager)
 
-### .winner
-- The winner of the game
-- Type: [Player](./struct.md/#Player) | null
+### .goal
+- The goal of the game
+- Type: number
 
 ## methods
 ### .end(status)

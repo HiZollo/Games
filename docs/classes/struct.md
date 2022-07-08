@@ -31,10 +31,6 @@ new Game(gameOptions);
 - The end time of the game (in millisecond)
 - Type: number | null
 
-### .loser
-- The loser of the game
-- Type: [Player](#Player) | null
-
 ### .ongoing
 - Whether the game is ongoing
 - Type: boolean
@@ -50,10 +46,6 @@ new Game(gameOptions);
 ### .status
 - The status manager of the game
 - Type: [GameStatusManager](#GameStatusManager)
-
-### .winner
-- The winner of the game
-- Type: [Player](#Player) | null
 
 ## methods
 ### .end(status)
@@ -148,6 +140,10 @@ new PlayerManager(playerManagerOptions);
 - The index of the current player
 - Type: number
 
+### .inGamePlayerCount
+- The number of the players that are still playing
+- Type: number
+
 ### .nowPlayer
 - The current player
 - Type: [Player](#Player)
@@ -182,6 +178,13 @@ new PlayerManager(playerManagerOptions);
 | id        | number \| string | *required* | The id of the player |
 - Kicks a player from the player manager
 - Returns: void
+
+### .getIndex(id)
+| parameter | type             | default    | description          |
+|-----------|------------------|------------|----------------------|
+| id        | number \| string | *required* | The id of the player |
+- Gets the index with a player's id, `-1` is returned if the player has left or is not found
+- Returns: number
 
 ### .next(n)
 | parameter | type   | default | description |
