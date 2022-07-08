@@ -178,7 +178,7 @@ export class Tofe extends Game implements ITofe {
   private randomNumber(): number {
     const random = Math.random();
     const mappedRandom = random ** 6;
-    const [min, max] = [1, Math.max(2, Math.log2(this.maxNumber) - 4)];
+    const [min, max] = [1, Math.max(2, Math.log2(this.maxNumber) - 6)];
     const power = Math.floor(mappedRandom * (max - min + 1) + min);
     return 2 ** power;
   }
