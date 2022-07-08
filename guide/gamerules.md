@@ -2,6 +2,7 @@ This is the documentations for the game rules.
 
 
 # Table of Contents
+- [Big Two](#Big-Two)
 - [Bulls and Cows](#Bulls-and-Cows)
 - [Final Code](#Final-Code)
 - [Flip Trip](#Flip-Trip)
@@ -9,6 +10,34 @@ This is the documentations for the game rules.
 - [Lights-up](#Lights-up)
 - [Tic-tac-toe](#Tic-tac-toe)
 - [2048](#2048)
+
+
+# Big Two
+This is a poker game that only allows 4 players to play. When the game starts, each player gets 13 cards. Starts with the player with 3♣️ in hand, players take turns to play tricks, and the first one runs out of cards wins. In each round, a player can play one trick. All legal tricks are listed below:
+- Single: any card from the deck, ordered by rank with suit being tie-breaker.
+- Pair: 2 cards with the same rank, ordered by rank with the highest suit being tie-breaker.
+- Straight: any 5 cards with consecutive ranks, suits don't matter.
+  - The order of straights: **2**-3-4-5-6 > 10-J-Q-K-**A** > 9-10-J-Q-**K** > ... > 4-5-6-7-**8** > 3-4-5-6-**7** > A-2-3-4-**5**.
+  - J-Q-K-A-2, Q-K-A-2-3, K-A-2-3-4 are **Not** valid straights.
+  - The suit of the highest rank in a straight is the tie-breaker.
+- Full House: 3 cards with same rank + 2 cards with another rank.
+  - **3-3-3**-A-A and **2-2-2**-7-7 are both valid full houses.
+  - The order is determined by the rank of the triple.
+- Four-of-a-kind: 4 cards with same rank + 1 other card.
+  - **4-4-4-4**-2 and **7-7-7-7**-5 are both valid four-of-a-kinds.
+  - The order is determined by the rank of the 4 card set.
+- Straight flush: a straight but all 5 cards are in the same suit.
+
+The order of the ranks is 2 > A > K > Q > J > 10 > ... > 4 > 3, and the order of the suits is ♠ > ♥ > ♦ > ♣. The first player can play any trick they want. However, in most circumstances, the following players should only play the same trick as the previous player's, but with a higher order. For example, [3♥, 3♠] can be played after [3♣, 3♦], and [7♦, 8♥, 9♦, 10♣, 11♠] can be played after [4♣, 5♦, 6♣, 7♥, 8♥]. 
+
+Two special tricks are four-of-a-kind and straight flush. A four-of-a-kind can be played after any single, pair, straight or full house, and a straight flush can be played after any tricks just mentioned, plus four-of-a-kind. For example, [3♣, 3♦, 3♥, 3♠, 4♦] can be played after [2♣, 2♥, 2♠, A♣, A♠], and [A♣, 2♣, 3♣, 4♣, 5♣] can then be played after [3♣, 3♦, 3♥, 3♠, 4♦].
+
+Players can also pass, meaning that they cannot/don't want to play cards in this round. If player A plays a trick, and the other three players pass, player A can then play any trick they want. 
+
+## Discord.js version
+- To reveal your poken hands, you need to click on the gray button on the main message. Then, a ephemeral message (message that only you can see) with a select menu and two buttons will emerge.
+- To play cards, you need to first select the cards you want to play in the select menu. When it is in your turn, click on the green button the play the cards you have just selected, or you can also click on the red button to pass.
+- You can click on the red button on the main message to leave the game.
 
 
 # Bulls and Cows

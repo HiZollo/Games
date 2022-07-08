@@ -44,6 +44,18 @@ client.on('messageCreate', async message => {
 # Examples
 This section only covers the required options, that is, the minimum amount of settings to create a game. For more customizations, you can refer to our documentations for [Options](../docs/options.md). 
 
+## Big Two
+```js
+const game = new DjsBigTwo({
+  source: interaction ?? message, 
+  players: [player1, player3, player3, player4] // 4 players only
+});
+
+await game.initialize();
+await game.start();
+await game.conclude();
+```
+
 ## Bulls and Cows
 ```js
 const game = new DjsBullsAndCows({
