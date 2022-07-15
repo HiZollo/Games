@@ -112,7 +112,8 @@ export class DjsLightsUp extends DjsGameWrapper {
     
     const args = interaction.customId.split('_');
     if (args[2] === 'answer') {
-      await interaction.followUp({ content: format(this.strings.currentAnswer, { answer: this.answerContent }), ephemeral: true });
+      await interaction.deferReply({ ephemeral: true });
+      await interaction.followUp({ content: format(this.strings.currentAnswer, { answer: this.answerContent }) });
     }
   }
 

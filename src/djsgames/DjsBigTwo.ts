@@ -138,7 +138,8 @@ export class DjsBigTwo extends DjsGameWrapper {
       const content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) });
       const components = [new MessageActionRow().addComponents(this.bundles[index].menu), new MessageActionRow().addComponents(...this.bundles[index].buttons)];
 
-      this.bundles[index].messageId = (await interaction.reply({ content, components, ephemeral: true, fetchReply: true })).id;
+      this.bundles[index].messageId = (await interaction.deferReply({ ephemeral: true, fetchReply: true })).id;
+      await interaction.editReply({ content, components })
     }
   }
 
@@ -277,7 +278,7 @@ export class DjsBigTwo extends DjsGameWrapper {
     return cards.map(c => ({ label: this.cardToString(c), value: `${c}` }));
   }
 
-  protected async getInput(): Promise<any> {
+  protected async getInput(): Promise<number[] | null> {
     // Since awaitMessageComponent() may reject, a must-resolving Promise is needed
     const promises: Promise<number[] | null>[] = [sleep(this.time, null)];
 

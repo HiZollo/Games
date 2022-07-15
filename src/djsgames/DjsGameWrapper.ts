@@ -176,12 +176,13 @@ export abstract class DjsGameWrapper {
       const index = this.game.playerManager.getIndex(interaction.user.id);
       if (index < 0) return;
 
+      const message = await interaction.deferReply({ fetchReply: true });
       this.game.playerManager.kick(interaction.user.id);
       if (interaction.user.id === this.game.playerManager.nowPlayer.id) {
         this.conveyor.emit('playerLeft');
       }
 
-      const message = await interaction.reply({ content: format(this.strings.playerLeft, { player: this.game.playerManager.players[index].username }), fetchReply: true });
+      await interaction.editReply({ content: format(this.strings.playerLeft, { player: this.game.playerManager.players[index].username }) });
       if ('delete' in message) {
         setTimeout(() => {
           message.delete().catch(() => {});
@@ -235,7 +236,7 @@ export abstract class DjsGameWrapper {
       return null;
     }
     if ('customId' in input) {
-      await input.update({});
+      await input.deferUpdate();
       return input.customId;
     }
 
