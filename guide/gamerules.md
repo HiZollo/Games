@@ -28,7 +28,7 @@ This is a poker game that only allows 4 players to play. When the game starts, e
   - The order is determined by the rank of the 4 card set.
 - Straight flush: a straight but all 5 cards are in the same suit.
 
-The order of the ranks is 2 > A > K > Q > J > 10 > ... > 4 > 3, and the order of the suits is ♠ > ♥ > ♦ > ♣. The first player can play any trick they want. However, in most circumstances, the following players should only play the same trick as the previous player's, but with a higher order. For example, [3♥, 3♠] can be played after [3♣, 3♦], and [7♦, 8♥, 9♦, 10♣, 11♠] can be played after [4♣, 5♦, 6♣, 7♥, 8♥]. 
+The order of the ranks is 2 > A > K > Q > J > 10 > ... > 4 > 3, and the order of the suits is ♠ > ♥ > ♦ > ♣. The first player can play any trick they want. However, in most circumstances, the following players should only play the same trick as the previous player's, but with a higher order. For example, [3♥, 3♠] can be played after [3♣, 3♦], and [7♦, 8♥, 9♦, 10♣, 11♠] can be played after [4♣, 5♦, 6♣, 7♥, 8♦]. 
 
 Two special tricks are four-of-a-kind and straight flush. A four-of-a-kind can be played after any single, pair, straight or full house, and a straight flush can be played after any tricks just mentioned, plus four-of-a-kind. For example, [3♣, 3♦, 3♥, 3♠, 4♦] can be played after [2♣, 2♥, 2♠, A♣, A♠], and [A♣, 2♣, 3♣, 4♣, 5♣] can then be played after [3♣, 3♦, 3♥, 3♠, 4♦].
 

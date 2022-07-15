@@ -38,17 +38,18 @@ client.on('messageCreate', async message => {
   }
 });
 ```
-- **You can, but are not recommended to, let bots join the game, since the bot will not and cannot play the game for themselves.**
-- **Player who joins multiple games in the same channel may cause problems, so it's recommended to block them off if they are trying to do so**.
 
 # Examples
 This section only covers the required options, that is, the minimum amount of settings to create a game. For more customizations, you can refer to our documentations for [Options](../docs/options.md). 
 
 ## Big Two
+- `player1`, `player2`, `player3`, `player4` are instances of [`User`](https://discord.js.org/#/docs/discord.js/main/class/User).
+- Bots are not allowed in this game.
+- Exactly 4 players required for this game.
 ```js
 const game = new DjsBigTwo({
   source: interaction ?? message, 
-  players: [player1, player3, player3, player4] // 4 players only
+  players: [player1, player3, player3, player4]
 });
 
 await game.initialize();
@@ -57,10 +58,13 @@ await game.conclude();
 ```
 
 ## Bulls and Cows
+- `user` is an instance of [`User`](https://discord.js.org/#/docs/discord.js/main/class/User).
+- Exactly 1 player required for this game.
+- `MESSAGE_CONTENT` intent is required.
 ```js
 const game = new DjsBullsAndCows({
   source: interaction ?? message, 
-  players: [user] // one player only
+  players: [user]
 });
 
 await game.initialize();
@@ -69,10 +73,12 @@ await game.conclude();
 ```
 
 ## Final Code
+- `user` is an instance of [`User`](https://discord.js.org/#/docs/discord.js/main/class/User).
+- You can let 1 or more player join this game, including multiple (different) bots.
 ```js
 const game = new DjsFinalCode({
   source: interaction ?? message, 
-  players: [user] // one or more players
+  players: [user]
 });
 
 await game.initialize();
@@ -81,6 +87,8 @@ await game.conclude();
 ```
 
 ## Flip Trip
+- `user` is an instance of [`User`](https://discord.js.org/#/docs/discord.js/main/class/User).
+- Exactly 1 player required for this game.
 ```js
 const game = new DjsFlipTrip({
   source: interaction ?? message, 
@@ -94,6 +102,9 @@ await game.conclude();
 
 
 ## Gomoku
+- `user` and `opponent` are instances of [`User`](https://discord.js.org/#/docs/discord.js/main/class/User).
+- You can let 2 or more player join this game.
+- `MESSAGE_CONTENT` intent is required.
 ```js
 const game = new DjsGomoku({
   source: interaction ?? message, 
@@ -115,6 +126,8 @@ await game.conclude();
 
 
 ## Lights-up
+- `user` is an instance of [`User`](https://discord.js.org/#/docs/discord.js/main/class/User).
+- Exactly 1 player required for this game.
 ```js
 const game = new DjsLightsUp({
   source: interaction ?? message, 
@@ -128,6 +141,10 @@ await game.conclude();
 
 
 ## Tic-tac-toe
+- `user` and `opponent` are instances of [`User`](https://discord.js.org/#/docs/discord.js/main/class/User).
+- You can let 2 or more player join this game.
+- Bots are allowed in this game, but only when the players are 1 human v.s. 1 bot.
+- `MESSAGE_CONTENT` intent is required.
 ```js
 const game = new DjsTicTacToe({
   source: interaction ?? message, 
@@ -149,6 +166,8 @@ await game.conclude();
 
 
 ## Tofe
+- `user` is an instance of [`User`](https://discord.js.org/#/docs/discord.js/main/class/User).
+- Exactly 1 player required for this game.
 ```js
 const game = new DjsTofe({
   source: interaction ?? message, 
