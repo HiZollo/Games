@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { ButtonInteraction, Client, Collection, CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageEmbed } from 'discord.js';
+import { ButtonInteraction, Client, Collection, CommandInteraction, InteractionCollector, Message, MessageActionRow, EmbedBuilder } from 'discord.js';
 import { HZGError, ErrorCodes } from '../errors';
 import { Game, Player } from '../struct';
 import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types';
@@ -145,7 +145,7 @@ export abstract class DjsGameWrapper {
     });
   }
 
-  getEndEmbed(): MessageEmbed {
+  getEndEmbed(): EmbedBuilder {
     if (this.game.duration == null) {
       throw new HZGError(ErrorCodes.GameNotEnded);
     }
@@ -154,7 +154,7 @@ export abstract class DjsGameWrapper {
     const min = ~~(this.game.duration/60000);
     const sec = fixedDigits(Math.round(this.game.duration/1000) % 60, 2);
   
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setAuthor({ name: format(message.gameStats.header, { game: this.strings.name }), iconURL: this.client.user?.displayAvatarURL() })
       .setColor(0x000000)
       .setDescription(format(message.gameStats.message, { min, sec, step: this.game.playerManager.totalSteps }));
