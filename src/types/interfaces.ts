@@ -49,27 +49,27 @@ export interface FinalCodeOptions {
 
 export interface FlipTripOptions {
   players: PlayerOptions[], 
-  boardSize: number
+  boardSize?: number
 }
 
 export interface GomokuOptions {
   players: PlayerOptions[], 
-  boardSize: number
+  boardSize?: number
 }
 
 export interface LightsUpOptions {
   players: PlayerOptions[], 
-  boardSize: number
+  boardSize?: number
 }
 
 export interface TicTacToeOptions {
   players: PlayerOptions[], 
-  boardSize: number
+  boardSize?: number
 }
 
 export interface TofeOptions {
   players: PlayerOptions[], 
-  hardMode: boolean
+  hardMode?: boolean
 }
 
 
@@ -78,7 +78,7 @@ export interface TofeOptions {
 
 export interface DjsGameWrapperOptions {
   source: CommandInteraction | Message, 
-  time: number
+  time?: number
 }
 
 export interface DjsGameInitializeMessageOptions {
@@ -91,7 +91,7 @@ export interface DjsBigTwoOptions extends DjsGameWrapperOptions, BigTwoOptions {
 }
 
 export interface DjsBullsAndCowsOptions extends DjsGameWrapperOptions, BullsAndCowsOptions {
-  hardMode: boolean, 
+  hardMode?: boolean, 
   strings: BullsAndCowsStrings
 }
 
