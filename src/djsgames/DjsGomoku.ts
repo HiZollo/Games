@@ -1,4 +1,4 @@
-import { Message, MessageActionRow, MessageButton } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { Gomoku } from '../games';
@@ -33,11 +33,11 @@ export class DjsGomoku extends DjsGameWrapper {
   async initialize(): Promise<void> {
     const player = this.game.playerManager.nowPlayer;
     const content = format(this.strings.nowPlayer, { player: `<@${player.id}>`, symbol: player.symbol });
-    const components = [new MessageActionRow().addComponents(
-      new MessageButton()
+    const components = [new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId('HZG_CTRL_leave')
         .setLabel(this.strings.controller.leave)
-        .setStyle("DANGER")
+        .setStyle(ButtonStyle.Danger)
     )];
     await super.initialize({ content, components });
     await this.mainMessage?.edit(content + '\n' + this.boardContent);

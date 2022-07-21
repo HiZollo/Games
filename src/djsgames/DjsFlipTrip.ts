@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
+import { ButtonInteraction, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
 import { FlipTrip } from '../games';
@@ -14,7 +14,7 @@ export class DjsFlipTrip extends DjsGameWrapper {
 
   protected game: FlipTrip;
   protected inputMode: number;
-  protected boardButtons: MessageActionRow[];
+  protected boardButtons: ActionRowBuilder<ButtonBuilder>[];
 
   
   constructor({ players, boardSize, source, time, strings }: DjsFlipTripOptions) {
@@ -33,23 +33,23 @@ export class DjsFlipTrip extends DjsGameWrapper {
   async initialize(): Promise<void> {
     for (let i = 0; i < this.game.boardSize; i++) {
       if (i % MAX_BUTTON_PER_ROW === 0) {
-        this.boardButtons.push(new MessageActionRow());
+        this.boardButtons.push(new ActionRowBuilder<ButtonBuilder>());
       }
       this.boardButtons[~~(i / MAX_BUTTON_PER_ROW)].addComponents(
-        new MessageButton()
+        new ButtonBuilder()
           .setCustomId(`HZG_PLAY_${this.game.boardSize - 1 - i}`)
           .setLabel(`${this.game.boardSize - i}`)
-          .setStyle("PRIMARY")
+          .setStyle(ButtonStyle.Primary)
       );
     }
 
     const components = [
       ...this.boardButtons, 
-      new MessageActionRow().addComponents(
-        new MessageButton()
+      new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder()
           .setCustomId('HZG_CTRL_leave')
           .setLabel(this.strings.controller.leave)
-          .setStyle("DANGER")
+          .setStyle(ButtonStyle.Danger)
       )
     ];
 

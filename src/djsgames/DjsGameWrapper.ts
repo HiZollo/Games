@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
-import { ButtonInteraction, Client, Collection, CommandInteraction, InteractionCollector, Message, MessageActionRow, MessageEmbed } from 'discord.js';
+import { ButtonInteraction, Client, Collection, CommandInteraction, ComponentType, EmbedBuilder, InteractionCollector, Message } from 'discord.js';
 import { HZGError, ErrorCodes } from '../errors';
 import { Game, Player } from '../struct';
-import { DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types';
+import { DjsGameInitializeMessageOptions, DjsGameWrapperOptions, DjsInputResult, GameStrings } from '../types';
 import { fixedDigits, format, sleep } from '../util/Functions';
 
 export abstract class DjsGameWrapper {
@@ -50,7 +50,7 @@ export abstract class DjsGameWrapper {
     this.ctrlCollected = this.ctrlCollected.bind(this);
   }
 
-  public async initialize(main: { content: string, components: MessageActionRow[] }, sub?: { content: string, components: MessageActionRow[] }): Promise<void> {
+  public async initialize(main: DjsGameInitializeMessageOptions, sub?: DjsGameInitializeMessageOptions): Promise<void> {
     this.game.initialize();
 
     if ('editReply' in this.source) {
@@ -70,7 +70,7 @@ export abstract class DjsGameWrapper {
     }
 
     this.controllerCollector = this.subMessage.createMessageComponentCollector({
-      componentType: "BUTTON", 
+      componentType: ComponentType.Button, 
       filter: (i: ButtonInteraction): boolean => {
         return i.customId.startsWith("HZG_CTRL") && this.game.playerManager.ids.includes(i.user.id);
       }
@@ -145,7 +145,7 @@ export abstract class DjsGameWrapper {
     });
   }
 
-  getEndEmbed(): MessageEmbed {
+  getEndEmbed(): EmbedBuilder {
     if (this.game.duration == null) {
       throw new HZGError(ErrorCodes.GameNotEnded);
     }
@@ -154,7 +154,7 @@ export abstract class DjsGameWrapper {
     const min = ~~(this.game.duration/60000);
     const sec = fixedDigits(Math.round(this.game.duration/1000) % 60, 2);
   
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setAuthor({ name: format(message.gameStats.header, { game: this.strings.name }), iconURL: this.client.user?.displayAvatarURL() })
       .setColor(0x000000)
       .setDescription(format(message.gameStats.message, { min, sec, step: this.game.playerManager.totalSteps }));
@@ -163,7 +163,11 @@ export abstract class DjsGameWrapper {
       for (const player of this.game.playerManager.players) {
         const m = ~~(player.time/60000);
         const s = fixedDigits(Math.round(player.time/1000) % 60, 2);
-        embed.addField(player.username, format(message.playerStats.message, { min: m, sec: s, step: player.steps }), true);
+        embed.addFields({
+          name: player.username, 
+          value: format(message.playerStats.message, { min: m, sec: s, step: player.steps }), 
+          inline: true
+        });
       }
     }
   
@@ -209,7 +213,7 @@ export abstract class DjsGameWrapper {
     // button input from sub message
     promises.push(this.subMessage.awaitMessageComponent({
       filter: this.buttonFilter,
-      componentType: "BUTTON",
+      componentType: ComponentType.Button,
       time: this.time
     }));
   
@@ -217,7 +221,7 @@ export abstract class DjsGameWrapper {
     if (this.inputMode & 0b10)
       promises.push(this.mainMessage.awaitMessageComponent({
         filter: this.buttonFilter,
-        componentType: "BUTTON",
+        componentType: ComponentType.Button,
         time: this.time
       }));
   

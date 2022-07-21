@@ -1,4 +1,4 @@
-import { ButtonInteraction, InteractionCollector, MessageActionRow, MessageButton, MessageSelectMenu, MessageSelectOptionData, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, APISelectMenuOption, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, InteractionCollector, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
 import { BigTwo } from '../games';
@@ -12,7 +12,7 @@ export class DjsBigTwo extends DjsGameWrapper {
 
   protected game: BigTwo;
   protected inputMode: number;
-  protected bundles: ({ messageId: string, menu: MessageSelectMenu, buttons: MessageButton[], selectedCards: number[] })[];
+  protected bundles: ({ messageId: string, menu: SelectMenuBuilder, buttons: ButtonBuilder[], selectedCards: number[] })[];
   protected buttonCollector: InteractionCollector<ButtonInteraction> | void;
   protected menuCollector: InteractionCollector<SelectMenuInteraction> | void;
 
@@ -36,36 +36,36 @@ export class DjsBigTwo extends DjsGameWrapper {
       throw new HZGError(ErrorCodes.InvalidChannel);
     }
 
-    const components = [new MessageActionRow().addComponents(
-      new MessageButton()
+    const components = [new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId('HZG_CTRL_leave')
         .setLabel(this.strings.controller.leave)
-        .setStyle("DANGER"), 
-      new MessageButton()
+        .setStyle(ButtonStyle.Danger), 
+      new ButtonBuilder()
         .setCustomId('HZG_CTRL_cards')
         .setLabel(this.strings.controller.cards)
-        .setStyle("SECONDARY")
+        .setStyle(ButtonStyle.Secondary)
     )];
     await super.initialize({ content: '\u200b', components });
 
     for (let i = 0; i < this.game.playerManager.playerCount; i++) {
       this.bundles[i] = {
         messageId: '', 
-        menu: new MessageSelectMenu()
+        menu: new SelectMenuBuilder()
           .setCustomId('HZG_PLAY_select')
           .setPlaceholder(this.strings.player.menu)
           .setMinValues(1)
           .setMaxValues(5)
           .setOptions(this.getOptions(this.game.cards[i])), 
         buttons: [
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId('HZG_PLAY_play')
             .setLabel(this.strings.player.play)
-            .setStyle("SUCCESS"), 
-          new MessageButton()
+            .setStyle(ButtonStyle.Success), 
+          new ButtonBuilder()
             .setCustomId('HZG_PLAY_pass')
             .setLabel(this.strings.player.pass)
-            .setStyle("DANGER"), 
+            .setStyle(ButtonStyle.Danger), 
         ], 
         selectedCards: []
       };
@@ -74,11 +74,11 @@ export class DjsBigTwo extends DjsGameWrapper {
     await this.mainMessage?.edit({ content: this.getMainContent() });
     this.buttonCollector = this.source.channel.createMessageComponentCollector({
       filter: i => this.bundles.some(({ messageId }) => i.message.id === messageId) && i.customId.startsWith("HZG_PLAY"), 
-      componentType: "BUTTON"
+      componentType: ComponentType.Button
     });
     this.menuCollector = this.source.channel.createMessageComponentCollector({
       filter: i => this.bundles.some(({ messageId }) => i.message.id === messageId) && i.customId.startsWith("HZG_PLAY"), 
-      componentType: "SELECT_MENU"
+      componentType: ComponentType.SelectMenu
     });
   }
 
@@ -136,7 +136,10 @@ export class DjsBigTwo extends DjsGameWrapper {
 
       const index = this.game.playerManager.getIndex(interaction.user.id);
       const content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) });
-      const components = [new MessageActionRow().addComponents(this.bundles[index].menu), new MessageActionRow().addComponents(...this.bundles[index].buttons)];
+      const components = [
+        new ActionRowBuilder<SelectMenuBuilder>().addComponents(this.bundles[index].menu), 
+        new ActionRowBuilder<ButtonBuilder>().addComponents(...this.bundles[index].buttons)
+      ];
 
       this.bundles[index].messageId = (await interaction.deferReply({ ephemeral: true, fetchReply: true })).id;
       await interaction.editReply({ content, components })
@@ -154,18 +157,21 @@ export class DjsBigTwo extends DjsGameWrapper {
     
     if (interaction.user.id !== this.game.playerManager.nowPlayer.id) {
       content += this.strings.player.notYourTurn;
-      return await interaction.update({ content });
+      await interaction.update({ content });
+      return;
     }
 
     const args = interaction.customId.split('_');
     if (args[2] === 'play') {
       if (cards.length === 0) {
         content += this.strings.player.noSelection;
-        return await interaction.update({ content });
+        await interaction.update({ content });
+        return;
       }
       if (!this.game.playable(cards)) {
         content += format(this.strings.player.invalid, { cards: this.cardsToString(cards) });
-        return await interaction.update({ content });
+        await interaction.update({ content });
+        return;
       }
 
       this.conveyor.emit('cardsPlayed', JSON.parse(JSON.stringify(cards)));
@@ -180,17 +186,22 @@ export class DjsBigTwo extends DjsGameWrapper {
           .setMaxValues(Math.min(this.game.cards[index].length, 5))
           .setOptions(this.getOptions(this.game.cards[index]));
       }
-      const components = [new MessageActionRow().addComponents(this.bundles[index].menu), new MessageActionRow().addComponents(...this.bundles[index].buttons)];
+      const components = [
+        new ActionRowBuilder<SelectMenuBuilder>().addComponents(this.bundles[index].menu), 
+        new ActionRowBuilder<ButtonBuilder>().addComponents(...this.bundles[index].buttons)
+      ];
       
       this.bundles[index].selectedCards = [];
-      return await interaction.update({ content, components });
+      await interaction.update({ content, components });
+      return;
     }
     else if (args[2] === 'pass') {
       this.conveyor.emit('cardsPlayed', []);
       this.game.pass();
       
       content += this.strings.player.passed;
-      return await interaction.update({ content });
+      await interaction.update({ content });
+      return;
     }
     throw new HZGError(ErrorCodes.InvalidButtonInteraction);
   }
@@ -203,7 +214,8 @@ export class DjsBigTwo extends DjsGameWrapper {
     const cards = interaction.values.map(c => parseInt(c, 10)).sort((a, b) => a - b);
     if (!this.game.playable(cards)) {
       content += format(this.strings.player.invalid, { cards: this.cardsToString(cards) });
-      return await interaction.update({ content });
+      await interaction.update({ content });
+      return;
     }
 
     this.bundles[index].selectedCards = cards;
@@ -274,7 +286,7 @@ export class DjsBigTwo extends DjsGameWrapper {
   }
 
 
-  private getOptions(cards: number[]): MessageSelectOptionData[] {
+  private getOptions(cards: number[]): APISelectMenuOption[] {
     return cards.map(c => ({ label: this.cardToString(c), value: `${c}` }));
   }
 

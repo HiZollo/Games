@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
 import { LightsUp } from '../games';
@@ -14,7 +14,7 @@ export class DjsLightsUp extends DjsGameWrapper {
 
   protected game: LightsUp;
   protected inputMode: number;
-  protected boardButtons: MessageButton[][];
+  protected boardButtons: ButtonBuilder[][];
 
 
   constructor({ players, boardSize = 5, source, time, strings }: DjsLightsUpOptions) {
@@ -35,15 +35,15 @@ export class DjsLightsUp extends DjsGameWrapper {
   }
 
   async initialize(): Promise<void> {
-    const subComponents = [new MessageActionRow().addComponents(
-      new MessageButton()
+    const subComponents = [new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId('HZG_CTRL_answer')
         .setLabel(this.strings.controller.answer)
-        .setStyle("SUCCESS"), 
-      new MessageButton()
+        .setStyle(ButtonStyle.Success), 
+      new ButtonBuilder()
         .setCustomId('HZG_CTRL_leave')
         .setLabel(this.strings.controller.leave)
-        .setStyle("DANGER")
+        .setStyle(ButtonStyle.Danger)
     )]
     
     await super.initialize(
@@ -54,10 +54,10 @@ export class DjsLightsUp extends DjsGameWrapper {
     for (let i = 0; i < this.game.boardSize; i++) {
       this.boardButtons.push([]);
       for (let j = 0; j < this.game.boardSize; j++) {
-        this.boardButtons[i].push(new MessageButton()
+        this.boardButtons[i].push(new ButtonBuilder()
           .setCustomId(`HZG_PLAY_${i}_${j}`)
           .setLabel('\u200b')
-          .setStyle(this.game.board[i][j] ? "PRIMARY" : "SECONDARY")
+          .setStyle(this.game.board[i][j] ? ButtonStyle.Primary : ButtonStyle.Secondary)
         );
       }
     }
@@ -75,7 +75,7 @@ export class DjsLightsUp extends DjsGameWrapper {
     [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dr, dc]) => {
       const nr = row + dr, nc = col + dc;
       if (0 <= nr && nr < this.game.boardSize && 0 <= nc && nc < this.game.boardSize) {
-        this.boardButtons[nr][nc].setStyle(this.game.board[nr][nc] ? "PRIMARY" : "SECONDARY");
+        this.boardButtons[nr][nc].setStyle(this.game.board[nr][nc] ? ButtonStyle.Primary : ButtonStyle.Secondary);
       }
     });
   }
@@ -174,10 +174,10 @@ export class DjsLightsUp extends DjsGameWrapper {
   }
 
 
-  private get displayBoard(): MessageActionRow[] {
+  private get displayBoard(): ActionRowBuilder<ButtonBuilder>[] {
     const actionRows = [];
     for (let i = 0; i < this.game.boardSize; i++) {
-      actionRows.push(new MessageActionRow());
+      actionRows.push(new ActionRowBuilder<ButtonBuilder>());
       for (let j = 0; j < this.game.boardSize; j++) {
         actionRows[i].addComponents(this.boardButtons[i][j]);
       }

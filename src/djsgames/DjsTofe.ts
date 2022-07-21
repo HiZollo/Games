@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
 import { Tofe } from '../games';
@@ -12,7 +12,7 @@ export class DjsTofe extends DjsGameWrapper {
 
   protected game: Tofe;
   protected inputMode: number;
-  protected boardButtons: MessageButton[][];
+  protected boardButtons: ButtonBuilder[][];
 
   
   constructor({ players, hardMode, source, time, strings }: DjsTofeOptions) {
@@ -37,10 +37,10 @@ export class DjsTofe extends DjsGameWrapper {
     for (let i = 0; i < this.game.boardSize; i++) {
       this.boardButtons.push([]);
       for (let j = 0; j < this.game.boardSize; j++) {
-        this.boardButtons[i][j] = new MessageButton()
+        this.boardButtons[i][j] = new ButtonBuilder()
           .setCustomId(`HZG_PLAY_${i}_${j}`)
           .setLabel(`${this.game.board[i][j] ?? '\u200b'}`)
-          .setStyle("PRIMARY")
+          .setStyle(ButtonStyle.Primary)
           .setDisabled(true);
       }
     }
@@ -143,51 +143,51 @@ export class DjsTofe extends DjsGameWrapper {
   }
 
 
-  private get newController(): MessageActionRow[] {
-    return [new MessageActionRow().addComponents(
-      new MessageButton()
+  private get newController(): ActionRowBuilder<ButtonBuilder>[] {
+    return [new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId('HZG_PLAY_empty_1')
         .setLabel('\u200b')
-        .setStyle("SECONDARY")
+        .setStyle(ButtonStyle.Secondary)
         .setDisabled(true), 
-      new MessageButton()
+      new ButtonBuilder()
         .setCustomId('HZG_PLAY_up')
         .setLabel(this.strings.controller.up)
-        .setStyle("PRIMARY"), 
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary), 
+      new ButtonBuilder()
         .setCustomId('HZG_PLAY_empty_2')
         .setLabel('\u200b')
-        .setStyle("SECONDARY")
+        .setStyle(ButtonStyle.Secondary)
         .setDisabled(true), 
-    ), new MessageActionRow().addComponents(
-      new MessageButton()
+    ), new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId('HZG_PLAY_left')
         .setLabel(this.strings.controller.left)
-        .setStyle("PRIMARY"), 
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary), 
+      new ButtonBuilder()
         .setCustomId('HZG_PLAY_down')
         .setLabel(this.strings.controller.down)
-        .setStyle("PRIMARY"), 
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary), 
+      new ButtonBuilder()
         .setCustomId('HZG_PLAY_right')
         .setLabel(this.strings.controller.right)
-        .setStyle("PRIMARY"), 
-    ), new MessageActionRow().addComponents(
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary), 
+    ), new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId('HZG_CTRL_leave')
         .setLabel(this.strings.controller.leave)
-        .setStyle("DANGER")
+        .setStyle(ButtonStyle.Danger)
     )]
   }
 
-  private get displayBoard(): MessageActionRow[] {
+  private get displayBoard(): ActionRowBuilder<ButtonBuilder>[] {
     let result = [];
     for (let i = 0; i < this.game.boardSize; i++) {
-      result.push(new MessageActionRow());
+      result.push(new ActionRowBuilder<ButtonBuilder>());
       for (let j = 0; j < this.game.boardSize; j++) {
         this.boardButtons[i][j]
           .setLabel(`${this.game.board[i][j] ?? '\u200b'}`)
-          .setStyle(this.game.board[i][j] === this.game.goal ? "SUCCESS" : "PRIMARY");
+          .setStyle(this.game.board[i][j] === this.game.goal ? ButtonStyle.Success : ButtonStyle.Primary);
         result[i].addComponents(this.boardButtons[i][j]);
       }
     }

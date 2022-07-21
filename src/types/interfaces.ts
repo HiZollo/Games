@@ -1,4 +1,4 @@
-import { CommandInteraction, Message, MessageActionRow } from 'discord.js';
+import { ActionRowBuilder, CommandInteraction, Message, MessageActionRowComponentBuilder } from 'discord.js';
 import { TofeDirections } from './';
 import { Range } from '../struct';
 
@@ -79,6 +79,11 @@ export interface TofeOptions {
 export interface DjsGameWrapperOptions {
   source: CommandInteraction | Message, 
   time: number
+}
+
+export interface DjsGameInitializeMessageOptions {
+  content: string, 
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[]
 }
 
 export interface DjsBigTwoOptions extends DjsGameWrapperOptions, BigTwoOptions {
@@ -185,7 +190,7 @@ export interface ITofe {
 // function returned results
 
 export interface DjsInputResult {
-  components?: MessageActionRow[], 
+  components?: ActionRowBuilder<MessageActionRowComponentBuilder>[], 
   content?: string, 
   endStatus?: string
 }

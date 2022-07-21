@@ -1,4 +1,4 @@
-import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { AI } from '../AI/AI';
 import { HZGError, HZGRangeError, ErrorCodes } from '../errors';
@@ -10,11 +10,11 @@ import { ticTacToe } from '../util/strings.json';
 
 export class DjsTicTacToe extends DjsGameWrapper {
   public strings: TicTacToeStrings;
-  public controller: MessageActionRow;
+  public controller: ActionRowBuilder<ButtonBuilder>;
 
   protected game: TicTacToe;
   protected inputMode: number;
-  protected boardButtons: MessageButton[][];
+  protected boardButtons: ButtonBuilder[][];
 
   
   constructor({ players, boardSize = 3, source, strings, time }: DjsTicTacToeOptions) {
@@ -25,11 +25,11 @@ export class DjsTicTacToe extends DjsGameWrapper {
     this.game = new TicTacToe({ players, boardSize });
 
     this.strings = overwrite(JSON.parse(JSON.stringify(ticTacToe)), strings);
-    this.controller = new MessageActionRow().addComponents(
-      new MessageButton()
+    this.controller = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId('HZG_CTRL_leave')
         .setLabel(this.strings.controller.leave)
-        .setStyle("DANGER")
+        .setStyle(ButtonStyle.Danger)
     );
 
     this.inputMode = 0b01;
@@ -43,10 +43,10 @@ export class DjsTicTacToe extends DjsGameWrapper {
     for (let i = 0; i < this.game.boardSize; i++) {
       this.boardButtons.push([]);
       for (let j = 0; j < this.game.boardSize; j++) {
-        this.boardButtons[i][j] = new MessageButton()
+        this.boardButtons[i][j] = new ButtonBuilder()
           .setCustomId(`HZG_PLAY_${i}_${j}`)
           .setLabel(this.strings.labels[i][j])
-          .setStyle("PRIMARY");
+          .setStyle(ButtonStyle.Primary);
       }
     }
 
@@ -174,10 +174,10 @@ export class DjsTicTacToe extends DjsGameWrapper {
   }
 
 
-  private get displayBoard(): MessageActionRow[] {
+  private get displayBoard(): ActionRowBuilder<ButtonBuilder>[] {
     const actionRows = [];
     for (let i = 0; i < this.game.boardSize; i++) {
-      actionRows.push(new MessageActionRow());
+      actionRows.push(new ActionRowBuilder<ButtonBuilder>());
       for (let j = 0; j < this.game.boardSize; j++) {
         actionRows[i].addComponents(this.boardButtons[i][j]);
       }

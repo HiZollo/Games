@@ -1,4 +1,4 @@
-import { Message, MessageActionRow, MessageButton } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Message } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { AI } from '../AI/AI';
 import { HZGError, ErrorCodes } from '../errors';
@@ -29,11 +29,11 @@ export class DjsFinalCode extends DjsGameWrapper {
   async initialize(): Promise<void> {
     const content = format(this.strings.interval, { min: this.game.range.min, max: this.game.range.max }) + '\n'
                   + format(this.strings.nowPlayer, { player: `<@${this.game.playerManager.nowPlayer.id}>` });
-    const components = [new MessageActionRow().addComponents(
-      new MessageButton()
+    const components = [new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId('HZG_CTRL_leave')
         .setLabel(this.strings.controller.leave)
-        .setStyle("DANGER")
+        .setStyle(ButtonStyle.Danger)
     )];
     await super.initialize({ content, components })
   }
