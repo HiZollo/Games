@@ -3,7 +3,7 @@ In this package, you can customize display strings when certain events happen, l
 For example, if you want to change the string that shows when someone hit the answer in *Final Code*, you can do:
 ```js
 const game = new DjsFinalCode({
-  source: interaction
+  source: interaction ?? message,
   time: 15e3,
   players: [
     player1, player2, player3
@@ -22,10 +22,11 @@ If you are planning to make a bot in languages other than English, feel free to 
 ```js
 const mystrings = require('./your/path/to/mystrings.json');
 const game = new DjsFinalCode({
+  source: interaction ?? message,
+  time: 15e3,
   players: [
     player1, player2, player3
   ],
-  time: 15e3,
   strings: mystrings.finalCode
 });
 ```

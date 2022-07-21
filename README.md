@@ -10,12 +10,12 @@
 
 # Features
 - **Easy to set up** - only requires a few lines of code to host a game.
-- **Type autocomplete** - this package contains built-in type declarations.
-- **Single player mode** - built-in AI algorithms come to the rescue when there's no one to play with in 3 a.m.
+- **Various games** - 2048, tic-tac-toe, bulls and cows, and more game included in this package. See our [main guide](./guide/guide.md) for more information.
+- **Single player mode** - built-in AI algorithms come to the rescue when there's no one to play with in 3 a.m. morning.
 
 # Requirements
-- discord.js version >= `^13.3.1`
-- node.js version >= `16.6`
+- discord.js version >= `^14.0.3`
+- node.js version >= `16.9`
 
 # Installation
 ```
@@ -32,7 +32,7 @@ npm install @hizollo/games
   - [Basic Structures](./docs/classes/struct.md)
   - [Games](./docs/classes/games.md)
   - [Discord.js Games](./docs/classes/djsgames.md)
-- [Interfaces](./docs/interfaces.md) (for Typescript users)
+- [Interfaces](./docs/interfaces.md) (for TypeScript users)
 - [Options](./docs/options.md)
 - [Strings](./docs/strings.md)
 - [Utilities](./docs/util.md)
