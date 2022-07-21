@@ -11,7 +11,7 @@
       "selected": "**You selected**: [<cards>] (<trick>)\nWhen it's your turn, click on [Play] button to play the cards.", 
       "played": "[<cards>] (<trick>) successfully played.", 
       "passed": "You passed this turn.", 
-      "invalid": "[<cards>] is invalid or not playable.", 
+      "invalid": "[<cards>] is invalid or not playable, please re-select your cards.", 
       "notYourTurn": "It's not your turn yet.", 
       "noSelection": "You haven't select any cards."
     }, 
