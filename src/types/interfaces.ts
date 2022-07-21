@@ -87,36 +87,36 @@ export interface DjsGameInitializeMessageOptions {
 }
 
 export interface DjsBigTwoOptions extends DjsGameWrapperOptions, BigTwoOptions {
-  strings: BigTwoStrings
+  strings?: BigTwoStrings
 }
 
 export interface DjsBullsAndCowsOptions extends DjsGameWrapperOptions, BullsAndCowsOptions {
   hardMode?: boolean, 
-  strings: BullsAndCowsStrings
+  strings?: BullsAndCowsStrings
 }
 
 export interface DjsFinalCodeOptions extends DjsGameWrapperOptions, FinalCodeOptions {
-  strings: FinalCodeStrings
+  strings?: FinalCodeStrings
 }
 
 export interface DjsFlipTripOptions extends DjsGameWrapperOptions, FlipTripOptions {
-  strings: FlipTripStrings
+  strings?: FlipTripStrings
 }
 
 export interface DjsGomokuOptions extends DjsGameWrapperOptions, GomokuOptions {
-  strings: GomokuStrings
+  strings?: GomokuStrings
 }
 
 export interface DjsLightsUpOptions extends DjsGameWrapperOptions, LightsUpOptions {
-  strings: LightsUpStrings
+  strings?: LightsUpStrings
 }
 
 export interface DjsTicTacToeOptions extends DjsGameWrapperOptions, LightsUpOptions {
-  strings: TicTacToeStrings
+  strings?: TicTacToeStrings
 }
 
 export interface DjsTofeOptions extends DjsGameWrapperOptions, TofeOptions {
-  strings: TofeStrings
+  strings?: TofeStrings
 }
 
 
