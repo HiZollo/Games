@@ -106,7 +106,7 @@ This is the documentation for all options.
 # TofeOptions
 | parameter | type                              | default    | description                 |
 |-----------|-----------------------------------|------------|-----------------------------|
-| hardMode  | number                            | `false`    | Whether to enable hard mode |
+| hardMode  | boolean                           | `false`    | Whether to enable hard mode |
 | players   | [PlayerOptions](#PlayerOptions)[] | *required* | All players' data           |
 
 
@@ -178,5 +178,5 @@ This is the documentation for all options.
 > extends [DjsGameWrapperOptions](#DjsGameWrapperOptions), [TofeOptions](#TofeOptions)
 
 | parameter    | type                                     | default                                       | description         |
-|--------------|------------------------------------------|--------------------------------- -------------|---------------------|
+|--------------|------------------------------------------|-----------------------------------------------|---------------------|
 | strings      | [TofeStrings](./strings.md/#TofeStrings) | [strings.json#tofe](../src/util/strings.json) | The display strings |
