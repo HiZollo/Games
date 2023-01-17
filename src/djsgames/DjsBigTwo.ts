@@ -1,4 +1,4 @@
-import { ActionRowBuilder, APISelectMenuOption, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, InteractionCollector, SelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
+import { ActionRowBuilder, APISelectMenuOption, ButtonBuilder, ButtonInteraction, ButtonStyle, ComponentType, InteractionCollector, StringSelectMenuBuilder, SelectMenuInteraction } from 'discord.js';
 import { DjsGameWrapper } from './DjsGameWrapper';
 import { HZGError, ErrorCodes } from '../errors';
 import { BigTwo } from '../games';
@@ -12,7 +12,7 @@ export class DjsBigTwo extends DjsGameWrapper {
 
   protected game: BigTwo;
   protected inputMode: number;
-  protected bundles: ({ messageId: string, menu: SelectMenuBuilder, buttons: ButtonBuilder[], selectedCards: number[] })[];
+  protected bundles: ({ messageId: string, menu: StringSelectMenuBuilder, buttons: ButtonBuilder[], selectedCards: number[] })[];
   protected buttonCollector: InteractionCollector<ButtonInteraction> | void;
   protected menuCollector: InteractionCollector<SelectMenuInteraction> | void;
 
@@ -51,7 +51,7 @@ export class DjsBigTwo extends DjsGameWrapper {
     for (let i = 0; i < this.game.playerManager.playerCount; i++) {
       this.bundles[i] = {
         messageId: '', 
-        menu: new SelectMenuBuilder()
+        menu: new StringSelectMenuBuilder()
           .setCustomId('HZG_PLAY_select')
           .setPlaceholder(this.strings.player.menu)
           .setMinValues(1)
@@ -137,7 +137,7 @@ export class DjsBigTwo extends DjsGameWrapper {
       const index = this.game.playerManager.getIndex(interaction.user.id);
       const content = format(this.strings.player.cards, { cards: this.cardsToString(this.game.cards[index]) });
       const components = [
-        new ActionRowBuilder<SelectMenuBuilder>().addComponents(this.bundles[index].menu), 
+        new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(this.bundles[index].menu), 
         new ActionRowBuilder<ButtonBuilder>().addComponents(...this.bundles[index].buttons)
       ];
 
@@ -187,7 +187,7 @@ export class DjsBigTwo extends DjsGameWrapper {
           .setOptions(this.getOptions(this.game.cards[index]));
       }
       const components = [
-        new ActionRowBuilder<SelectMenuBuilder>().addComponents(this.bundles[index].menu), 
+        new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(this.bundles[index].menu), 
         new ActionRowBuilder<ButtonBuilder>().addComponents(...this.bundles[index].buttons)
       ];
       
