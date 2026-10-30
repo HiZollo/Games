@@ -1,8 +1,5 @@
-import { ActionRowBuilder, CommandInteraction, Message, MessageActionRowComponentBuilder } from 'discord.js';
 import { TofeDirections } from './';
 import { Range } from '../struct';
-
-
 
 // basic structure options
 
@@ -72,55 +69,6 @@ export interface TofeOptions {
   hardMode?: boolean
 }
 
-
-
-// implemented discord.js game options
-
-export interface DjsGameWrapperOptions {
-  source: CommandInteraction | Message, 
-  time?: number
-}
-
-export interface DjsGameInitializeMessageOptions {
-  content: string, 
-  components: ActionRowBuilder<MessageActionRowComponentBuilder>[]
-}
-
-export interface DjsBigTwoOptions extends DjsGameWrapperOptions, BigTwoOptions {
-  strings?: BigTwoStrings
-}
-
-export interface DjsBullsAndCowsOptions extends DjsGameWrapperOptions, BullsAndCowsOptions {
-  hardMode?: boolean, 
-  strings?: BullsAndCowsStrings
-}
-
-export interface DjsFinalCodeOptions extends DjsGameWrapperOptions, FinalCodeOptions {
-  strings?: FinalCodeStrings
-}
-
-export interface DjsFlipTripOptions extends DjsGameWrapperOptions, FlipTripOptions {
-  strings?: FlipTripStrings
-}
-
-export interface DjsGomokuOptions extends DjsGameWrapperOptions, GomokuOptions {
-  strings?: GomokuStrings
-}
-
-export interface DjsLightsUpOptions extends DjsGameWrapperOptions, LightsUpOptions {
-  strings?: LightsUpStrings
-}
-
-export interface DjsTicTacToeOptions extends DjsGameWrapperOptions, LightsUpOptions {
-  strings?: TicTacToeStrings
-}
-
-export interface DjsTofeOptions extends DjsGameWrapperOptions, TofeOptions {
-  strings?: TofeStrings
-}
-
-
-
 // interfaces to implement
 
 export interface IBigTwo {
@@ -186,14 +134,7 @@ export interface ITofe {
 }
 
 
-
 // function returned results
-
-export interface DjsInputResult {
-  components?: ActionRowBuilder<MessageActionRowComponentBuilder>[], 
-  content?: string, 
-  endStatus?: string
-}
 
 export interface BullsAndCowsResult {
   a: number, 
