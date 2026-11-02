@@ -1,6 +1,6 @@
 {
   "name": "@hizollo/games",
-  "version": "2.5.0",
+  "version": "3.0.0-beta.0",
   "description": "A package that provides interfaces of various games.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
