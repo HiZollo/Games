@@ -22,7 +22,7 @@ export class TicTacToe extends Game implements ITicTacToe {
     this.occupiedCount = 0;
   }
 
-  initialize() {
+  initialize(): void {
     super.initialize();
 
     for (let i = 0; i < this.boardSize; i++) {

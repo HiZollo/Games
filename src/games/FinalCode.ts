@@ -40,7 +40,7 @@ export class FinalCode extends Game implements IFinalCode {
     return 0;
   }
 
-  win() {
+  win(): boolean {
     return this.range.min === this.range.max;
   }
 }

@@ -45,7 +45,7 @@ export class Chess extends Game implements IChess {
     return this.history[this.history.length - 1];
   }
 
-  move(notation: string) {
+  move(notation: string): void {
     if (this.winner || this.drawn) {
       throw new HZGError(ErrorCodes.GameAlreadyEnded);
     }
@@ -142,7 +142,7 @@ export class Chess extends Game implements IChess {
     return [this.rankToIndex(square[1]), this.fileToIndex(square[0])];
   }
 
-  genMoves(side: Piece.WHITE | Piece.BLACK) {
+  genMoves(side: Piece.WHITE | Piece.BLACK): ChessMoveSuccess[] {
     const moves: ChessMoveSuccess[] = [];
     const addMove = (move: ChessMoveSuccess) => {
       this._move(move);

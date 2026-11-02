@@ -3,7 +3,7 @@ import { HZGError, ErrorCodes } from '../errors';
 import { Range } from '../struct';
 import { sleep } from '../util/Functions';
 
-export class AI extends null {
+export class AI {
   static async FinalCode(range: Range): Promise<number> {
     await sleep(2e3, null);
     let query: number;
