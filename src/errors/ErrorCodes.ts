@@ -22,13 +22,9 @@ export enum ErrorCodes {
   BullsAndCowsQueryLength, 
   BullsAndCowsDuplicatedNumbers, 
 
-  FinalCodeQueryType, 
+  ChessIllegalMove,
 
-  BotsNotAllowed, 
-  GuildNotCached, 
-  InvalidButtonInteraction, 
-  InvalidChannel, 
-  InvalidMainMessage, 
+  FinalCodeQueryType, 
 
   OneHumanOnly
 };

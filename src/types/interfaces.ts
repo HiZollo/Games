@@ -1,5 +1,5 @@
-import { TofeDirections } from './';
-import { Range } from '../struct';
+import { ChessPiece, TofeDirections } from './';
+import { Player, Range } from '../struct';
 
 // basic structure options
 
@@ -37,6 +37,10 @@ export interface BigTwoOptions {
 export interface BullsAndCowsOptions {
   players: PlayerOptions[], 
   answerLength?: number
+}
+
+export interface ChessOptions {
+  players: PlayerOptions[], 
 }
 
 export interface FinalCodeOptions {
@@ -84,6 +88,12 @@ export interface IBullsAndCows {
   numberCount: number, 
   guess(query: number[]): BullsAndCowsResult, 
   win(result: BullsAndCowsResult): boolean
+}
+
+export interface IChess {
+  board: number[][], 
+  win(): (Player | null), 
+  draw(): boolean
 }
 
 export interface IFinalCode {
@@ -134,9 +144,33 @@ export interface ITofe {
 }
 
 
-// function returned results
+// helper types
 
 export interface BullsAndCowsResult {
   a: number, 
   b: number
+}
+
+export type ChessMove = ChessMoveSuccess | ChessMoveFailed;
+
+export interface ChessMoveSuccess {
+  error?: false;
+  piece: ChessPiece;
+  from: [number, number];
+  to: [number, number];
+  capture?: ChessPiece;
+  enPassant?: boolean;
+  check?: boolean;
+  checkMate?: boolean;
+  promote?: ChessPiece.WQ | ChessPiece.WR | ChessPiece.WB | ChessPiece.WN | ChessPiece.BQ | ChessPiece.BR | ChessPiece.BB | ChessPiece.BN;
+  castle?: "LONG" | "SHORT";
+  selfLostShortCastle?: boolean;
+  selfLostLongCastle?: boolean;
+  oppoLostShortCastle?: boolean;
+  oppoLostLongCastle?: boolean;
+}
+
+export interface ChessMoveFailed {
+  error: true;
+  message: string;
 }

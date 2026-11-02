@@ -1,5 +1,6 @@
 export { BigTwo } from './BigTwo';
 export { BullsAndCows } from './BullsAndCows';
+export { Chess } from './Chess';
 export { FinalCode } from './FinalCode';
 export { FlipTrip } from './FlipTrip';
 export { Gomoku } from './Gomoku';

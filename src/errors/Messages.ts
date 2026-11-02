@@ -24,13 +24,9 @@ export const Messages = {
   [ErrorCodes.BullsAndCowsQueryLength]: (...args: any[]) => `The number count in query ${args[0]} is different from the answer's length (${args[1]}).`, 
   [ErrorCodes.BullsAndCowsDuplicatedNumbers]: (...args: any[]) => `There are duplicated numbers in query ${args[0]}.`, 
 
-  [ErrorCodes.FinalCodeQueryType]: `The query must be an integer.`, 
+  [ErrorCodes.ChessIllegalMove]: (...args: any[]) => `The move ${args[0]} is illegal.`,
 
-  [ErrorCodes.BotsNotAllowed]: `Bots are not allowed in this game.`, 
-  [ErrorCodes.GuildNotCached]: `The guild is not cached.`, 
-  [ErrorCodes.InvalidButtonInteraction]: `Invalid ButtonInteraction is received.`, 
-  [ErrorCodes.InvalidChannel]: `The channel of the source is invalid.`, 
-  [ErrorCodes.InvalidMainMessage]: `The main message of the game is invalid.`, 
+  [ErrorCodes.FinalCodeQueryType]: `The query must be an integer.`, 
 
   [ErrorCodes.OneHumanOnly]: `There must be one and only one human in this game.`
 };
